@@ -1,0 +1,42 @@
+{
+	//Formato
+	"editor.formatOnPaste": true, // Formatea el código al pegarlo
+	"editor.formatOnSave": true, // Formatea el código al guardar
+	"editor.formatOnType": true, // Formatea una línea después de escribirla
+	// Fuentes
+	"editor.fontFamily": "Fira Code", // Familia de la fuente
+	"editor.fontLigatures": true, // Activa las ligaduras en las fuentes
+	"editor.fontSize": 14, // Tamaño de fuente de 16px
+	//Código/Texto
+	"editor.renderLineHighlight": "none", // Desactiva el resaltado de las líneas
+	"editor.occurrencesHighlight": false, // Elimina el texto resaltado
+	"editor.renderWhitespace": "all", // Muestras siempre los espacios en el código
+	//Indentación y espaciado
+	"editor.detectIndentation": false, // Desactiva la indentación automática (Prettier)
+	"editor.renderIndentGuides": false, // Desactiva las líneas de indentación
+	"editor.folding": false, // Elimina el espaciado
+	"editor.glyphMargin": false, // Desactiva el margen izquierdo (Se usa principalmente para depurar)
+	//Cursor
+	"editor.cursorStyle": "line-thin", // Estilo del cursor: línea delgada
+	"editor.cursorBlinking": "blink", // Animación del cursor
+	"editor.hideCursorInOverviewRuler": true, // Oculta la marca del cursor en el editor
+	//Extra
+	"editor.matchBrackets": "never", // Elimina el resaltado de los corchetes ( Bracket Pair Colorizer 2)
+	"editor.colorDecorators": false, // Elimina los recuadros de color
+	"editor.suggestSelection": "first", // Preselecciona la primera opción de las sugerencias
+	"editor.minimap.enabled": true, // Muestra el mini mapa de código
+	//Archivos
+	"files.trimFinalNewlines": true, // Remueve las líneas extras al final del archivo
+	"files.insertFinalNewline": true, // Inserta una línea al final del archivo
+	"files.trimTrailingWhitespace": true, // Remueve los espacios extras al final de una línea
+	//Prettier
+	"prettier.arrowParens": "always", // Para utilizar ( ) en funciones flecha con un solo parámetro
+	"prettier.bracketSpacing": true, // Deja espacios entre los corchetes { ... }
+	"prettier.jsxBracketSameLine": true, // Para colocar el símbolo > al final de la última línea en JSX
+	"prettier.jsxSingleQuote": false, // Define comillas dobles para JSX
+	"prettier.printWidth": 85, // Especifica la longitud máxima de las líneas del código
+	"prettier.semi": true, // Define el punto y coma al final de las declaraciones
+	"prettier.singleQuote": false, // Define comillas dobles para el código
+	"prettier.tabWidth": 4, // Específica el número de espacios para la indentación
+	"prettier.useTabs": false, // Desactiva la indentación con tabulaciones
+}

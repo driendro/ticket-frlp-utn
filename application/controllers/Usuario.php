@@ -1,0 +1,96 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Usuario extends CI_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->load->model('usuario_model');
+        $this->load->model('feriado_model');
+
+        if(!$this->general->isLogged())
+        {
+            redirect(base_url('login'));
+        }
+
+		if(ini_get('date.timezone'))
+        {
+            date_default_timezone_set('America/Argentina/Buenos_Aires');
+        }
+    }
+
+    public function index()
+    {
+		$nroDia = date('N');
+		$proximo_lunes = time() + ((7-($nroDia-1)) * 24 * 60 * 60);
+		$proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
+		$proximo_viernes = time() + ((7-($nroDia-5)) * 24 * 60 * 60);
+		$proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
+
+        $data = [
+            'titulo' => 'Comprar',
+            'usuario' => $this->usuario_model->getUserById(
+                $this->session->userdata('id_usuario')),
+			'feriados'=> $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
+			'feriados_list'=> $this->feriado_model->getFeriado(),
+			'fechas' => $this->feriado_model->getListFechasInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
+			'lunes'=>$proximo_lunes_fecha,
+			'viernes' => $proximo_viernes_fecha
+        ];
+
+        $this->load->view('header', $data);
+        $this->load->view('index', $data);
+        $this->load->view('footer');
+    }
+
+    public function changePassword()
+    {
+        $data = [
+            'titulo' => 'Cambio de contraseña'
+        ];
+
+        if ($this->input->method() == 'post')
+        {
+            $password_anterior = $this->input->post('password_anterior');
+            $password_nuevo = $this->input->post('password_nuevo');
+            $password_confirmado = $this->input->post('password_confirmado');
+            $password = $this->usuario_model->getPasswordById(
+                $this->session->userdata('id_usuario'));
+            if($password == md5($password_anterior))
+            {
+                if($password_nuevo == $password_confirmado)
+                {
+                    if($this->usuario_model->updatePassword($password_nuevo))
+                    {
+                        redirect(base_url('logout'));
+                    }
+                }
+            }
+            else
+            {
+                redirect(base_url('usuario/cambio-password'));
+            }
+        }
+        else
+        {
+            $this->load->view('header', $data);
+            $this->load->view('change_password');
+            $this->load->view('footer');
+        }
+    }
+
+    public function historial()
+    {
+        $data = [
+            'titulo' => 'Historial de compras',
+            'compras' => $this->usuario_model->getHistorialByIdUser(
+                $this->session->userdata('id_usuario'))
+        ];
+
+        $this->load->view('header', $data);
+        $this->load->view('historial', $data);
+        $this->load->view('footer');
+    }
+}

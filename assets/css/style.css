@@ -1,0 +1,22 @@
+body {
+    font-family: tahoma;
+    /*background-color: #AAB4DC;*/
+    background: #DFDFDE;
+}
+
+.ticket {
+    background: #CCCCCC;
+    margin: 2% auto;
+    border-radius: 30px;
+}
+
+.title {
+    margin-top: 1em;
+}
+
+.form-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1em;
+}
