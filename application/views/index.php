@@ -37,10 +37,10 @@
 
     					<div class="my-1 form-check form-check-inline">
     						<fieldset
-    							<?= ($usuario->saldo < 180) || (in_array(date('Y-m-d', $proximo), array_column($feriados, 'fecha'))) ? 'disabled' : ''; ?>>
+    							<?= ($usuario->saldo < 180) || (in_array(date('Y-m-d', $proximo), array_column($comprados,'dia_comprado'))) || (in_array(date('Y-m-d', $proximo), array_column($feriados, 'fecha'))) ? 'disabled' : ''; ?>>
     							<div class="form-check">
-    								<input type="checkbox" class="form-check-input" id="check<?= ucwords($dia); ?>"
-    									name="check<?= ucwords($dia); ?>" value="<?= ucwords($dia); ?>">
+    								<input type="checkbox" class="form-check-input" id="check<?= ucwords($dia);?>"
+    									name="check<?= ucwords($dia); ?>" value="<?= ucwords($dia); ?>" <?= (in_array(date('Y-m-d', $proximo), array_column($comprados,'dia_comprado'))) ? 'checked' : ''; ?>>
     								<label class="form-check-label" for="check<?= ucwords($dia); ?>">
     									<?= ucwords($dia); ?> <?= $proxima_fecha; ?>
     								</label>
@@ -56,8 +56,8 @@
     								<div>
     									<select class="form-select" name="selectTurno<?= ucwords($dia); ?>"
     										id="selectTurno<?= ucwords($dia); ?>">
-    										<option value="Turno 1"> 12:30 hs </option>
-    										<option value="Turno 2"> 13:30 hs </option>
+    										<option <?= (in_array(date('Y-m-d', $proximo), array_column($comprados,'dia_comprado'))) && ($comprados['dia_comprado'== date('Y-m-d', $proximo)] == 'Turno 1' ) ? 'selected' : ''; ?> value="Turno 1"> 12:30 hs </option>
+    										<option <?= (in_array(date('Y-m-d', $proximo), array_column($comprados,'dia_comprado'))) && ($comprados['dia_comprado'== date('Y-m-d', $proximo)] == 'Turno 2' ) ? 'selected' : ''; ?> value="Turno 2"> 13:30 hs </option>
     									</select>
     								</div>
     								<div>
@@ -82,8 +82,6 @@
     					<div id="totalCompra"></div>
     				</form>
     			</div>
-
     		</div>
     	</div>
-    </div>
     <script src="<?= base_url('assets/js/scripts.js'); ?>"></script>

@@ -9,6 +9,7 @@ class Usuario extends CI_Controller
 
         $this->load->model('usuario_model');
         $this->load->model('feriado_model');
+        $this->load->model('ticket_model');
 
         if(!$this->general->isLogged())
         {
@@ -26,9 +27,9 @@ class Usuario extends CI_Controller
 
         $data = [
             'titulo' => 'Comprar',
-            'usuario' => $this->usuario_model->getUserById(
-                $this->session->userdata('id_usuario')),
-			'feriados'=> $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha)
+			'usuario' => $this->usuario_model->getUserById($this->session->userdata('id_usuario')),
+			'feriados'=> $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
+			'comprados' => $this->ticket_model->getComprasInRange($proximo_lunes_fecha, $proximo_viernes_fecha)
         ];
 
         $this->load->view('header', $data);

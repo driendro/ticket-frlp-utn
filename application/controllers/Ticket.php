@@ -55,5 +55,6 @@ class Ticket extends CI_Controller
 				$this->ticket_model->addCompra($data);
 			}
 		}
+		redirect(base_url('usuario'));
     }
 }

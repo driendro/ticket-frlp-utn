@@ -24,4 +24,9 @@ class Ticket_model extends CI_Model
             return false;
         }
     }
+
+	public function getComprasInRange($fecha_i, $fecha_f)
+	{
+		return $this->db->select('dia_comprado')->where('dia_comprado >=', $fecha_i)->where('dia_comprado <=', $fecha_f)->get('log_compra')->result();
+	}
 }
