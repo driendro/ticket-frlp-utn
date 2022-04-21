@@ -15,11 +15,6 @@ class Ticket extends CI_Controller
         {
             redirect(base_url('login'));
         }
-
-        if(ini_get('date.timezone'))
-        {
-            date_default_timezone_set('America/Argentina/Buenos_Aires');
-        }
     }
 
     public function index()
@@ -36,31 +31,29 @@ class Ticket extends CI_Controller
             redirect(base_url('menu'));
         }
 
-        for ($i = 0; $i <= 4; $i++)
-        {
-            $nroDia = date('N');
-            $proximo = time() + ((7-$nroDia-$i) * 24 * 60 * 60);
-            $proxima_fecha = date('Y-m-d', $proximo);
+		$dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
 
+		foreach ($dias as $id => $dia)
+		{
+			if($this->input->post("check{$dia}"))
+			{
+				$nroDia = date('N');
+    			$proximo = time() + ((7-$nroDia+($id+1)) * 24 * 60 * 60 );
+    			$proxima_fecha = date('d', $proximo);
 
-            $data = [
-                'fecha' => date('Y-m-d', time()),
-                'hora' => date('H:i:s', time()),
-                'dia_comprado' => $proxima_fecha,
-                'id_usuario' => $this->session->userdata('id_usuario'),
-                'precio' => 180,
-                'tipo' => $this->input->post('checkTipo'+$i), // 1, 2, 3, 4, 5
-                'turno' => $this->input->post('radioTurno'+$i)
-            ];
+				$data = [
+					'fecha' => date('Y-m-d', time()),
+					'hora' => date('H:i:s', time()),
+					'dia_comprado' => date('Y-m-d', $proximo),
+					'id_usuario' => $this->session->userdata('id_usuario'),
+					'precio' => 180,
+					'tipo' => $this->input->post("selectTipo{$dia}"),
+					'turno' => $this->input->post("selectTurno{$dia}"),
+					'menu' => $this->input->post("selectMenu{$dia}"),
+				];
 
-            if($this->ticket_model->addCompra($data))
-            {
-                redirect(base_url('usuario'));
-            }
-            else
-            {
-                redirect(base_url('usuario'));
-            }
-        }
+				$this->ticket_model->addCompra($data);
+			}
+		}
     }
 }

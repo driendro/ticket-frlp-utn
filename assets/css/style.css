@@ -1,11 +1,11 @@
 body {
     font-family: tahoma;
     /*background-color: #AAB4DC;*/
-    background: #DFDFDE;
+    background: #f7f7f7;
 }
 
 .ticket {
-    background: #CCCCCC;
+    background: #ffffff;
     margin: 2% auto;
     border-radius: 30px;
 }

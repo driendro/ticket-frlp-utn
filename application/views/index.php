@@ -37,33 +37,36 @@
 
     					<div class="my-1 form-check form-check-inline">
     						<fieldset
-    							<?= ($usuario->saldo < 180) || (in_array(date('Y-m-d', $proximo), array_column($fechas, 'fecha'))) ? 'disabled' : ''; ?>>
+    							<?= ($usuario->saldo < 180) || (in_array(date('Y-m-d', $proximo), array_column($feriados, 'fecha'))) ? 'disabled' : ''; ?>>
     							<div class="form-check">
     								<input type="checkbox" class="form-check-input" id="check<?= ucwords($dia); ?>"
     									name="check<?= ucwords($dia); ?>" value="<?= ucwords($dia); ?>">
-    								<label class="form-check-label"
-    									for="check<?= ucwords($dia); ?>"><?= ucwords($dia); ?>
-    									<?= $proxima_fecha; ?></label>
+    								<label class="form-check-label" for="check<?= ucwords($dia); ?>">
+    									<?= ucwords($dia); ?> <?= $proxima_fecha; ?>
+    								</label>
     							</div>
     							<fieldset id="<?= $dia; ?>" disabled>
-    								<div class="form-check">
-    									<input type="checkbox" class="form-check-input" id="checkTipo<?= $key; ?>"
-    										name="checkTipo<?= $key; ?>" value="Para llevar">
-    									<label class="form-check-label" for="checkTipo<?= $key; ?>">Para llevar</label>
+    								<div>
+    									<select class="form-select" name="selectTipo<?= ucwords($dia); ?>"
+    										id="selectTipo<?= ucwords($dia); ?>">
+    										<option value="Comer"> Comer aqui </option>
+    										<option value="Llevar"> Para llevar </option>
+    									</select>
     								</div>
-    								<div class="form-check">
-    									<input class="form-check-input" type="radio"
-    										name="radioTurno<?= ucwords($dia); ?>" id="radioTurno<?= ucwords($dia); ?>1"
-    										value="Turno 1" checked>
-    									<label class="form-check-label" for="radioTurno<?= ucwords($dia); ?>1">Turno
-    										1</label>
+    								<div>
+    									<select class="form-select" name="selectTurno<?= ucwords($dia); ?>"
+    										id="selectTurno<?= ucwords($dia); ?>">
+    										<option value="Turno 1"> 12:30 hs </option>
+    										<option value="Turno 2"> 13:30 hs </option>
+    									</select>
     								</div>
-    								<div class="form-check">
-    									<input class="form-check-input" type="radio"
-    										name="radioTurno<?= ucwords($dia); ?>" id="radioTurno<?= ucwords($dia); ?>2"
-    										value="Turno 2">
-    									<label class="form-check-label" for="radioTurno<?= ucwords($dia); ?>2">Turno
-    										2</label>
+    								<div>
+    									<select class="form-select" name="selectMenu<?= ucwords($dia); ?>"
+    										id="selectMenu<?= ucwords($dia); ?>">
+    										<option value="Basico"> Básico </option>
+    										<option value="Veggie"> Veggie </option>
+    										<option value="Celiaco"> Celiaco </option>
+    									</select>
     								</div>
     							</fieldset>
     						</fieldset>
@@ -71,7 +74,7 @@
     					<?php endforeach; ?>
     					<div class="form-check">
     						<div class="btn-group" role="group" aria-label="Basic example">
-    							<button type="submit" id="btnCompra" class="btn btn-primary mx-3"
+    							<button type="submit" id="btnCompra" class="btn btn-success mx-3"
     								disabled>Comprar</button>
     							<button type="reset" id="btnReset" class="btn btn-warning mx-3">Reset</button>
     						</div>

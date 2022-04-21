@@ -14,11 +14,6 @@ class Usuario extends CI_Controller
         {
             redirect(base_url('login'));
         }
-
-		if(ini_get('date.timezone'))
-        {
-            date_default_timezone_set('America/Argentina/Buenos_Aires');
-        }
     }
 
     public function index()
@@ -33,11 +28,7 @@ class Usuario extends CI_Controller
             'titulo' => 'Comprar',
             'usuario' => $this->usuario_model->getUserById(
                 $this->session->userdata('id_usuario')),
-			'feriados'=> $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
-			'feriados_list'=> $this->feriado_model->getFeriado(),
-			'fechas' => $this->feriado_model->getListFechasInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
-			'lunes'=>$proximo_lunes_fecha,
-			'viernes' => $proximo_viernes_fecha
+			'feriados'=> $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha)
         ];
 
         $this->load->view('header', $data);

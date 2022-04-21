@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -25,6 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 //$config['base_url'] = 'http://localhost/ticket';
 $config['base_url'] = 'http://192.168.0.101/ticket';
+//$config['base_url'] = 'http://192.168.66.88/ticket';
 
 /*
 |--------------------------------------------------------------------------

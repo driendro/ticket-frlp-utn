@@ -38,6 +38,10 @@ class Migration_create_log_compra extends CI_Migration
             'turno' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
+            ],
+            'menu' => [
+                'type' => 'VARCHAR',
+                'constraint' => '10',
             ]
         ]);
         $this->dbforge->add_key('id', TRUE);
