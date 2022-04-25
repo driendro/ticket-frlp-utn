@@ -9,7 +9,7 @@
     			<?= form_close(); ?>
     		</div>
     	</div>
-    	<?php if(isset($usuario)): ?>
+    	<?php if((isset($usuario)) && ($usuario!=FALSE)): ?>
     	<div class="row form-center">
     		<div class="col-sm-2"></div>
     		<div class="col-sm-8">
@@ -49,10 +49,21 @@
     						<input type="text" readonly class="form-control-plaintext" value="<?= $usuario->mail ?>">
     					</div>
     				</div>
-    				<button type="submit" class="btn btn-success">Buscar</button>
+    				<button type="submit" class="btn btn-success">Cargar</button>
     			</form>
     		</div>
     		<div class="col-sm-2"></div>
     	</div>
+
+		<?php elseif((isset($usuario)) && ($usuario==FALSE)): ?>
+		<div class="row form-center">
+    		<div class="col-sm-2"></div>
+    		<div class="col-sm-8">
+    			<h2>Ese numero de documento no existe</h2>
+				<a class="btn btn-primary" href="<?= base_url('admin/nuevo_usuario'); ?>" role="button">Crear Nuevo usuario</a>
+    		</div>
+    		<div class="col-sm-2"></div>
+    	</div>
+
     	<?php endif; ?>
     </div>

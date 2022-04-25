@@ -73,3 +73,4 @@ $route['datos'] = 'ticket/datos';
 
 $route['admin'] = 'loginVendedor/Login';
 $route['admin/index'] = 'vendedor/index';
+$route['admin/nuevo_usuario'] = 'vendedor/crateUser';

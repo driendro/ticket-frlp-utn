@@ -33,6 +33,10 @@ class Vendedor extends CI_Controller
 			{
 				$data['usuario'] = $usuario;
 			}
+			else
+			{
+				$data['usuario'] = FALSE;
+			}
 
 			$this->load->view('vendedor/header', $data);
 			$this->load->view('vendedor/index', $data);
@@ -47,6 +51,24 @@ class Vendedor extends CI_Controller
 		}
 
     }
+
+	public function crateUser()
+	{
+		$data = [
+			'titulo' => 'Nuevo Usuario'
+		];
+
+		if ($this->input->method() == 'post')
+        {
+			null;
+        }
+        else
+        {
+            $this->load->view('vendedor/header', $data);
+            $this->load->view('vendedor/crear_usuario.php');
+            $this->load->view('footer');
+        }
+	}
 
 /*
     public function changePassword()
