@@ -11,9 +11,13 @@ class Usuario extends CI_Controller
         $this->load->model('feriado_model');
         $this->load->model('ticket_model');
 
-        if(!$this->general->isLogged())
+        if(!$this->session->userdata('is_user'))
         {
-            redirect(base_url('login'));
+			if($this->session->userdata('is_admin'))
+			{
+				redirect(base_url('logout'));
+			}
+			redirect(base_url('login'));
         }
     }
 

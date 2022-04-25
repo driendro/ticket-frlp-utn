@@ -11,7 +11,7 @@ class Ticket extends CI_Controller
         $this->load->model('usuario_model');
         $this->load->model('feriado_model');
 
-        if(!$this->general->isLogged())
+        if(!$this->session->userdata('is_user'))
         {
             redirect(base_url('login'));
         }

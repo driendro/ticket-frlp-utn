@@ -67,3 +67,8 @@ $route['dbmigrate'] = 'migrate/index';
 
 $route['menu'] = 'menu/index';
 $route['datos'] = 'ticket/datos';
+
+//Enrutamienot para los vendedores/admins
+
+$route['admin'] = 'loginVendedor/Login';
+$route['admin/index'] = 'vendedor/index';

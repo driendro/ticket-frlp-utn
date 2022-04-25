@@ -12,8 +12,12 @@ class Login extends CI_Controller
 
     public function index()
     {
-        if($this->general->isLogged())
+        if($this->session->userdata('is_user'))
         {
+			if($this->session->userdata('is_admin'))
+			{
+				redirect(base_url('logout'));
+			}
             redirect(base_url('usuario'));
         }
 
@@ -27,13 +31,14 @@ class Login extends CI_Controller
             $password = $this->input->post('password');
             if($this->usuario_model->validateUser($documento, md5($password)))
             {
-                $session = [
+                $session_user = [
                     'id_usuario'  => $this->usuario_model->getIdByDocumento($documento),
                     'apellido' => $this->usuario_model->getLastNameByDocumento($documento),
                     'nombre' => $this->usuario_model->getFirstNameByDocumento($documento),
-                    'logged_in' => TRUE
+					'is_user' => TRUE,
+					'is_admin' => FALSE,
                 ];
-                $this->session->set_userdata($session);
+                $this->session->set_userdata($session_user);
                 redirect(base_url('usuario'));
             }
             else
@@ -51,7 +56,7 @@ class Login extends CI_Controller
 
     public function logout()
     {
-        $this->session->sess_destroy();
+        $this->session->sess_destroy($session_user);
         redirect(base_url('login'),'refresh');
     }
 }

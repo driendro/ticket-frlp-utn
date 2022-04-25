@@ -13,6 +13,11 @@ class Usuario_model extends CI_Model
         return $this->db->select('*')->where('id_usuario', $id)->get('usuario')->row();
     }
 
+	public function getUserByDocumento($documento)
+    {
+        return $this->db->select('*')->where('documento', $documento)->get('usuario')->row();
+    }
+
     public function getLastNameByDocumento($documento)
     {
         return $this->db->select('apellido')->where('documento', $documento)->get('usuario')->row('apellido');
