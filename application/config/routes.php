@@ -57,6 +57,7 @@ $route['translate_uri_dashes'] = FALSE;
 $route['usuario'] = 'usuario/index';
 $route['usuario/cambio-password'] = 'usuario/changePassword';
 $route['usuario/historial'] = 'usuario/historial';
+$route['usuario/devolver_compra'] = 'usuario/devolverCompra';
 $route['login'] = 'login';
 $route['logout'] = 'login/logout';
 

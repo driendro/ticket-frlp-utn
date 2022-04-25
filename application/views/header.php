@@ -38,6 +38,9 @@
 									compras</a>
 							</li>
 							<li>
+								<a class="dropdown-item" href="<?= base_url('usuario/devolver_compra'); ?>">Devolver compras</a>
+							</li>
+							<li>
 								<a class="dropdown-item" href="<?= base_url('usuario/cambio-password'); ?>">Cambiar
 									contraseña</a>
 							</li>

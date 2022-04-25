@@ -79,14 +79,44 @@ class Usuario extends CI_Controller
 
     public function historial()
     {
+		$id_usuario = $this->session->userdata('id_usuario');
         $data = [
             'titulo' => 'Historial de compras',
-            'compras' => $this->usuario_model->getHistorialByIdUser(
-                $this->session->userdata('id_usuario'))
+            'compras' => $this->usuario_model->getHistorialByIdUser($id_usuario)
         ];
 
         $this->load->view('header', $data);
         $this->load->view('historial', $data);
         $this->load->view('footer');
+    }
+
+    public function devolverCompra()
+    {
+		$id_usuario = $this->session->userdata('id_usuario');
+		$nroDia = date('N');
+		$proximo_lunes = time() + ((7-($nroDia-1)) * 24 * 60 * 60);
+		$proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
+		$proximo_viernes = time() + ((7-($nroDia-5)) * 24 * 60 * 60);
+		$proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
+        $data = [
+            'titulo' => 'Devolucion de compras',
+            'compras' => $this->ticket_model->getComprasInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
+			'devolucion'=>TRUE
+        ];
+
+		if($this->input->method()=='post')
+		{
+			$id_compra =$this->input->post('compraId');
+			$this->ticket_model->removeCompra($id_compra,$id_usuario);
+			redirect(base_url('usuario/devolver_compra'));
+		}
+		else
+		{
+			$this->load->view('header', $data);
+			$this->load->view('historial', $data);
+			$this->load->view('footer');
+		}
+
+
     }
 }

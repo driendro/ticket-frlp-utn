@@ -25,6 +25,12 @@
     							<td><?= $compra->dia_comprado; ?></td>
     							<td><?= $compra->precio; ?></td>
     							<td><?= $compra->menu; ?></td>
+								<?php if(isset($devolucion)): ?>
+								<?= form_open(current_url()); ?>
+								<td> <input type="text" name='compraId' id='compraId' value="<?= $compra->id ?>" hidden>
+									<button type="submit" id="btnDevolverCompra" class="btn btn-danger mx-3">Devolver</button></td>
+								<?= form_close(); ?>
+								<?php endif; ?>
     						</tr>
     						<?php endforeach; ?>
     					</tbody>
