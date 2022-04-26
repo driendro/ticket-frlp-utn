@@ -25,9 +25,9 @@ class Ticket_model extends CI_Model
         }
     }
 
-	public function getComprasInRange($fecha_i, $fecha_f)
+	public function getComprasInRangeByIdUser($fecha_i, $fecha_f, $idusuario)
 	{
-		return $this->db->select('*')->where('dia_comprado >=', $fecha_i)->where('dia_comprado <=', $fecha_f)->get('log_compra')->result();
+		return $this->db->select('*')->where('id_usuario', $idusuario)->where('dia_comprado >=', $fecha_i)->where('dia_comprado <=', $fecha_f)->get('log_compra')->result();
 	}
 
 	public function removeCompra($idcompra, $idusuario)

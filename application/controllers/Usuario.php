@@ -23,6 +23,7 @@ class Usuario extends CI_Controller
 
     public function index()
     {
+		$id_usuario = $this->session->userdata('id_usuario');
 		$nroDia = date('N');
 		$proximo_lunes = time() + ((7-($nroDia-1)) * 24 * 60 * 60);
 		$proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
@@ -31,9 +32,9 @@ class Usuario extends CI_Controller
 
         $data = [
             'titulo' => 'Comprar',
-			'usuario' => $this->usuario_model->getUserById($this->session->userdata('id_usuario')),
+			'usuario' => $this->usuario_model->getUserById($id_usuario),
 			'feriados'=> $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
-			'comprados' => $this->ticket_model->getComprasInRange($proximo_lunes_fecha, $proximo_viernes_fecha)
+			'comprados' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario)
         ];
 
         $this->load->view('header', $data);
@@ -100,7 +101,7 @@ class Usuario extends CI_Controller
 		$proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
         $data = [
             'titulo' => 'Devolucion de compras',
-            'compras' => $this->ticket_model->getComprasInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
+            'compras' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
 			'devolucion'=>TRUE
         ];
 
