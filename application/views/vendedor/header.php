@@ -21,7 +21,7 @@
 			<div class="collapse navbar-collapse" id="navbarHeader">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="nav-link" href="<?= base_url('menu'); ?>">Menu</a>
+						<a class="nav-link" href="<?= base_url('#'); ?>">Menu</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="<?= base_url('contacto'); ?>">Contacto</a>
@@ -34,11 +34,14 @@
 							<?= $this->session->userdata('nombre'); ?></a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<li>
-								<a class="dropdown-item" href="<?= base_url('usuario/historial'); ?>">Historial de
-									compras</a>
+								<a class="dropdown-item" href="<?= base_url('#'); ?>">Historial de
+									ventas</a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="<?= base_url('usuario/cambio-password'); ?>">Cambiar
+								<a class="dropdown-item" href="<?= base_url('admin/nuevo_usuario'); ?>">Crear nuevo usuario</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="<?= base_url('#'); ?>">Cambiar
 									contraseña</a>
 							</li>
 							<li>

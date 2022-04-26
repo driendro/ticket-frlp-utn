@@ -3,7 +3,7 @@
     		<div class="col-4 my-3">
     			<?= form_open(current_url()); ?>
     			<div class="row form-group mb-4 form-inline">
-    				<input type="number" class="form-control" placeholder="Ingrese DNI" name="numeroDni">
+    				<input type="number" class="mb-2 form-control" placeholder="Ingrese DNI" name="numeroDni">
     				<button type="submit" class="btn btn-success">Buscar</button>
     			</div>
     			<?= form_close(); ?>

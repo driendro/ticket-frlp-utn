@@ -11,10 +11,10 @@ class LoginVendedor extends CI_Controller
 
 		// Esta funcion controla si existe la variable de sesion 'is_admin' para
 		// impedir que muestre el formulario de ingreso si ya esta logeado
-		if($this->session->userdata('is_admin'))
-		{
-			redirect(base_url('admin'));
-		}
+		// if($this->session->userdata('is_admin'))
+		// {
+		// 	redirect(base_url('admin/index'));
+		// }
 
     }
 

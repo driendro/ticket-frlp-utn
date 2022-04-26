@@ -60,7 +60,19 @@ class Vendedor extends CI_Controller
 
 		if ($this->input->method() == 'post')
         {
-			null;
+			$numerodni = $this->input->post('dni');
+			$legajo = $this->input->post('legajo');
+			if($this->usuario_model->getUserByDocumento($numerodni))
+			{
+				redirect(base_url("{$numerodni}"));
+			}
+			if($this->usuario_model->getUserByLegajo($legajo))
+			{
+				redirect(base_url("{$legajo}"));
+			}
+
+			redirect(base_url('admin/nuevo_usuario'));
+
         }
         else
         {
