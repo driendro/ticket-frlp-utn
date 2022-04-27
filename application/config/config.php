@@ -24,9 +24,7 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 | a PHP script and you can easily do that on your own.
 |
 */
-//$config['base_url'] = 'http://localhost/ticket';
-//$config['base_url'] = 'http://192.168.0.101/ticket';
-$config['base_url'] = 'http://192.168.66.88/ticket';
+$config['base_url'] = 'http://localhost/ticket';
 
 /*
 |--------------------------------------------------------------------------
@@ -533,3 +531,7 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+$config['modules_locations'] = [
+    APPPATH.'modules/'
+];
