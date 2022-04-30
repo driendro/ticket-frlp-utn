@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------------
@@ -50,25 +50,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 
-$route['default_controller'] = 'ticket';
+$route['default_controller'] = 'comedor/ticket';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['usuario'] = 'usuario/index';
+$route['usuario'] = 'usuario/usuario/index';
 $route['usuario/cambio-password'] = 'usuario/changePassword';
-$route['usuario/historial'] = 'usuario/historial';
 $route['usuario/devolver_compra'] = 'usuario/devolverCompra';
-$route['login'] = 'login';
-$route['logout'] = 'login/logout';
+$route['usuario/historial'] = 'usuario/historial';
+$route['login'] = 'usuario/login';
+$route['logout'] = 'usuario/login/logout';
 
-$route['ticket'] = 'ticket/index';
-$route['contacto'] = 'contacto/index';
+$route['ticket'] = 'comedor/ticket/index';
+$route['contacto'] = 'comedor/contacto/index';
 
-$route['dbmigrate'] = 'migrate/index';
+$route['dbmigrate'] = 'admin/migrate/index';
 
-$route['menu'] = 'menu/index';
-$route['datos'] = 'ticket/datos';
+$route['menu'] = 'comedor/menu/index';
+$route['datos'] = 'comedor/ticket/datos';
 
 $route['admin'] = 'admin/vendedor/index';
 $route['admin/login'] = 'admin/login/index';
-$route['admin/nuevo_usuario'] = 'admin/vendedor/crateUser';
+$route['admin/nuevo_usuario'] = 'admin/vendedor/createUser';
+$route['admin/cargar_saldo'] = 'admin/vendedor/cargarSaldo';
+$route['admin/modificar_usuario'] = 'admin/vendedor/updateUser';

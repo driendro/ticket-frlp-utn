@@ -9,14 +9,14 @@
     			<?= form_close(); ?>
     		</div>
     	</div>
-    	<?php if((isset($usuario)) && ($usuario!=FALSE)): ?>
+    	<?php if ((isset($usuario)) && ($usuario != FALSE)) : ?>
     	<div class="row form-center">
     		<div class="col-sm-2"></div>
     		<div class="col-sm-8">
     			<h2> <?= ucwords($usuario->tipo) ?>: <?= strtoupper($usuario->apellido) ?>,
     				<?= ucwords($usuario->nombre) ?>
     			</h2>
-    			<form action="cargar_saldo" method="post">
+    			<form action="<?= base_url('admin/cargar_saldo'); ?>" method="post">
     				<div class="form-group row">
     					<label for="idSaldoActual" class="col-sm-2 col-form-label">Saldo actual:</label>
     					<div class="col-sm-10">
@@ -25,7 +25,7 @@
     					</div>
     					<label for="idCarga" class="col-sm-2 col-form-label">Carga: </label>
     					<div class="col-sm-2">
-    						<input type="number" class="form-control" id="idCarga">
+    						<input type="number" class="form-control" name="carga" id="carga">
     					</div>
     					<div class="col-sm-8"></div>
 
@@ -35,7 +35,7 @@
     					</div>
     					<label class="col-sm-2 col-form-label">DNI:</label>
     					<div class="col-sm-10">
-    						<input type="text" readonly class="form-control-plaintext"
+    						<input type="text" readonly name='dni' class="form-control-plaintext"
     							value="<?= $usuario->documento ?>">
     					</div>
     					<label class="col-sm-2 col-form-label">Especialidad:</label>
@@ -49,18 +49,23 @@
     						<input type="text" readonly class="form-control-plaintext" value="<?= $usuario->mail ?>">
     					</div>
     				</div>
-    				<button type="submit" class="btn btn-success">Cargar</button>
+    				<div>
+    					<button type="submit" class="btn btn-success mx-3">Cargar Saldo</button>
+    					<a class="btn btn-primary" href="<?= base_url('admin/modificar_usuario'); ?>"
+    						role="button">Modificar usuario</a>
+    				</div>
     			</form>
     		</div>
     		<div class="col-sm-2"></div>
     	</div>
 
-		<?php elseif((isset($usuario)) && ($usuario==FALSE)): ?>
-		<div class="row form-center">
+    	<?php elseif ((isset($usuario)) && ($usuario == FALSE)) : ?>
+    	<div class="row form-center">
     		<div class="col-sm-2"></div>
     		<div class="col-sm-8">
     			<h2>Ese numero de documento no existe</h2>
-				<a class="btn btn-primary" href="<?= base_url('admin/nuevo_usuario'); ?>" role="button">Crear Nuevo usuario</a>
+    			<a class="btn btn-primary" href="<?= base_url('admin/nuevo_usuario'); ?>" role="button">Nuevo
+    				usuario</a>
     		</div>
     		<div class="col-sm-2"></div>
     	</div>
