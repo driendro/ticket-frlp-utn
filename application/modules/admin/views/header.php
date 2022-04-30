@@ -13,20 +13,17 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container">
-			<a class="navbar-brand" href="<?= base_url('ticket'); ?>">Ticket</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader"
-				aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+			<a class="navbar-brand" href="<?= base_url('admin'); ?>">Ticket</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+				aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<div class="collapse navbar-collapse" id="navbarHeader">
+			<div class="collapse navbar-collapse" id="navbarNavDropdown">
 				<ul class="navbar-nav mr-auto">
+					<?php if ($this->session->userdata('id_vendedor')) : ?>
 					<li class="nav-item">
 						<a class="nav-link" href="<?= base_url('#'); ?>">Menu</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="<?= base_url('contacto'); ?>">Contacto</a>
-					</li>
-					<?php if($this->session->userdata('id_vendedor')): ?>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
 							data-bs-toggle="dropdown"
@@ -38,7 +35,8 @@
 									ventas</a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="<?= base_url('admin/nuevo_usuario'); ?>">Crear nuevo usuario</a>
+								<a class="dropdown-item" href="<?= base_url('admin/nuevo_usuario'); ?>">Crear nuevo
+									usuario</a>
 							</li>
 							<li>
 								<a class="dropdown-item" href="<?= base_url('#'); ?>">Cambiar

@@ -1,0 +1,54 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Login extends CI_Controller
+{
+	public function __construct()
+	{
+		parent::__construct();
+
+		$this->load->model('usuario_model');
+	}
+
+	public function index()
+	{
+		if ($this->session->userdata('is_user')) {
+			if ($this->session->userdata('is_admin')) {
+				redirect(base_url('logout'));
+			}
+			redirect(base_url('usuario'));
+		}
+
+		$data = [
+			'titulo' => 'Login'
+		];
+
+		if ($this->input->method() == 'post') {
+			$documento = $this->input->post('documento');
+			$password = $this->input->post('password');
+			if ($this->usuario_model->validateUser($documento, md5($password))) {
+				$session_user = [
+					'id_usuario'  => $this->usuario_model->getIdByDocumento($documento),
+					'apellido' => $this->usuario_model->getLastNameByDocumento($documento),
+					'nombre' => $this->usuario_model->getFirstNameByDocumento($documento),
+					'is_user' => TRUE,
+					'is_admin' => FALSE,
+				];
+				$this->session->set_userdata($session_user);
+				redirect(base_url('usuario'));
+			} else {
+				redirect(base_url('login'));
+			}
+		} else {
+			$this->load->view('comedor/header', $data);
+			$this->load->view('login');
+			$this->load->view('comedor/footer');
+		}
+	}
+
+	public function logout()
+	{
+		$this->session->sess_destroy($session_user);
+		redirect(base_url('login'), 'refresh');
+	}
+}
