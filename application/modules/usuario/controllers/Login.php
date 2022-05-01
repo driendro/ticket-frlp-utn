@@ -68,10 +68,14 @@ class Login extends CI_Controller
 				$pal3 = substr(str_shuffle($letras_permitidas), 0, 3);
 				$password = "{$pal3}{$num3}";
 
-				$this->generalticket->smtpSendEmail($usuario->mail, 'Nueva Contraseña', $password);
+				$message = "<p>Hola, <strong>{$usuario->apellido}, {$usuario->nombre}</strong>. Tu solicitaste el cambio de contraseña.</p><p>Tu nueva contraseña es: <strong>{$password}</strong></p><p>Por favor, cambiala luego del inicio de sesion</p><p>Saludos cordiales, {$this->config->item('email_settings_sender_name')} soporte.</p>";
 
-				if ($this->usuario_model->updatePasswordById($password, $usuario->id_usuario)) {
-					redirect(base_url('login'));
+				if ($this->generalticket->smtpSendEmail($usuario->mail, 'Nueva Contraseña', $message)) {
+					if ($this->usuario_model->updatePasswordById($password, $usuario->id_usuario)) {
+						redirect(base_url('login'));
+					} else {
+						redirect(base_url('usuario/contacto'));
+					}
 				} else {
 					redirect(base_url('usuario/recovery'));
 				}

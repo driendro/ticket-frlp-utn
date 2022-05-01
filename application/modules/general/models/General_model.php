@@ -20,17 +20,22 @@ class General_model extends CI_Model
 			'smtp_port' => $this->config->item('smtp_port'),
 			'smtp_crypto' => $this->config->item('smtp_crypto'),
 			'mailtype'  => 'html',
-			'charset'   => 'utf-8'
+			'charset'   => 'UTF-8'
 		);
 		$this->email->initialize($config);
-		//$this->email->set_mailtype("html");
+		$this->email->set_mailtype("html");
 		$this->email->set_newline("\r\n");
+		$this->email->set_crlf("\r\n");
 
 		$this->email->to($to);
 		$this->email->from($this->config->item('email_settings_sender'), $this->config->item('email_settings_sender_name'));
 		$this->email->subject($subject);
 		$this->email->message($message);
 
-		return $this->email->send();
+		if ($this->email->send()) {
+			return True;
+		} else {
+			show_error($this->email->print_debugger());
+		};
 	}
 }
