@@ -54,7 +54,7 @@ $route['default_controller'] = 'comedor/ticket';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['usuario'] = 'usuario/usuario/index';
+$route['usuario'] = 'comedor/ticket/index';
 $route['usuario/cambio-password'] = 'usuario/changePassword';
 $route['usuario/devolver_compra'] = 'usuario/devolverCompra';
 $route['usuario/historial'] = 'usuario/historial';

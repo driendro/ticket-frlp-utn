@@ -18,7 +18,23 @@ class Ticket extends CI_Controller
 
 	public function index()
 	{
-		redirect(base_url('usuario'));
+		$id_usuario = $this->session->userdata('id_usuario');
+		$nroDia = date('N');
+		$proximo_lunes = time() + ((7 - ($nroDia - 1)) * 24 * 60 * 60);
+		$proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
+		$proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
+		$proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
+
+		$data = [
+			'titulo' => 'Comprar',
+			'usuario' => $this->usuario_model->getUserById($id_usuario),
+			'feriados' => $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
+			'comprados' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario)
+		];
+
+		$this->load->view('usuario/header', $data);
+		$this->load->view('index', $data);
+		$this->load->view('general/footer');
 	}
 
 	public function datos()
