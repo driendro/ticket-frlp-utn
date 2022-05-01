@@ -27,28 +27,28 @@ class Login extends CI_Controller
 			$documento = $this->input->post('documento');
 			$password = $this->input->post('password');
 			if ($this->usuario_model->validateUser($documento, md5($password))) {
-				$session_user = [
+				$session = [
 					'id_usuario'  => $this->usuario_model->getIdByDocumento($documento),
 					'apellido' => $this->usuario_model->getLastNameByDocumento($documento),
 					'nombre' => $this->usuario_model->getFirstNameByDocumento($documento),
 					'is_user' => TRUE,
 					'is_admin' => FALSE,
 				];
-				$this->session->set_userdata($session_user);
+				$this->session->set_userdata($session);
 				redirect(base_url('usuario'));
 			} else {
 				redirect(base_url('login'));
 			}
 		} else {
-			$this->load->view('comedor/header', $data);
+			$this->load->view('header', $data);
 			$this->load->view('login');
-			$this->load->view('comedor/footer');
+			$this->load->view('general/footer');
 		}
 	}
 
 	public function logout()
 	{
-		$this->session->sess_destroy($session_user);
+		$this->session->sess_destroy();
 		redirect(base_url('login'), 'refresh');
 	}
 }

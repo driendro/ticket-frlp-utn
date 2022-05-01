@@ -35,9 +35,9 @@ class Usuario extends CI_Controller
 			'comprados' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario)
 		];
 
-		$this->load->view('comedor/header', $data);
+		$this->load->view('header', $data);
 		$this->load->view('index', $data);
-		$this->load->view('comedor/footer');
+		$this->load->view('general/footer');
 	}
 
 	public function changePassword()
@@ -63,9 +63,9 @@ class Usuario extends CI_Controller
 				redirect(base_url('usuario/cambio-password'));
 			}
 		} else {
-			$this->load->view('comedor/header', $data);
+			$this->load->view('header', $data);
 			$this->load->view('change_password');
-			$this->load->view('comedor/footer');
+			$this->load->view('general/footer');
 		}
 	}
 
@@ -77,9 +77,9 @@ class Usuario extends CI_Controller
 			'compras' => $this->usuario_model->getHistorialByIdUser($id_usuario)
 		];
 
-		$this->load->view('comedor/header', $data);
+		$this->load->view('header', $data);
 		$this->load->view('historial', $data);
-		$this->load->view('comedor/footer');
+		$this->load->view('general/footer');
 	}
 
 	public function devolverCompra()
@@ -101,9 +101,9 @@ class Usuario extends CI_Controller
 			$this->ticket_model->removeCompra($id_compra, $id_usuario);
 			redirect(base_url('usuario/devolver_compra'));
 		} else {
-			$this->load->view('comedor/header', $data);
+			$this->load->view('header', $data);
 			$this->load->view('historial', $data);
-			$this->load->view('comedor/footer');
+			$this->load->view('general/footer');
 		}
 	}
 }

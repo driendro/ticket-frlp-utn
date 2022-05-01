@@ -47,7 +47,7 @@ class Login extends MX_Controller
 		} else {
 			$this->load->view('header', $data);
 			$this->load->view('login');
-			$this->load->view('comedor/footer');
+			$this->load->view('general/footer');
 		}
 	}
 }

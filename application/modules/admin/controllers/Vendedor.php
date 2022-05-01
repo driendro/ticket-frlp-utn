@@ -32,6 +32,7 @@ class Vendedor extends CI_Controller
 
 			if ($usuario) {
 				$data['usuario'] = $usuario;
+				//Seteo el numero de documento como variable de sesion
 				$this->session->set_flashdata('documento', $documento);
 			} else {
 				$data['usuario'] = FALSE;
@@ -39,24 +40,27 @@ class Vendedor extends CI_Controller
 
 			$this->load->view('header', $data);
 			$this->load->view('index', $data);
-			$this->load->view('comedor/footer');
+			$this->load->view('general/footer');
 		} else {
 			$this->load->view('header', $data);
 			$this->load->view('index');
-			$this->load->view('comedor/footer');
+			$this->load->view('general/footer');
 		}
 	}
 
 	public function cargarSaldo()
 	{
-		if ($this->input->method() == 'post') {
-			$documento = $this->input->post('dni');
-			$usuario = $this->usuario_model->getUserByDocumento($documento);
-			$iduser = $usuario->id_usuario;
-			$carga = $this->input->post('carga');
-			$this->usuario_model->updateSaldoByUserId($iduser, $carga);
-			$codCargaMax = max(array_column($this->carga_model->getCodCarga(), 'cod_carga'));
+		$this->generalticket->smtpSendEmail('jorge.ronconi@gmail.com', 'Prueba 1', 'Hola mundo');
 
+		if ($this->input->method() == 'post') {
+			$documento = $this->input->post('dni'); //obtengo el numero de documento
+			$carga = $this->input->post('carga'); // obtengo el monto a cargar
+			$usuario = $this->usuario_model->getUserByDocumento($documento); //obtengo el user de ese dni
+			$iduser = $usuario->id_usuario; //obtengo el id del user
+			$this->usuario_model->updateSaldoByUserId($iduser, $carga); // modifico el salodo del usuario
+
+			//Genero la carga en la tabla carga_saldo como log
+			$codCargaMax = max(array_column($this->carga_model->getCodCarga(), 'cod_carga'));
 			$cargaLog = [
 				'cod_carga' => $codCargaMax + 1,
 				'fecha_y_hora' => date('Y-m-d H:i:s', time()),
@@ -64,8 +68,8 @@ class Vendedor extends CI_Controller
 				'monto' => $carga,
 				'nombre_vendedor' => $this->session->nick_name
 			];
-
 			$this->carga_model->addCargaLog($cargaLog);
+
 			redirect(base_url('admin'));
 		} else {
 			redirect(base_url('admin'));
@@ -130,7 +134,7 @@ class Vendedor extends CI_Controller
 		} else {
 			$this->load->view('header', $data);
 			$this->load->view('crear_usuario', $data);
-			$this->load->view('comedor/footer');
+			$this->load->view('general/footer');
 		}
 	}
 
@@ -150,7 +154,7 @@ class Vendedor extends CI_Controller
 		} else {
 			$this->load->view('header', $data);
 			$this->load->view('modificar_usuario', $data);
-			$this->load->view('comedor/footer');
+			$this->load->view('general/footer');
 		}
 	}
 }
