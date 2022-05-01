@@ -50,7 +50,7 @@ class Vendedor extends CI_Controller
 
 	public function cargarSaldo()
 	{
-		$this->generalticket->smtpSendEmail('jorge.ronconi@gmail.com', 'Prueba 1', 'Hola mundo');
+		//$this->generalticket->smtpSendEmail('jorge.ronconi@gmail.com', 'Prueba 1', 'Hola mundo');
 
 		if ($this->input->method() == 'post') {
 			$documento = $this->input->post('dni'); //obtengo el numero de documento
@@ -60,13 +60,12 @@ class Vendedor extends CI_Controller
 			$this->usuario_model->updateSaldoByUserId($iduser, $carga); // modifico el salodo del usuario
 
 			//Genero la carga en la tabla carga_saldo como log
-			$codCargaMax = max(array_column($this->carga_model->getCodCarga(), 'cod_carga'));
 			$cargaLog = [
-				'cod_carga' => $codCargaMax + 1,
-				'fecha_y_hora' => date('Y-m-d H:i:s', time()),
+				'fecha' => date('Y-m-d', time()),
+				'hora' => date('H:i:s', time()),
 				'id_usuario' => $iduser,
 				'monto' => $carga,
-				'nombre_vendedor' => $this->session->nick_name
+				'id_vendedor' => $this->session->id_vendedor
 			];
 			$this->carga_model->addCargaLog($cargaLog);
 

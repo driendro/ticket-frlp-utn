@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Carga_model extends CI_Model //Tabla -cargar_saldo-
+class Carga_model extends CI_Model //Tabla -log_carga-
 {
 	public function __construct()
 	{
@@ -10,16 +10,11 @@ class Carga_model extends CI_Model //Tabla -cargar_saldo-
 
 	public function getCargasByNickname($nick)
 	{
-		return $this->db->select('*')->where('nombre_vendedor', $nick)->get('cargar_saldo')->result();
-	}
-
-	public function getCodCarga()
-	{
-		return $this->db->select('cod_carga')->get('cargar_saldo')->result();
+		return $this->db->select('*')->where('vendedor', $nick)->get('log_carga')->result();
 	}
 
 	public function addCargaLog($data)
 	{
-		$this->db->insert('cargar_saldo', $data);
+		$this->db->insert('log_carga', $data);
 	}
 }
