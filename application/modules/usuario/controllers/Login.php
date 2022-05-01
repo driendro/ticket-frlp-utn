@@ -51,4 +51,37 @@ class Login extends CI_Controller
 		$this->session->sess_destroy();
 		redirect(base_url('login'), 'refresh');
 	}
+
+	public function recoveryPassword()
+	{
+		$data['titulo'] = 'Recuperacion de Contraseña';
+
+		if ($this->input->method() == 'post') {
+			$documento = $this->input->post('documento');
+			$usuario = $this->usuario_model->getUserByDocumento($documento);
+
+			if ($usuario) {
+				//Crer Password aleatorio de la forma 3letras+3numeros
+				$numeros_permitidos = '0123456789';
+				$letras_permitidas = 'abcdefghijklmnopqrstuvwxyz';
+				$num3 = substr(str_shuffle($numeros_permitidos), 0, 3);
+				$pal3 = substr(str_shuffle($letras_permitidas), 0, 3);
+				$password = "{$pal3}{$num3}";
+
+				$this->generalticket->smtpSendEmail($usuario->mail, 'Nueva Contraseña', $password);
+
+				if ($this->usuario_model->updatePasswordById($password, $usuario->id_usuario)) {
+					redirect(base_url('login'));
+				} else {
+					redirect(base_url('usuario/recovery'));
+				}
+			} else {
+				redirect(base_url('menu'));
+			}
+		}
+
+		$this->load->view('header', $data);
+		$this->load->view('recovery');
+		$this->load->view('general/footer');
+	}
 }

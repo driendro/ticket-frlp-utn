@@ -23,7 +23,7 @@ class General_model extends CI_Model
 			'charset'   => 'utf-8'
 		);
 		$this->email->initialize($config);
-		$this->email->set_mailtype("html");
+		//$this->email->set_mailtype("html");
 		$this->email->set_newline("\r\n");
 
 		$this->email->to($to);

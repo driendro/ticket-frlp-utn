@@ -67,6 +67,17 @@ class Usuario_model extends CI_Model
 		return true;
 	}
 
+	public function updatePasswordById($password, $iduser)
+	{
+		$data = [
+			'pass' => md5($password)
+		];
+
+		$this->db->where('id_usuario', $iduser);
+		$this->db->update('usuario', $data);
+		return true;
+	}
+
 	public function validateUser($documento, $password)
 	{
 		$this->db->where('documento', $documento);
