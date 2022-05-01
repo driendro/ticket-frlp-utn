@@ -12,8 +12,8 @@ $config['modules_locations'] = [
  */
 
 $config['protocol'] = 'smtp';
-$config['smtp_host'] = 'smtp.office365.com';
-$config['smtp_user'] = 'ticketweb@frlp.utn.edu.ar';
+$config['smtp_host'] = 'smtp.gmail.com';
+$config['smtp_user'] = 'ticketwbfrlp@gmail.com';
 $config['smtp_pass'] = 'Ch1ch0L74';
 $config['smtp_port'] = '587';
 $config['smtp_crypto'] = 'tls';
