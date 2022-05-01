@@ -41,17 +41,23 @@ class Ticket extends CI_Controller
 	{
 		$totalCompra = $this->input->post('total');
 
+		$id_usuario = $this->session->userdata('id_usuario');
+		$nroDia = date('N');
+		$proximo_lunes = time() + ((7 - ($nroDia - 1)) * 24 * 60 * 60);
+		$proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
+		$proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
+		$proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
+
 		if ($totalCompra > $this->usuario_model->getSaldoById($this->session->userdata('id_usuario'))) {
 			redirect(base_url('menu'));
 		}
 
 		$dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
-
+		// carga de la comppra en la DB
 		foreach ($dias as $id => $dia) {
 			if ($this->input->post("check{$dia}")) {
 				$nroDia = date('N');
 				$proximo = time() + ((7 - $nroDia + ($id + 1)) * 24 * 60 * 60);
-				$proxima_fecha = date('d', $proximo);
 
 				$data = [
 					'fecha' => date('Y-m-d', time()),
@@ -67,6 +73,20 @@ class Ticket extends CI_Controller
 				$this->ticket_model->addCompra($data);
 			}
 		}
-		redirect(base_url('usuario'));
+		//Confeccion del correo del recivo
+		$usuario = $this->usuario_model->getUserById($this->session->userdata('id_usuario'));
+		$compras = $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario);
+		$dataRecivo['compras'] = $compras;
+		$dataRecivo['total'] = count(array_column($compras, 'id')) * 180;
+		$dataRecivo['fechaHoy'] = date('d/m/Y', time());
+		$dataRecivo['horaAhora'] = date('H:i:s', time());
+		$dataRecivo['recivoNumero'] = implode(array_column($compras, 'id'));
+
+		$subject = "Recivo de compra del comedor";
+		$message = $this->load->view('recivo_compra', $dataRecivo, true);
+
+		if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message))
+
+			redirect(base_url('usuario'));
 	}
 }

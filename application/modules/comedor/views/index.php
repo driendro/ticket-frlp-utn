@@ -50,7 +50,7 @@
     								<div>
     									<select class="form-select" name="selectTipo<?= ucwords($dia); ?>"
     										id="selectTipo<?= ucwords($dia); ?>">
-    										<option value="Comer"> Comer aqui </option>
+    										<option value="Comer aqui"> Comer aqui </option>
     										<option value="Llevar"> Para llevar </option>
     									</select>
     								</div>
@@ -59,10 +59,10 @@
     										id="selectTurno<?= ucwords($dia); ?>">
     										<option
     											<?= (in_array(date('Y-m-d', $proximo), array_column($comprados, 'dia_comprado'))) && ($comprados['dia_comprado' == date('Y-m-d', $proximo)] == 'Turno 1') ? 'selected' : ''; ?>
-    											value="Turno 1"> 12:30 hs </option>
+    											value="Turno 12:30"> 12:30 hs </option>
     										<option
     											<?= (in_array(date('Y-m-d', $proximo), array_column($comprados, 'dia_comprado'))) && ($comprados['dia_comprado' == date('Y-m-d', $proximo)] == 'Turno 2') ? 'selected' : ''; ?>
-    											value="Turno 2"> 13:30 hs </option>
+    											value="Turno 13:30"> 13:30 hs </option>
     									</select>
     								</div>
     								<div>
