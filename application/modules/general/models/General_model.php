@@ -12,6 +12,9 @@ class General_model extends CI_Model
 	{
 		$this->load->library('email');
 
+		$from = $this->config->item('email_settings_sender');
+		$fromName = $this->config->item('email_settings_sender_name');
+
 		$config = array(
 			'protocol'  => 'smtp',
 			'smtp_host' => $this->config->item('smtp_host'),
@@ -28,7 +31,7 @@ class General_model extends CI_Model
 		$this->email->set_crlf("\r\n");
 
 		$this->email->to($to);
-		$this->email->from($this->config->item('email_settings_sender'), $this->config->item('email_settings_sender_name'));
+		$this->email->from($from, $fromName);
 		$this->email->subject($subject);
 		$this->email->message($message);
 

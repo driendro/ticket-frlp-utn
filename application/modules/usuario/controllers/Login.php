@@ -68,19 +68,21 @@ class Login extends CI_Controller
 				$pal3 = substr(str_shuffle($letras_permitidas), 0, 3);
 				$password = "{$pal3}{$num3}";
 
-				$message = "<p>Hola, <strong>{$usuario->apellido}, {$usuario->nombre}</strong>. Tu solicitaste el cambio de contraseña.</p><p>Tu nueva contraseña es: <strong>{$password}</strong></p><p>Por favor, cambiala luego del inicio de sesion</p><p>Saludos cordiales, {$this->config->item('email_settings_sender_name')} soporte.</p>";
+				$data['nombre'] = $usuario->nombre;
+				$data['apellido'] = $usuario->apellido;
+				$data['dni'] = $usuario->documento;
+				$data['password'] = $password;
 
-				if ($this->generalticket->smtpSendEmail($usuario->mail, 'Nueva Contraseña', $message)) {
+				$subject = "Aquí está tu nueva contraseña para TickeWeb-FRLP";
+				$message = $this->load->view('general/email_contraseña', $data, true);
+
+				if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message)) {
 					if ($this->usuario_model->updatePasswordById($password, $usuario->id_usuario)) {
 						redirect(base_url('login'));
-					} else {
-						redirect(base_url('usuario/contacto'));
 					}
-				} else {
-					redirect(base_url('usuario/recovery'));
 				}
 			} else {
-				redirect(base_url('menu'));
+				redirect(base_url('usuario/recovery'));
 			}
 		}
 
