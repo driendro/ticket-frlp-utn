@@ -24,12 +24,14 @@ class Ticket extends CI_Controller
 		$proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
 		$proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
 		$proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
+		$usuario = $this->usuario_model->getUserById($id_usuario);
 
 		$data = [
 			'titulo' => 'Comprar',
-			'usuario' => $this->usuario_model->getUserById($id_usuario),
+			'usuario' => $usuario,
 			'feriados' => $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
-			'comprados' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario)
+			'comprados' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
+			'costoVianda' => $this->ticket_model->getCostoById($usuario->id)
 		];
 
 		$this->load->view('usuario/header', $data);
@@ -82,8 +84,8 @@ class Ticket extends CI_Controller
 		$dataRecivo['horaAhora'] = date('H:i:s', time());
 		$dataRecivo['recivoNumero'] = implode(array_column($compras, 'id'));
 
-		$subject = "Recivo de compra del comedor";
-		$message = $this->load->view('general/correos/recivo_compra', $dataRecivo, true);
+		$subject = "Recibo de compra del comedor";
+		$message = $this->load->view('general/correos/recibo_compra', $dataRecivo, true);
 
 		if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message))
 

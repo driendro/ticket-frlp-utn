@@ -39,7 +39,7 @@
     						<div class="col-md-3">
     							<select class="mb-2 form-select" name="claustro">
     								<option selected>Seleccione Claustro</option>
-    								<option value="Estudiante">Estudiate</option>
+    								<option value="Estudiante">Estudiante</option>
     								<option value="Docente">Docente</option>
     								<option value="No Docente">No Docente</option>
     							</select>

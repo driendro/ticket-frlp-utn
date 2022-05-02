@@ -78,6 +78,21 @@ class Usuario_model extends CI_Model
 		return true;
 	}
 
+	public function updateUserById($iduser, $data)
+	{
+		$this->db->set('tipo', $data->tipo)->where('id', $iduser)->update('usuarios');
+		$this->db->set('legajo', $data->legajo)->where('id', $iduser)->update('usuarios');
+		$this->db->set('documento', $data->documento)->where('id', $iduser)->update('usuarios');
+		$this->db->set('nombre', $data->nombre)->where('id', $iduser)->update('usuarios');
+		$this->db->set('apellido', $data->apellido)->where('id', $iduser)->update('usuarios');
+		$this->db->set('especialidad', $data->especialidad)->where('id', $iduser)->update('usuarios');
+		$this->db->set('mail', $data->mail)->where('id', $iduser)->update('usuarios');
+		$this->db->set('estado', $data->estado)->where('id', $iduser)->update('usuarios');
+		$this->db->set('id_precio', $data->id_precio)->where('id', $iduser)->update('usuarios');
+
+		return true;
+	}
+
 	public function validateUser($documento, $password)
 	{
 		$this->db->where('documento', $documento);

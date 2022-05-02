@@ -1,7 +1,7 @@
     <div class="container-fluid">
     	<div class="row">
     		<div class="col mt-5">
-    			<h2 class="text-center">Recivo de compra</h2>
+    			<h2 class="text-center">Recibo de compra</h2>
     			<p>
     				Codigo: <?= $recivoNumero; ?> <br>
     				Fecha: <?= $fechaHoy; ?> <br>
@@ -26,14 +26,14 @@
     					</thead>
     					<tbody>
     						<?php foreach ($compras as $compra) : ?>
-    						<tr>
-    							<td><?= date('d-m-Y', strtotime($compra->dia_comprado)); ?></td>
-    							<td><?= date('l', strtotime($compra->dia_comprado)); ?></td>
-    							<td><?= $compra->turno; ?></td>
-    							<td><?= $compra->menu; ?></td>
-    							<td><?= $compra->tipo; ?></td>
-    							<td><?= $compra->precio; ?></td>
-    						</tr>
+    							<tr>
+    								<td><?= date('d-m-Y', strtotime($compra->dia_comprado)); ?></td>
+    								<td><?= date('l', strtotime($compra->dia_comprado)); ?></td>
+    								<td><?= $compra->turno; ?></td>
+    								<td><?= $compra->menu; ?></td>
+    								<td><?= $compra->tipo; ?></td>
+    								<td><?= $compra->precio; ?></td>
+    							</tr>
     						<?php endforeach; ?>
     						<tr>
     							<td></td>

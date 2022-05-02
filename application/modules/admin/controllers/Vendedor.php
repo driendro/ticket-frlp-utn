@@ -148,13 +148,45 @@ class Vendedor extends CI_Controller
 			'titulo' => 'Actualizar Usuario'
 		];
 
-		$documento = $this->session->flashdata('documento');
-		$usuario = $this->usuario_model->getUserByDocumento($documento);
+		if (null == $this->session->flashdata('documento')) {
+			redirect(base_url('admin'));
+		}
+		$numerodni = $this->session->flashdata('documento');
+		$usuario = $this->usuario_model->getUserByDocumento($numerodni);
 		$data['usuario'] = $usuario;
+
+		//Asigno el costo de la vianda segun el tipo de usuario
+		//1-Estudiante || 2-Becado || 3-Docente || 4-No Docente
+		if ($this->input->post('beca') == 'Si') {
+			$idPrecio = 2;
+		} else {
+			if ($this->input->post('claustro') == 'Estudiante') {
+				$idPrecio = 1;
+			} elseif ($this->input->post('claustro') == 'No Docente') {
+				$idPrecio = 4;
+			} elseif ($this->input->post('claustro') == 'Docente') {
+				$idPrecio = 3;
+			}
+		};
 
 		// Verifico si se carga informacion en el formulario
 		if ($this->input->method() == 'post') {
-			null;
+			$iduser = $this->usuario_model->getUserByDocumento($numerodni)->id;
+			$updateUser = [
+				'tipo' => $this->input->post('claustro'),
+				'legajo' => $this->input->post('legajo'),
+				'documento' => $numerodni,
+				'nombre' => ucwords($this->input->post('nombre')),
+				'apellido' => ucwords($this->input->post('apellido')),
+				'especialidad' => $this->input->post('especialidad'),
+				'mail' => strtolower($this->input->post('email')),
+				'estado' => 1,
+				'id_precio' => $idPrecio
+			];
+
+			if ($this->usuario_model->updateUserById($iduser, $updateUser)) {
+				redirect(base_url('admin'));
+			}
 		} else {
 			$this->load->view('header', $data);
 			$this->load->view('modificar_usuario', $data);

@@ -10,15 +10,24 @@ class Ticket_model extends CI_Model
 
 	public function addCompra($data)
 	{
-		$saldo = $this->db->select('saldo')->where('id', $this->session->userdata('id_usuario'))->get('usuarios')->row('saldo');
+		$idusuario = $this->session->userdata('id_usuario');
+		$idPrecio = $this->db->select('id_precio')->where('id', $idusuario)->get('usuarios')->row('id_precio');
+		$costoVianda = $this->db->select('costo')->where('id', $idPrecio)->get('precios')->row('costo');
+		$saldo = $this->db->select('saldo')->where('id', $idusuario)->get('usuarios')->row('saldo');
 		if ($saldo >= 180) {
 			if ($this->db->insert('log_compra', $data)) {
-				$saldo = $saldo - 180;
+				$saldo = $saldo - $costoVianda;
 			}
 			return $this->db->set('saldo', $saldo)->where('id', $this->session->userdata('id_usuario'))->update('usuarios');
 		} else {
 			return false;
 		}
+	}
+
+	public function getCostoById($id)
+	{
+		$idPrecio = $this->db->select('id_precio')->where('id', $id)->get('usuarios')->row('id_precio');
+		return $this->db->select('costo')->where('id', $idPrecio)->get('precios')->row('costo');
 	}
 
 	public function getComprasInRangeByIdUser($fecha_i, $fecha_f, $idusuario)
@@ -28,8 +37,10 @@ class Ticket_model extends CI_Model
 
 	public function removeCompra($idcompra, $idusuario)
 	{
+		$idPrecio = $this->db->select('id_precio')->where('id', $idusuario)->get('usuarios')->row('id_precio');
+		$costoVianda = $this->db->select('costo')->where('id', $idPrecio)->get('precios')->row('costo');
 		$saldo = $this->db->select('saldo')->where('id', $idusuario)->get('usuarios')->row('saldo');
-		$saldo = $saldo + 180;
+		$saldo = $saldo + $costoVianda;
 
 		$this->db->set('saldo', $saldo)->where('id', $idusuario)->update('usuarios');
 		$this->db->delete('log_compra', array('id' => $idcompra));

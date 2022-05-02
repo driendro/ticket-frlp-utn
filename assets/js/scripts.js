@@ -1,16 +1,17 @@
 var $cantidad_dias = 0;
 var $monto = 0;
 var $saldo = 0;
+var $costo = parseInt(document.getElementById("costoVianda").value);
 
 function check(event) {
     if (document.getElementById(event.currentTarget.checkDia).checked) {
         document.getElementById(event.currentTarget.dia).disabled = false;
         $cantidad_dias += 1;
-        $monto += 180;
+        $monto += $costo;
     } else {
         document.getElementById(event.currentTarget.dia).disabled = true;
         $cantidad_dias -= 1;
-        $monto -= 180;
+        $monto -= $costo;
     }
 
     var $saldo = document.getElementById("saldoCuenta").value;
@@ -21,7 +22,7 @@ function check(event) {
         document.getElementById("btnCompra").disabled = true;
     }
 
-    document.getElementById("compra").innerHTML = $monto;
+    document.getElementById("compra").innerHTML = "$" + $monto;
 
     document.getElementById("totalCompra").innerHTML =
         '<input name="total" value="' + $monto + '" hidden>';
