@@ -50,12 +50,12 @@
     						<div class="col-md-3">
     							<select class="mb-2 form-select" name="especialidad">
     								<option selected>Seleccione Carrera</option>
-    								<option value="Ing. Civil">Ing. Civil</option>
-    								<option value="Ing. Electrica">Ing. Electrica</option>
-    								<option value="Ing. Industrial">Ing. Idustrial</option>
-    								<option value="Ing. Mecanica">Ing. Mecanica</option>
-    								<option value="Ing. Quimica">Ing. Quimica</option>
-    								<option value="Ing. en Sistmeas">Ing. en Sistemas</option>
+    								<option value="Civil">Ing. Civil</option>
+    								<option value="Electrica">Ing. Electrica</option>
+    								<option value="Industrial">Ing. Idustrial</option>
+    								<option value="Mecanica">Ing. Mecanica</option>
+    								<option value="Quimica">Ing. Quimica</option>
+    								<option value="Sistmeas">Ing. en Sistemas</option>
     							</select>
     						</div>
     					</div>

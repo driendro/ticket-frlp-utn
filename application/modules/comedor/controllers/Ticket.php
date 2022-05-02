@@ -83,7 +83,7 @@ class Ticket extends CI_Controller
 		$dataRecivo['recivoNumero'] = implode(array_column($compras, 'id'));
 
 		$subject = "Recivo de compra del comedor";
-		$message = $this->load->view('recivo_compra', $dataRecivo, true);
+		$message = $this->load->view('general/correos/recivo_compra', $dataRecivo, true);
 
 		if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message))
 

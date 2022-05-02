@@ -74,7 +74,7 @@ class Login extends CI_Controller
 				$data['password'] = $password;
 
 				$subject = "Aquí está tu nueva contraseña para TickeWeb-FRLP";
-				$message = $this->load->view('general/email_contraseña', $data, true);
+				$message = $this->load->view('general/correos/cambio_contraseña', $data, true);
 
 				if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message)) {
 					if ($this->usuario_model->updatePasswordById($password, $usuario->id_usuario)) {

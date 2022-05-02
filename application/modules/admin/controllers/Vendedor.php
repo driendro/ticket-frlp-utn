@@ -108,15 +108,6 @@ class Vendedor extends CI_Controller
 				}
 			};
 
-			if ($this->usuario_model->getUserByDocumento($numerodni)) {
-				// Verifico si el DNI ya existe como usuario
-				redirect(base_url("{$password}"));
-			};
-			if ($this->usuario_model->getUserByLegajo($legajo)) {
-				// Verifico si el Legajo ya existe como usuario
-				redirect(base_url("{$legajo}"));
-			};
-
 			$newUser = [
 				'tipo' => $this->input->post('claustro'),
 				'legajo' => $legajo,
@@ -130,6 +121,20 @@ class Vendedor extends CI_Controller
 				'estado' => 1,
 				'id_precio' => $idPrecio
 			];
+			if ($this->usuario_model->addNewUser($newUser)) {
+				//Confeccion del correo del recivo
+				$correo = $this->input->post('email');
+				$dataCorreo['dni'] = $numerodni;
+				$dataRecivo['apellido'] = $this->input->post('apellido');
+				$dataRecivo['nombre'] = $this->input->post('nombre');
+				$dataRecivo['password'] = $password;
+
+				$subject = "Bienvenido al Comedor Universitario UTN-FRLP";
+				$message = $this->load->view('general/correos/nuevo_usuario', $dataCorreo, true);
+				$this->generalticket->smtpSendEmail($correo, $subject, $message);
+
+				redirect(base_url('admin'));
+			}
 		} else {
 			$this->load->view('header', $data);
 			$this->load->view('crear_usuario', $data);

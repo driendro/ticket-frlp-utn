@@ -89,4 +89,13 @@ class Usuario_model extends CI_Model
 	{
 		return $this->db->select('*')->where('id_usuario', $id)->limit(15)->order_by('dia_comprado', 'DESC')->get('log_compra')->result();
 	}
+
+	// Desde Aqui se apunta a la tabla usuarios que la nueva que se va a usar para esta app
+
+	public function addNewUser($data)
+	{
+		$this->db->insert('usuarios', $data);
+
+		return true;
+	}
 }
