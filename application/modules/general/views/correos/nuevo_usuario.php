@@ -5,9 +5,9 @@
 
 <body>
 
-	<p>Hola <strong><?= strtoupper($apellido); ?>, <?= ucwords($nombre); ?></strong>, bienvenida al comedor
-		universitario:</p>
-	<p>Su nueva cuenta ha sido creada y asociada al documento <strong><?= $dni; ?></strong>. </p>
+	<p>Hola <strong><?= strtoupper($apellido); ?>, <?= ucwords($nombre); ?></strong>, bienvenida al Comedor
+		Universitario.</p>
+	<p>Su nueva cuenta ha sido creada y asociada al documento <strong><?= $dni; ?></strong>.</p>
 
 	<p>Para poder realizar la compra debe ingresar al siguiente <a href="http://192.168.0.101/ticket/">Link</a></p>
 

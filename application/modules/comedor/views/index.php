@@ -1,7 +1,7 @@
     <div class="container">
     	<div class="row">
     		<div class="col my-3 text-center">
-    			<p class="mb-0"><strong>ID:</strong> <?= $usuario->id_usuario; ?> - <strong>Tipo:</strong>
+    			<p class="mb-0"><strong>ID:</strong> <?= $usuario->id; ?> - <strong>Tipo:</strong>
     				<?= $usuario->tipo; ?> - <strong>Legajo:</strong> <?= $usuario->legajo; ?> -
     				<strong>Documento:</strong> <?= $usuario->documento; ?>
     			</p>

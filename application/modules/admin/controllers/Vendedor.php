@@ -56,7 +56,7 @@ class Vendedor extends CI_Controller
 			$documento = $this->input->post('dni'); //obtengo el numero de documento
 			$carga = $this->input->post('carga'); // obtengo el monto a cargar
 			$usuario = $this->usuario_model->getUserByDocumento($documento); //obtengo el user de ese dni
-			$iduser = $usuario->id_usuario; //obtengo el id del user
+			$iduser = $usuario->id; //obtengo el id del user
 			$this->usuario_model->updateSaldoByUserId($iduser, $carga); // modifico el salodo del usuario
 
 			//Genero la carga en la tabla carga_saldo como log
@@ -125,9 +125,9 @@ class Vendedor extends CI_Controller
 				//Confeccion del correo del recivo
 				$correo = $this->input->post('email');
 				$dataCorreo['dni'] = $numerodni;
-				$dataRecivo['apellido'] = $this->input->post('apellido');
-				$dataRecivo['nombre'] = $this->input->post('nombre');
-				$dataRecivo['password'] = $password;
+				$dataCorreo['apellido'] = $this->input->post('apellido');
+				$dataCorreo['nombre'] = $this->input->post('nombre');
+				$dataCorreo['password'] = $password;
 
 				$subject = "Bienvenido al Comedor Universitario UTN-FRLP";
 				$message = $this->load->view('general/correos/nuevo_usuario', $dataCorreo, true);
