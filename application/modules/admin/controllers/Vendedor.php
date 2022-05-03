@@ -147,12 +147,13 @@ class Vendedor extends CI_Controller
 		$data = [
 			'titulo' => 'Actualizar Usuario'
 		];
+		$iduser = $this->uri->segment(3);
 
-		if (null == $this->session->flashdata('documento')) {
+		if (null == $this->usuario_model->getUserById($iduser)) {
 			redirect(base_url('admin'));
 		}
-		$numerodni = $this->session->flashdata('documento');
-		$usuario = $this->usuario_model->getUserByDocumento($numerodni);
+
+		$usuario = $this->usuario_model->getUserById($iduser);
 		$data['usuario'] = $usuario;
 
 		//Asigno el costo de la vianda segun el tipo de usuario
@@ -171,16 +172,15 @@ class Vendedor extends CI_Controller
 
 		// Verifico si se carga informacion en el formulario
 		if ($this->input->method() == 'post') {
-			$iduser = $this->usuario_model->getUserByDocumento($numerodni)->id;
 			$updateUser = [
 				'tipo' => $this->input->post('claustro'),
 				'legajo' => $this->input->post('legajo'),
-				'documento' => $numerodni,
+				'documento' => $this->input->post('documento'),
 				'nombre' => ucwords($this->input->post('nombre')),
 				'apellido' => ucwords($this->input->post('apellido')),
-				'especialidad' => $this->input->post('especialidad'),
+				'tipo' => ucwords($this->input->post('claustro')),
+				'especialidad' => ucwords($this->input->post('especialidad')),
 				'mail' => strtolower($this->input->post('email')),
-				'estado' => 1,
 				'id_precio' => $idPrecio
 			];
 

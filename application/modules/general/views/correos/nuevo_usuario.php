@@ -5,11 +5,11 @@
 
 <body>
 
-	<p>Hola <strong><?= strtoupper($apellido); ?>, <?= ucwords($nombre); ?></strong>, bienvenida al Comedor
+	<p>Hola <strong><?= strtoupper($apellido); ?>, <?= ucwords($nombre); ?></strong>, te damos la bienvenida al nuevo sistema del Comedor
 		Universitario.</p>
 	<p>Su nueva cuenta ha sido creada y asociada al documento <strong><?= $dni; ?></strong>.</p>
 
-	<p>Para poder realizar la compra debe ingresar al siguiente <a href="http://192.168.0.101/ticket/">Link</a></p>
+	<p>Para poder realizar la compra debe ingresar al siguiente <a href="<?= base_url() ?>">Link</a></p>
 
 	<p>Las credenciales para ingresar son: <br>
 	<ul>

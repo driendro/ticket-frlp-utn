@@ -44,6 +44,7 @@ class Ticket extends CI_Controller
 		$totalCompra = $this->input->post('total');
 
 		$id_usuario = $this->session->userdata('id_usuario');
+		$costoVianda = $this->ticket_model->getCostoById($id_usuario);
 		$nroDia = date('N');
 		$proximo_lunes = time() + ((7 - ($nroDia - 1)) * 24 * 60 * 60);
 		$proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
@@ -66,7 +67,7 @@ class Ticket extends CI_Controller
 					'hora' => date('H:i:s', time()),
 					'dia_comprado' => date('Y-m-d', $proximo),
 					'id_usuario' => $this->session->userdata('id_usuario'),
-					'precio' => 180,
+					'precio' => $costoVianda,
 					'tipo' => $this->input->post("selectTipo{$dia}"),
 					'turno' => $this->input->post("selectTurno{$dia}"),
 					'menu' => $this->input->post("selectMenu{$dia}"),
@@ -79,7 +80,7 @@ class Ticket extends CI_Controller
 		$usuario = $this->usuario_model->getUserById($this->session->userdata('id_usuario'));
 		$compras = $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario);
 		$dataRecivo['compras'] = $compras;
-		$dataRecivo['total'] = count(array_column($compras, 'id')) * 180;
+		$dataRecivo['total'] = count(array_column($compras, 'id')) * $costoVianda;
 		$dataRecivo['fechaHoy'] = date('d/m/Y', time());
 		$dataRecivo['horaAhora'] = date('H:i:s', time());
 		$dataRecivo['recivoNumero'] = implode(array_column($compras, 'id'));

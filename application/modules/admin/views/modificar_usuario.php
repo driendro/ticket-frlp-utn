@@ -1,7 +1,7 @@
     	<div class="container">
     		<div class="row">
     			<div class="col-10 my-3">
-    				<h1>Modificar usuario</h1>
+    				<h1>Modificar usuario <?= $usuario->id ?></h1>
     				<?= form_open(current_url()); ?>
     				<div class="form-group col">
     					<div class="row">
@@ -13,7 +13,7 @@
     					<div class="row">
     						<label class="col-sm-2 col-form-label">DNI:</label>
     						<div class="mb-2 col-sm-3">
-    							<input type="number" class="form-control" name="dni" value="<?= $usuario->documento ?>">
+    							<input type="number" class="form-control" name="documento" value="<?= $usuario->documento ?>">
     						</div>
     					</div>
     					<div class="row">
@@ -47,16 +47,11 @@
     							<select class="mb-2 form-select" name="especialidad">
     								<option <?= ($usuario->especialidad == 'civil') ? 'selected' : ''; ?> value="Civil">
     									Civil</option>
-    								<option <?= ($usuario->especialidad == 'Electrica') ? 'selected' : ''; ?>
-    									value="Electrica">Electrica</option>
-    								<option <?= ($usuario->especialidad == 'Industrial') ? 'selected' : ''; ?>
-    									value="Industrial">Idustrial</option>
-    								<option <?= ($usuario->especialidad == 'Mecanica') ? 'selected' : ''; ?>
-    									value="Mecanica">Mecanica</option>
-    								<option <?= ($usuario->especialidad == 'Quimica') ? 'selected' : ''; ?>
-    									value="Quimica">Quimica</option>
-    								<option <?= ($usuario->especialidad == 'Sistemas') ? 'selected' : ''; ?>
-    									value="Sistmeas">Sistemas</option>
+    								<option <?= ($usuario->especialidad == 'Electrica') ? 'selected' : ''; ?> value="Electrica">Electrica</option>
+    								<option <?= ($usuario->especialidad == 'Industrial') ? 'selected' : ''; ?> value="Industrial">Idustrial</option>
+    								<option <?= ($usuario->especialidad == 'Mecanica') ? 'selected' : ''; ?> value="Mecanica">Mecanica</option>
+    								<option <?= ($usuario->especialidad == 'Quimica') ? 'selected' : ''; ?> value="Quimica">Quimica</option>
+    								<option <?= ($usuario->especialidad == 'Sistemas') ? 'selected' : ''; ?> value="Sistmeas">Sistemas</option>
     							</select>
     						</div>
     					</div>
