@@ -54,8 +54,8 @@
     									</div>
     									<div>
     										<select class="form-select" name="selectTurno<?= ucwords($dia); ?>" id="selectTurno<?= ucwords($dia); ?>">
-    											<option <?= (in_array(date('Y-m-d', $proximo), array_column($comprados, 'dia_comprado'))) && ($comprados['dia_comprado' == date('Y-m-d', $proximo)] == 'Turno 1') ? 'selected' : ''; ?> value="Turno 12:30"> 12:30 hs </option>
-    											<option <?= (in_array(date('Y-m-d', $proximo), array_column($comprados, 'dia_comprado'))) && ($comprados['dia_comprado' == date('Y-m-d', $proximo)] == 'Turno 2') ? 'selected' : ''; ?> value="Turno 13:30"> 13:30 hs </option>
+    											<option value="12:30"> 12:30 hs </option>
+    											<option value="13:30"> 13:30 hs </option>
     										</select>
     									</div>
     									<div>

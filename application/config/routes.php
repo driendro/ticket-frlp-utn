@@ -75,3 +75,4 @@ $route['admin/login'] = 'admin/login/index';
 $route['admin/nuevo_usuario'] = 'admin/vendedor/createUser';
 $route['admin/cargar_saldo'] = 'admin/vendedor/cargarSaldo';
 $route['admin/modificar_usuario/(:num)'] = 'admin/vendedor/updateUser/$1';
+$route['admin/listados'] = 'admin/vendedor/descarcgarExcel';

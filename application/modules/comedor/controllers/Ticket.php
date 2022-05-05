@@ -49,7 +49,7 @@ class Ticket extends CI_Controller
 			//Si hoy esta entre el lunes y el jueves
 			return true;
 		} elseif ($hoy == $dia_fin && $ahora <= $hora_fin) {
-			//y si es viernes hasta las 3:00AM
+			//y si es viernes hasta las 12:00AM
 			return true;
 		}
 	}
@@ -80,7 +80,7 @@ class Ticket extends CI_Controller
 			} else {
 				$data = [
 					'titulo' => 'Comprar',
-					'alerta' => "<p>Fuera del horario de compra</p><p>La compra se realiza de Lunes a Jueves</p>"
+					'alerta' => "<p>Fuera del horario de compra</p><p>La compra se realiza desde el Lunes hasta el Viernes a las {$this->config->item('hora_final')}</p>"
 				];
 
 				$this->load->view('usuario/header', $data);

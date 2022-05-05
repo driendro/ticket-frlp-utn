@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use	PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Vendedor extends CI_Controller
 {
 	public function __construct()
@@ -190,6 +193,49 @@ class Vendedor extends CI_Controller
 		} else {
 			$this->load->view('header', $data);
 			$this->load->view('modificar_usuario', $data);
+			$this->load->view('general/footer');
+		}
+	}
+
+	public function descarcgarExcel()
+	{
+		$data = [
+			'titulo' => 'Descarga de Planilla'
+		];
+		if ($this->input->method() == 'post') {
+			$strtime = strtotime($this->input->post('fecha'));
+			$fecha_dowload = date('Y-m-d', $strtime);
+
+			$filename = "Listado_{$fecha_dowload}.xlsx";
+			$compras = $this->vendedor_model->getHistorialByIdFecha($fecha_dowload);
+			$spreadsheet = new Spreadsheet();
+			$sheet = $spreadsheet->getActiveSheet();
+			$sheet->setCellValue('A1', 'Legajo');
+			$sheet->setCellValue('B1', 'Apellido');
+			$sheet->setCellValue('C1', 'Nombre');
+			$sheet->setCellValue('D1', 'Turno');
+			$sheet->setCellValue('E1', 'Menu');
+			$sheet->setCellValue('F1', 'Retira/Lleva');
+			$rows = 2;
+			foreach ($compras as $compra) {
+				$usuario = $this->usuario_model->getUserById($compra->id_usuario);
+				if ($usuario != null) {
+					$sheet->setCellValue("A{$rows}", $usuario->legajo);
+					$sheet->setCellValue("B{$rows}", $usuario->apellido);
+					$sheet->setCellValue("C{$rows}", $usuario->nombre);
+					$sheet->setCellValue("D{$rows}", $compra->turno);
+					$sheet->setCellValue("E{$rows}", $compra->menu);
+					$sheet->setCellValue("F{$rows}", $compra->tipo);
+					$rows++;
+				}
+			}
+			header('Content-Type: application/vnd.ms-excel');
+			header("Content-Disposition: attachment; filename={$filename}");
+			$writer = new Xlsx($spreadsheet);
+			$writer->save("php://output");
+		} else {
+			$this->load->view('header', $data);
+			$this->load->view('descarga_planilla', $data);
 			$this->load->view('general/footer');
 		}
 	}
