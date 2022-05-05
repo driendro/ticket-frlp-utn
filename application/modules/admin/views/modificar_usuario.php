@@ -48,7 +48,7 @@
     								<option <?= ($usuario->especialidad == 'civil') ? 'selected' : ''; ?> value="Civil">
     									Civil</option>
     								<option <?= ($usuario->especialidad == 'Electrica') ? 'selected' : ''; ?> value="Electrica">Electrica</option>
-    								<option <?= ($usuario->especialidad == 'Industrial') ? 'selected' : ''; ?> value="Industrial">Idustrial</option>
+    								<option <?= ($usuario->especialidad == 'Industrial') ? 'selected' : ''; ?> value="Industrial">Industrial</option>
     								<option <?= ($usuario->especialidad == 'Mecanica') ? 'selected' : ''; ?> value="Mecanica">Mecanica</option>
     								<option <?= ($usuario->especialidad == 'Quimica') ? 'selected' : ''; ?> value="Quimica">Quimica</option>
     								<option <?= ($usuario->especialidad == 'Sistemas') ? 'selected' : ''; ?> value="Sistmeas">Sistemas</option>

@@ -16,6 +16,44 @@ class Ticket extends CI_Controller
 		}
 	}
 
+	public function estadoComedor()
+	{
+		//Con esta funcion se verifica si el comedor se encuentra cerrado, definiendo los periodos
+		//entre la fecha de apertura y cierre, y las vacaciones de invierno
+		$hoy = date('Y-m-d', time());
+		$apertura = $this->config->item('apertura');
+		$vaca_ini = $this->config->item('vacaciones_i');
+		$vaca_fin = $this->config->item('vacaciones_f');
+		$cierre = $this->config->item('cierre');
+
+		if ($hoy >= $apertura && $hoy <= $vaca_ini) {
+			//Primer semestre
+			return true;
+		} elseif ($hoy >= $vaca_fin && $hoy <= $cierre) {
+			//Segundo semestre
+			return true;
+		}
+	}
+
+	public function estadoCompra()
+	{
+		//Con esta funcion se verifica si el comedor habilitado para usarse, definindo los periodos
+		// de compra entre el lunes y el jueves
+		$hoy = date('N');
+		$ahora = date('H:i:s', time());
+		$dia_ini = $this->config->item('dia_inicial');
+		$dia_fin = $this->config->item('dia_final');
+		$hora_fin = $this->config->item('hora_final');
+
+		if ($hoy >= $dia_ini && $hoy < $dia_fin) {
+			//Si hoy esta entre el lunes y el jueves
+			return true;
+		} elseif ($hoy == $dia_fin && $ahora <= $hora_fin) {
+			//y si es viernes hasta las 3:00AM
+			return true;
+		}
+	}
+
 	public function index()
 	{
 		$id_usuario = $this->session->userdata('id_usuario');
@@ -26,17 +64,39 @@ class Ticket extends CI_Controller
 		$proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
 		$usuario = $this->usuario_model->getUserById($id_usuario);
 
-		$data = [
-			'titulo' => 'Comprar',
-			'usuario' => $usuario,
-			'feriados' => $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
-			'comprados' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
-			'costoVianda' => $this->ticket_model->getCostoById($usuario->id)
-		];
+		if ($this->estadoComedor()) {
+			if ($this->estadoCompra()) {
+				$data = [
+					'titulo' => 'Comprar',
+					'usuario' => $usuario,
+					'feriados' => $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
+					'comprados' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
+					'costoVianda' => $this->ticket_model->getCostoById($usuario->id)
+				];
 
-		$this->load->view('usuario/header', $data);
-		$this->load->view('index', $data);
-		$this->load->view('general/footer');
+				$this->load->view('usuario/header', $data);
+				$this->load->view('index', $data);
+				$this->load->view('general/footer');
+			} else {
+				$data = [
+					'titulo' => 'Comprar',
+					'alerta' => "<p>Fuera del horario de compra</p><p>La compra se realiza de Lunes a Jueves</p>"
+				];
+
+				$this->load->view('usuario/header', $data);
+				$this->load->view('alerta_comedor_cerrado', $data);
+				$this->load->view('general/footer');
+			}
+		} else {
+			$data = [
+				'titulo' => 'Comprar',
+				'alerta' => '<p>El comedor no funciona en este Periodo</p>'
+			];
+
+			$this->load->view('usuario/header', $data);
+			$this->load->view('alerta_comedor_cerrado', $data);
+			$this->load->view('general/footer');
+		}
 	}
 
 	public function datos()

@@ -73,6 +73,7 @@
     						<div class="btn-group" role="group" aria-label="Basic example">
     							<button type="submit" id="btnCompra" class="btn btn-success mx-3" disabled>Comprar</button>
     							<button type="reset" id="btnReset" class="btn btn-warning mx-3">Reset</button>
+    							<a href=" <?= base_url('usuario/devolver_compra'); ?>" class="btn btn-danger mx-3">Devolver Compras</a>
     						</div>
     					</div>
     					<div id="totalCompra"></div>
