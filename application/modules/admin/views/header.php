@@ -31,8 +31,8 @@
 							<?= $this->session->userdata('nombre'); ?></a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<li>
-								<a class="dropdown-item" href="<?= base_url('#'); ?>">Historial de
-									ventas</a>
+								<a class="dropdown-item" href="<?= base_url('admin/historial'); ?>">Historial de
+									cargas</a>
 							</li>
 							<li>
 								<a class="dropdown-item" href="<?= base_url('admin/nuevo_usuario'); ?>">Crear nuevo

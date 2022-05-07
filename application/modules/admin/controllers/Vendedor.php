@@ -257,4 +257,19 @@ class Vendedor extends CI_Controller
 		$dompdf->render();
 		$dompdf->stream("Cierre {$fecha}.pdf", array("Attachment" => 0)); //0 para ver, 1 para descargar
 	}
+
+	public function historialCargas()
+	{
+		$id_vendedor = $this->session->userdata('id_vendedor');
+		$cargas = $this->vendedor_model->getHistoryById($id_vendedor);
+
+		$data = [
+			'titulo' => 'Historial de cargas',
+			'cargas' => $cargas
+		];
+
+		$this->load->view('header', $data);
+		$this->load->view('historial', $data);
+		$this->load->view('general/footer');
+	}
 }

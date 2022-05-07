@@ -49,9 +49,15 @@ class Vendedor_model extends CI_Model
 		return true;
 	}
 
-	public function getHistorialByFecha($fecha)
+	public function getHistoryById($idvendedor)
 	{
-		return $this->db->select('*')->where('dia_comprado', $fecha)->get('log_compra')->result();
+		$this->db->select('*');
+		$this->db->from('log_carga');
+		$this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
+		$this->db->where('id_vendedor', $idvendedor);
+		$this->db->limit(20);
+		$query = $this->db->get();
+		return $query->result();
 	}
 
 	public function getCargasByFechaForPDF($fecha)
