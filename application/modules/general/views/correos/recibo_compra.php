@@ -20,26 +20,26 @@
     							<th class="col">Dia</th>
     							<th class="col">Turno</th>
     							<th class="col">Menu</th>
-    							<th class="col">Modo</th>
+    							<!-- <th class="col">Modo</th> -->
     							<th class="col">Costo</th>
     						</tr>
     					</thead>
     					<tbody>
     						<?php foreach ($compras as $compra) : ?>
-    							<tr>
-    								<td><?= date('d-m-Y', strtotime($compra->dia_comprado)); ?></td>
-    								<td><?= date('l', strtotime($compra->dia_comprado)); ?></td>
-    								<td><?= $compra->turno; ?></td>
-    								<td><?= $compra->menu; ?></td>
-    								<td><?= $compra->tipo; ?></td>
-    								<td><?= $compra->precio; ?></td>
-    							</tr>
+    						<tr>
+    							<td><?= date('d-m-Y', strtotime($compra->dia_comprado)); ?></td>
+    							<td><?= date('l', strtotime($compra->dia_comprado)); ?></td>
+    							<td><?= $compra->turno; ?></td>
+    							<td><?= $compra->menu; ?></td>
+    							<!-- <td><?= $compra->tipo; ?></td> -->
+    							<td><?= $compra->precio; ?></td>
+    						</tr>
     						<?php endforeach; ?>
     						<tr>
     							<td></td>
     							<td></td>
     							<td></td>
-    							<td></td>
+    							<!-- <td></td> -->
     							<td>Total:</td>
     							<td><?= $total; ?></td>
     						</tr>

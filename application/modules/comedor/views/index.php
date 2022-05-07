@@ -31,49 +31,58 @@
     				<form method="post" action="<?= base_url('datos'); ?>" id="formCompraId">
     					<?php $dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes']; ?>
     					<?php foreach ($dias as $key => $dia) : ?>
-    						<?php
+    					<?php
 							$nroDia = date('N');
 							$proximo = time() + ((7 - $nroDia + ($key + 1)) * 24 * 60 * 60);
 							$proxima_fecha = date('d', $proximo);
 							?>
 
-    						<div class="my-1 form-check form-check-inline">
-    							<fieldset <?= ($usuario->saldo < $costoVianda) || (in_array(date('Y-m-d', $proximo), array_column($comprados, 'dia_comprado'))) || (in_array(date('Y-m-d', $proximo), array_column($feriados, 'fecha'))) ? 'disabled' : ''; ?>>
-    								<div class="form-check">
-    									<input type="checkbox" class="form-check-input" id="check<?= ucwords($dia); ?>" name="check<?= ucwords($dia); ?>" value="<?= ucwords($dia); ?>" <?= (in_array(date('Y-m-d', $proximo), array_column($comprados, 'dia_comprado'))) ? 'checked' : ''; ?>>
-    									<label class="form-check-label" for="check<?= ucwords($dia); ?>">
-    										<?= ucwords($dia); ?> <?= $proxima_fecha; ?>
-    									</label>
-    								</div>
-    								<fieldset id="<?= $dia; ?>" disabled>
-    									<div>
+    					<div class="my-1 form-check form-check-inline">
+    						<fieldset
+    							<?= ($usuario->saldo < $costoVianda) || (in_array(date('Y-m-d', $proximo), array_column($comprados, 'dia_comprado'))) || (in_array(date('Y-m-d', $proximo), array_column($feriados, 'fecha'))) ? 'disabled' : ''; ?>>
+    							<div class="form-check">
+    								<input type="checkbox" class="form-check-input" id="check<?= ucwords($dia); ?>"
+    									name="check<?= ucwords($dia); ?>" value="<?= ucwords($dia); ?>"
+    									<?= (in_array(date('Y-m-d', $proximo), array_column($comprados, 'dia_comprado'))) ? 'checked' : ''; ?>>
+    								<label class="form-check-label" for="check<?= ucwords($dia); ?>">
+    									<?= ucwords($dia); ?> <?= $proxima_fecha; ?>
+    								</label>
+    							</div>
+    							<fieldset id="<?= $dia; ?>" disabled>
+    								<!--
+     									<div>
     										<select class="form-select" name="selectTipo<?= ucwords($dia); ?>" id="selectTipo<?= ucwords($dia); ?>">
     											<option value="Comer aqui"> Comer aqui </option>
     											<option value="Llevar"> Para llevar </option>
     										</select>
     									</div>
-    									<div>
-    										<select class="form-select" name="selectTurno<?= ucwords($dia); ?>" id="selectTurno<?= ucwords($dia); ?>">
-    											<option value="12:30"> 12:30 hs </option>
-    											<option value="13:30"> 13:30 hs </option>
-    										</select>
-    									</div>
-    									<div>
-    										<select class="form-select" name="selectMenu<?= ucwords($dia); ?>" id="selectMenu<?= ucwords($dia); ?>">
-    											<option value="Basico"> Básico </option>
-    											<option value="Veggie"> Veggie </option>
-    											<option value="Celiaco"> Celiaco </option>
-    										</select>
-    									</div>
-    								</fieldset>
+    									-->
+    								<div>
+    									<select class="form-select" name="selectTurno<?= ucwords($dia); ?>"
+    										id="selectTurno<?= ucwords($dia); ?>">
+    										<option value="12:30"> 12:30 hs </option>
+    										<option value="13:30"> 13:30 hs </option>
+    									</select>
+    								</div>
+    								<div>
+    									<select class="form-select" name="selectMenu<?= ucwords($dia); ?>"
+    										id="selectMenu<?= ucwords($dia); ?>">
+    										<option value="Basico"> Básico </option>
+    										<option value="Veggie"> Veggie </option>
+    										<option value="Celiaco"> Celiaco </option>
+    									</select>
+    								</div>
     							</fieldset>
-    						</div>
+    						</fieldset>
+    					</div>
     					<?php endforeach; ?>
     					<div class="form-check">
     						<div class="btn-group" role="group" aria-label="Basic example">
-    							<button type="submit" id="btnCompra" class="btn btn-success mx-3" disabled>Comprar</button>
+    							<button type="submit" id="btnCompra" class="btn btn-success mx-3"
+    								disabled>Comprar</button>
     							<button type="reset" id="btnReset" class="btn btn-warning mx-3">Reset</button>
-    							<a href=" <?= base_url('usuario/devolver_compra'); ?>" class="btn btn-danger mx-3">Devolver Compras</a>
+    							<a href=" <?= base_url('usuario/devolver_compra'); ?>"
+    								class="btn btn-danger mx-3">Devolver Compras</a>
     						</div>
     					</div>
     					<div id="totalCompra"></div>
