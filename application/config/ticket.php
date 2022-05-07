@@ -24,7 +24,7 @@ $config['cierre'] = '2022-12-09';
 $config['vacaciones_i'] = '2022-07-17';
 $config['vacaciones_f'] = '2022-07-31';
 $config['dia_inicial'] = 1; //lunes
-$config['dia_final'] = 5; //viernes
+$config['dia_final'] = 6; //viernes
 $config['hora_final'] = '12:00:00'; //hora del viernes de cierre de compra
 
 //Set lenguage

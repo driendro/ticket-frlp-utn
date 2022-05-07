@@ -3,6 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 use	PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Dompdf\Dompdf;
 
 class Vendedor extends CI_Controller
 {
@@ -26,7 +27,7 @@ class Vendedor extends CI_Controller
 	public function index()
 	{
 		$data = [
-			'titulo' => 'Vendedor'
+			'titulo' => 'Carga de Saldo'
 		];
 
 		if ($this->input->method() == 'post') {
@@ -53,8 +54,6 @@ class Vendedor extends CI_Controller
 
 	public function cargarSaldo()
 	{
-		//$this->generalticket->smtpSendEmail('jorge.ronconi@gmail.com', 'Prueba 1', 'Hola mundo');
-
 		if ($this->input->method() == 'post') {
 			$documento = $this->input->post('dni'); //obtengo el numero de documento
 			$carga = $this->input->post('carga'); // obtengo el monto a cargar
@@ -238,5 +237,24 @@ class Vendedor extends CI_Controller
 			$this->load->view('descarga_planilla', $data);
 			$this->load->view('general/footer');
 		}
+	}
+
+	public function descargarInformes()
+	{
+		$id_vendedor = $this->session->userdata('id_vendedor');
+		$fecha = date('Y-m-d');
+		$cargas = $this->vendedor_model->getCargasByFechaForPDF($fecha);
+
+		$data['cargas'] = $cargas;
+		$data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
+		$data['total'] = array_sum(array_column($cargas, 'monto'));
+		$data['fecha'] = date('d-m-Y');
+		$data['cantidad'] = count(array_column($cargas, 'id'));
+
+		$dompdf = new Dompdf();
+		$dompdf->loadHtml($this->load->view('pdf_view/cajaDiaria', $data, true));
+		$dompdf->setPaper('A4', 'portrait');
+		$dompdf->render();
+		$dompdf->stream("Cierre {$fecha}.pdf", array("Attachment" => 0)); //0 para ver, 1 para descargar
 	}
 }

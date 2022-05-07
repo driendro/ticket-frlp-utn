@@ -25,8 +25,7 @@ class Migration_create_log_carga extends CI_Migration
 			],
 			'monto' => [
 				'type' => 'INT',
-				'constraint' => '5',
-				'unsigned' => TRUE
+				'constraint' => '5'
 			],
 			'id_vendedor' => [
 				'type' => 'INT',
