@@ -22,7 +22,7 @@
 				<ul class="navbar-nav mr-auto">
 					<?php if ($this->session->userdata('id_vendedor')) : ?>
 					<li class="nav-item">
-						<a class="nav-link" href="<?= base_url('#'); ?>">Menu</a>
+						<a class="nav-link" href="<?= base_url('admin/menu'); ?>">Menu</a>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"

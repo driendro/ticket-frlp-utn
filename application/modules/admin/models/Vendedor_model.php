@@ -77,4 +77,18 @@ class Vendedor_model extends CI_Model
 		$this->db->where('pass', $password);
 		return $this->db->get('vendedor')->row();
 	}
+
+	public function updateMenu($id, $data)
+	{
+		$this->db->where('id', $id);
+		$this->db->update('menu', $data);
+		return true;
+	}
+
+	public function getMenu()
+	{
+		$this->db->select('*');
+		$query = $this->db->get('menu');
+		return $query->result();
+	}
 }

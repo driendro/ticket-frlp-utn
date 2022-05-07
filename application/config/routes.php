@@ -78,3 +78,4 @@ $route['admin/modificar_usuario/(:num)'] = 'admin/vendedor/updateUser/$1';
 $route['admin/listados'] = 'admin/vendedor/descarcgarExcel';
 $route['admin/informe'] = 'admin/vendedor/descargarInformes';
 $route['admin/historial'] = 'admin/vendedor/historialCargas';
+$route['admin/menu'] = 'admin/vendedor/updateMenu';

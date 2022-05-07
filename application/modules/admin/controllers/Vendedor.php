@@ -272,4 +272,25 @@ class Vendedor extends CI_Controller
 		$this->load->view('historial', $data);
 		$this->load->view('general/footer');
 	}
+
+	public function updateMenu()
+	{
+		$menu = $this->vendedor_model->getMenu();
+
+		$data['titulo'] = 'Actualizar Menu';
+		$data['menu'] = $menu;
+
+		if ($this->input->method() == 'post') {
+			for ($i = 1; $i <= 5; $i++) {
+				$menu_item['menu1'] = $this->input->post("basico_{$i}");
+				$menu_item['menu2'] = $this->input->post("veggie_{$i}");
+				$this->vendedor_model->updateMenu($i, $menu_item);
+			}
+			redirect(base_url('admin/menu'));
+		} else {
+			$this->load->view('header', $data);
+			$this->load->view('menu', $data);
+			$this->load->view('general/footer');
+		}
+	}
 }
