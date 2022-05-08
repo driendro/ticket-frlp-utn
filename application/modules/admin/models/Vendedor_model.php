@@ -49,13 +49,14 @@ class Vendedor_model extends CI_Model
 		return true;
 	}
 
-	public function getHistoryById($idvendedor)
+	public function getCargasByIdvendedor($idvendedor)
 	{
 		$this->db->select('*');
 		$this->db->from('log_carga');
 		$this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
 		$this->db->where('id_vendedor', $idvendedor);
 		$this->db->limit(20);
+		$this->db->order_by('log_carga.id', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
 	}
@@ -66,6 +67,7 @@ class Vendedor_model extends CI_Model
 		$this->db->from('log_carga');
 		$this->db->join('vendedor', 'log_carga.id_vendedor=vendedor.id_vendedor');
 		$this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
+		$this->db->order_by('id', 'DESC');
 		$this->db->where('fecha', $fecha);
 		$query = $this->db->get();
 		return $query->result();

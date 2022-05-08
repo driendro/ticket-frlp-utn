@@ -52,6 +52,35 @@ class Vendedor extends CI_Controller
 		}
 	}
 
+	public function correoCargaSaldo($id_vendedor)
+	{
+		$cargas = $this->vendedor_model->getCargasByIdvendedor($id_vendedor);
+
+		$i = 1;
+		foreach ($cargas as $a) {
+			if ($i == 1) {
+				//Solo tomo datos del primer elemento, que es la ultima carga del vendedor
+				$data['codigo'] = $a->id;
+				$data['fecha'] = date('d-m-Y', strtotime($a->fecha));
+				$data['hora'] = $a->hora;
+				$data['documento'] = $a->documento;
+				$data['apellido'] = $a->apellido;
+				$data['nombre'] = $a->nombre;
+				$data['monto'] = $a->monto;
+				$data['saldo'] = $a->saldo;
+				$correo = $a->mail;
+				$i = $i + 1;
+			}
+		}
+
+		//Confeccion del correo del recivo
+		$subject = "Carga de Saldo";
+		$message = $this->load->view('general/correos/carga_saldo', $data, true);
+		$this->generalticket->smtpSendEmail($correo, $subject, $message);
+
+		return true;
+	}
+
 	public function cargarSaldo()
 	{
 		if ($this->input->method() == 'post') {
@@ -70,6 +99,7 @@ class Vendedor extends CI_Controller
 				'id_vendedor' => $this->session->id_vendedor
 			];
 			$this->carga_model->addCargaLog($cargaLog);
+			$this->correoCargaSaldo($this->session->id_vendedor);
 
 			redirect(base_url('admin'));
 		} else {
@@ -124,6 +154,21 @@ class Vendedor extends CI_Controller
 				'id_precio' => $idPrecio
 			];
 			if ($this->usuario_model->addNewUser($newUser)) {
+				// realizamos la carga de saldo
+				$usuario = $this->usuario_model->getUserByDocumento($numerodni);
+
+				if ($this->input->post('saldo') != 0) {
+					$newCarga = [
+						'fecha' => date('Y-m-d', time()),
+						'hora' => date('H:i:s', time()),
+						'id_usuario' => $usuario->id,
+						'monto' => $this->input->post('saldo'),
+						'id_vendedor' => $this->session->id_vendedor
+					];
+					$this->carga_model->addCargaLog($newCarga);
+					$this->correoCargaSaldo($this->session->id_vendedor);
+				}
+
 				//Confeccion del correo del recivo
 				$correo = $this->input->post('email');
 				$dataCorreo['dni'] = $numerodni;
@@ -261,7 +306,7 @@ class Vendedor extends CI_Controller
 	public function historialCargas()
 	{
 		$id_vendedor = $this->session->userdata('id_vendedor');
-		$cargas = $this->vendedor_model->getHistoryById($id_vendedor);
+		$cargas = $this->vendedor_model->getCargasByIdvendedor($id_vendedor);
 
 		$data = [
 			'titulo' => 'Historial de cargas',

@@ -22,7 +22,7 @@ function check(event) {
         document.getElementById("btnCompra").disabled = true;
     }
 
-    document.getElementById("compra").innerHTML = "$" + $monto;
+    document.getElementById("compra").innerHTML = "<strong>Costo: $ " + $monto + "-.<\strong>";
 
     document.getElementById("totalCompra").innerHTML =
         '<input name="total" value="' + $monto + '" hidden>';

@@ -1,16 +1,6 @@
     <div class="container">
     	<div class="row">
     		<div class="col my-3 text-center">
-    			<p class="mb-0"><strong>ID:</strong> <?= $usuario->id; ?> - <strong>Tipo:</strong>
-    				<?= $usuario->tipo; ?> - <strong>Legajo:</strong> <?= $usuario->legajo; ?> -
-    				<strong>Documento:</strong> <?= $usuario->documento; ?>
-    			</p>
-    			<p class="mb-0"><strong>Apellido, Nombre:</strong> <?= $usuario->apellido; ?>, <?= $usuario->nombre; ?>
-    				- <strong>Especialidad:</strong> <?= $usuario->especialidad; ?></p>
-    			<p class="mb-0"><strong>Email:</strong> <?= $usuario->mail; ?> - <strong>Saldo:</strong>
-    				$<?= $usuario->saldo; ?> - <strong>Costo:</strong>
-    				$<?= $costoVianda; ?></p>
-    			<h2 class="mb-0" id="compra">$0</h2>
     			<input type="number" id="saldoCuenta" value="<?= $usuario->saldo; ?>" hidden>
     			<input type="number" id="costoVianda" value="<?= $costoVianda; ?>" hidden>
     		</div>
@@ -19,6 +9,14 @@
     		<div class="row">
     			<div class="col mt-3">
     				<h5 class="text-center">UTN FRLP Ticket Web - Compra</h5>
+    			</div>
+    		</div>
+    		<div class="row">
+    			<div class="col mt-3">
+    				<p style="padding: 0px;" class="text-center"><strong> Saldo: $ <?= $usuario->saldo; ?> -.</strong>
+    				</p>
+    				<p style="padding: 0px;" class="text-center" id="compra"><strong>Costo:</strong></h2>
+    				</p>
     			</div>
     		</div>
     		<div class="row">
@@ -82,7 +80,7 @@
     								disabled>Comprar</button>
     							<button type="reset" id="btnReset" class="btn btn-warning mx-3">Reset</button>
     							<a href=" <?= base_url('usuario/devolver_compra'); ?>"
-    								class="btn btn-danger mx-3">Devolver Compras</a>
+    								class="btn btn-danger mx-3">Devolver</a>
     						</div>
     					</div>
     					<div id="totalCompra"></div>
