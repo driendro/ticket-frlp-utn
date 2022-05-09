@@ -4,18 +4,31 @@
 </head>
 
 <body>
+	<?php if ($tipo == 'solicitud') : ?>
 
-	<p>Hola <strong><?= strtoupper($apellido); ?>, <?= ucwords($nombre); ?></strong>:</p>
-	<p> Ha solicitado una nueva contraseña para la cuenta de <strong>Ticket Web</strong> asociada al documento
-		<strong><?= $dni; ?></strong>.
-	</p>
+		<p>Hola <strong><?= strtoupper($apellido); ?>, <?= ucwords($nombre); ?></strong>:</p>
+		<p>Ha enviado una solicitud para recuperar su contraseña de <strong>Ticket Web</strong> asociada al documento
+			<strong><?= $dni; ?></strong>.
+		</p>
 
-	<p>Su nueva contraseña es: <strong><?= $password; ?></strong></p>
+		<p>Para reiniciar su contraseña, siga el siguiente link:</p>
 
-	<p>Por favor, vuelva a cambiar su contraseña en cuanto se conecte.</p>
+		<a href="<?= $link ?>"><?= $link ?></a>
 
-	<p> A su disposición, </br> El equipo de <strong>Ticket Web</strong></p>
+		<p>Si usted no la solicito, desestime este correo</p>
 
+		<p> A su disposición, </br> El equipo de <strong>Ticket Web</strong></p>
+
+	<?php elseif ($tipo == 'confirmacion') : ?>
+
+		<p>Hola <strong><?= strtoupper($apellido); ?>, <?= ucwords($nombre); ?></strong>:</p>
+		<p>La contraseña asociada al documento <strong><?= $dni; ?></strong>, se a restablecido exitosamente
+		</p>
+
+		<p> A su disposición, </br> El equipo de <strong>Ticket Web</strong></p>
+
+
+	<?php endif; ?>
 </body>
 
 </html>

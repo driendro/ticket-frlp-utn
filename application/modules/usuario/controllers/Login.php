@@ -52,42 +52,100 @@ class Login extends CI_Controller
 		redirect(base_url('login'), 'refresh');
 	}
 
-	public function recoveryPassword()
+	public function passwordRecoveryRequest($documento)
 	{
 		$data['titulo'] = 'Recuperacion de Contraseña';
+		$data['tipo'] = 'solicitud';
 
 		if ($this->input->method() == 'post') {
-			$documento = $this->input->post('documento');
 			$usuario = $this->usuario_model->getUserByDocumento($documento);
 
 			if ($usuario) {
-				//Crer Password aleatorio de la forma 3letras+3numeros
-				$numeros_permitidos = '0123456789';
-				$letras_permitidas = 'abcdefghijklmnopqrstuvwxyz';
-				$num3 = substr(str_shuffle($numeros_permitidos), 0, 3);
-				$pal3 = substr(str_shuffle($letras_permitidas), 0, 3);
-				$password = "{$pal3}{$num3}";
+				$token = md5($usuario->mail);
+				if ($this->usuario_model->getRecoveryByToken($token)) {
+					redirect(base_url('login'));
+				} else {
+					$data['tipo'] = 'solicitud';
+					$data['nombre'] = $usuario->nombre;
+					$data['apellido'] = $usuario->apellido;
+					$data['dni'] = $usuario->documento;
+					$data['link'] = base_url("usuario/recovery/{$token}");
 
-				$data['nombre'] = $usuario->nombre;
-				$data['apellido'] = $usuario->apellido;
-				$data['dni'] = $usuario->documento;
-				$data['password'] = $password;
+					$subject = "Solicitud de restablecimineto de contraseña";
+					$message = $this->load->view('general/correos/cambio_contraseña', $data, true);
 
-				$subject = "Aquí está tu nueva contraseña para TickeWeb-FRLP";
-				$message = $this->load->view('general/correos/cambio_contraseña', $data, true);
-
-				if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message)) {
-					if ($this->usuario_model->updatePasswordById($password, $usuario->id_usuario)) {
+					if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message)) {
+						$newLog = [
+							'fecha' => date('Y-m-d', time()),
+							'hora' => date('H:i:s', time()),
+							'id_usuario' => $usuario->id,
+							'token' => $token
+						];
+						$this->usuario_model->addLogPassrecovery($newLog);
 						redirect(base_url('login'));
 					}
 				}
 			} else {
 				redirect(base_url('usuario/recovery'));
 			}
-		}
 
+			$this->load->view('header', $data);
+			$this->load->view('recovery', $data);
+			$this->load->view('general/footer');
+		}
 		$this->load->view('header', $data);
-		$this->load->view('recovery');
+		$this->load->view('recovery', $data);
 		$this->load->view('general/footer');
+	}
+
+	public function newPasswordRequest($recovery)
+	{
+		$data['tipo'] = 'cambio';
+		$data['titulo'] = 'Cambio de Contraseña';
+
+		if ($this->input->method() == 'post') {
+			$pass1 = $this->input->post('password1');
+			$pass2 = $this->input->post('password2');
+			$token = $recovery->token;
+			if ($pass1 == $pass2) {
+				$iduser = $recovery->id_usuario;
+				$this->usuario_model->updatePasswordById($pass1, $iduser);
+				redirect(base_url('login'));
+			} else {
+				$data['alerta'] = 'Las contraseñas no coinciden';
+				redirect(base_url("usuario/recovery/{$token}"));
+			}
+		} else {
+			$this->load->view('header', $data);
+			$this->load->view('recovery', $data);
+			$this->load->view('general/footer');
+		}
+	}
+
+
+	public function recoveryPassword()
+	{
+		$data['titulo'] = 'Recuperacion de Contraseña';
+		$token_uri = $this->uri->segment(3);
+
+		if ($token_uri != 'recovery') {
+			$token_uri = $this->uri->segment(3);
+			$recovery = $this->usuario_model->getRecoveryByToken($token_uri);
+			if ($recovery != null) {
+				$this->newPasswordRequest($recovery);
+			} else {
+				$data['tipo'] = 'null';
+				$data['alerta'] = 'Solicitud de recuperacion no valida';
+
+				$this->load->view('header', $data);
+				$this->load->view('recovery', $data);
+				$this->load->view('general/footer');
+			}
+		} else {
+			// Si no le pasamos un token md5, mestra formulario para solicitar
+			// el recovery de la password
+			$documento = $this->input->post('documento');
+			$this->passwordRecoveryRequest($documento);
+		}
 	}
 }

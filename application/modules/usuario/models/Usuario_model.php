@@ -75,6 +75,7 @@ class Usuario_model extends CI_Model
 
 		$this->db->where('id', $iduser);
 		$this->db->update('usuarios', $data);
+		$this->db->delete('log_passrecovery', array('id_usuario' => $iduser));
 		return true;
 	}
 
@@ -99,6 +100,20 @@ class Usuario_model extends CI_Model
 	public function getHistorial()
 	{
 		return $this->db->select('*')->order_by('dia_comprado', 'DESC')->get('log_compra')->result();
+	}
+
+	public function addLogPassrecovery($data)
+	{
+		$this->db->insert('log_passrecovery', $data);
+
+		return true;
+	}
+
+	public function getRecoveryByToken($token)
+	{
+		$this->db->select('*');
+		$this->db->where('token', $token);
+		return $this->db->get('log_passrecovery')->row();
 	}
 
 	public function addNewUser($data)

@@ -67,7 +67,7 @@ class Vendedor_model extends CI_Model
 		$this->db->from('log_carga');
 		$this->db->join('vendedor', 'log_carga.id_vendedor=vendedor.id_vendedor');
 		$this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
-		$this->db->order_by('id', 'DESC');
+		$this->db->order_by('log_carga.id', 'DESC');
 		$this->db->where('fecha', $fecha);
 		$query = $this->db->get();
 		return $query->result();

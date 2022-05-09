@@ -60,7 +60,7 @@ $route['usuario/devolver_compra'] = 'usuario/devolverCompra';
 $route['usuario/historial'] = 'usuario/historial';
 $route['login'] = 'usuario/login';
 $route['logout'] = 'usuario/login/logout';
-$route['usuario/recovery'] = 'usuario/login/recoveryPassword';
+$route['usuario/recovery/(:any)'] = 'usuario/login/recoveryPassword';
 
 $route['ticket'] = 'comedor/ticket/index';
 $route['contacto'] = 'comedor/contacto/index';

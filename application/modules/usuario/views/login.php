@@ -15,7 +15,8 @@
     			</div>
     			<div class="d-grid gap-2">
     				<button type="submit" class="btn btn-success">Ingresar</button>
-    				<a href="<?= base_url('usuario/recovery'); ?>" class="btn btn-primary mt-2">Restablecer contraseña</a>
+    				<a href="<?= base_url('usuario/recovery/recovery'); ?>" class="btn btn-primary mt-2">Restablecer
+    					contraseña</a>
     			</div>
     			<?= form_close(); ?>
     		</div>
