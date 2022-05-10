@@ -13,6 +13,9 @@
     			<div class="form-group mb-4">
     				<input type="password" class="form-control" placeholder="Su contraseña" name="password">
     			</div>
+    			<?php if ($this->session->flashdata('error') != null) : ?>
+    				<div class="alert alert-danger"><?= $this->session->flashdata('error'); ?></div>
+    			<?php endif; ?>
     			<div class="d-grid gap-2">
     				<button type="submit" class="btn btn-success">Ingresar</button>
     				<a href="<?= base_url('usuario/recovery/recovery'); ?>" class="btn btn-primary mt-2">Restablecer

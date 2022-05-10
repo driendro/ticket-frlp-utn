@@ -17,9 +17,13 @@
     				<?= form_close(); ?>
     			</div>
     		</div>
+
+
+
     	<?php elseif ($tipo == 'cambio') : ?>
     		<div class="row form-center">
     			<div class="col-4 my-3">
+    				<?= validation_errors(); ?>
     				<?= form_open(current_url()); ?>
     				<div class="form-group mb-4">
     					<input type="password" class="form-control" placeholder="Ingrese nueva contraseña" name="password1">
@@ -36,6 +40,9 @@
     				<?= form_close(); ?>
     			</div>
     		</div>
+
+
+
     	<?php elseif ($tipo == 'null') : ?>
     		<div class="row form-center">
     			<div class="col-4 my-3">

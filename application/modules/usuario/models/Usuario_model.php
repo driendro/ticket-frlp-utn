@@ -75,7 +75,12 @@ class Usuario_model extends CI_Model
 
 		$this->db->where('id', $iduser);
 		$this->db->update('usuarios', $data);
-		$this->db->delete('log_passrecovery', array('id_usuario' => $iduser));
+		return true;
+	}
+
+	public function deleteRecoverylogById($id)
+	{
+		$this->db->delete('log_passrecovery', ['id' => $id]);
 		return true;
 	}
 

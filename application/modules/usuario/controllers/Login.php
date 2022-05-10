@@ -26,6 +26,7 @@ class Login extends CI_Controller
 		if ($this->input->method() == 'post') {
 			$documento = $this->input->post('documento');
 			$password = $this->input->post('password');
+
 			if ($this->usuario_model->validateUser($documento, md5($password))) {
 				$session = [
 					'id_usuario'  => $this->usuario_model->getIdByDocumento($documento),
@@ -37,6 +38,11 @@ class Login extends CI_Controller
 				$this->session->set_userdata($session);
 				redirect(base_url('usuario'));
 			} else {
+				if ($this->usuario_model->getUserByDocumento($documento) != null) {
+					$this->session->set_flashdata('error', 'Contraseña incorrecta');
+				} else {
+					$this->session->set_flashdata('error', 'El documento no se encuentra relacionado a ningun usuario activo');
+				}
 				redirect(base_url('login'));
 			}
 		} else {
@@ -109,7 +115,10 @@ class Login extends CI_Controller
 			$token = $recovery->token;
 			if ($pass1 == $pass2) {
 				$iduser = $recovery->id_usuario;
-				$this->usuario_model->updatePasswordById($pass1, $iduser);
+				if ($this->usuario_model->updatePasswordById($pass1, $iduser)) {
+					$id_rec = $recovery->id;
+					$this->usuario_model->deleteRecoverylogById($id_rec);
+				}
 				redirect(base_url('login'));
 			} else {
 				$data['alerta'] = 'Las contraseñas no coinciden';
