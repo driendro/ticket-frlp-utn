@@ -26,20 +26,53 @@ class Usuario extends CI_Controller
 		];
 
 		if ($this->input->method() == 'post') {
-			$password_anterior = $this->input->post('password_anterior');
-			$password_nuevo = $this->input->post('password_nuevo');
-			$password_confirmado = $this->input->post('password_confirmado');
-			$password = $this->usuario_model->getPasswordById(
-				$this->session->userdata('id_usuario')
-			);
-			if ($password == md5($password_anterior)) {
-				if ($password_nuevo == $password_confirmado) {
-					if ($this->usuario_model->updatePassword($password_nuevo)) {
-						redirect(base_url('logout'));
-					}
-				}
+			$rules = [
+				[
+					'field' => 'password_anterior',
+					'label' => 'Contraseña',
+					'rules' => 'trim|required',
+					'errors' => [
+						'required' => 'Debe ingresar su %s actual.'
+					]
+				],
+				[
+					'field' => 'password_nuevo',
+					'label' => 'Contraseña Nueva',
+					'rules' => 'trim|required',
+					'errors' => [
+						'required' => 'Debe ingresar una %s.'
+					]
+				],
+				[
+					'field' => 'password_confirmado',
+					'label' => 'Contraseña',
+					'rules' => 'trim|matches[password_nuevo]',
+					'errors' => [
+						'matches' => 'Las contraseñas no coinciden.'
+					]
+				]
+			];
+			$this->form_validation->set_rules($rules);
+			if ($this->form_validation->run() == FALSE) {
+				$this->load->view('header', $data);
+				$this->load->view('change_password', $data);
+				$this->load->view('general/footer');
 			} else {
-				redirect(base_url('usuario/cambio-password'));
+				$password_anterior = $this->input->post('password_anterior');
+				$password_nuevo = $this->input->post('password_nuevo');
+				$password_confirmado = $this->input->post('password_confirmado');
+				$password = $this->usuario_model->getPasswordById(
+					$this->session->userdata('id_usuario')
+				);
+				if ($password == md5($password_anterior)) {
+					if ($password_nuevo == $password_confirmado) {
+						if ($this->usuario_model->updatePassword($password_nuevo)) {
+							redirect(base_url('logout'));
+						}
+					}
+				} else {
+					redirect(base_url('usuario/cambio-password'));
+				}
 			}
 		} else {
 			$this->load->view('header', $data);
