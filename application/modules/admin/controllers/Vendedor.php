@@ -29,11 +29,9 @@ class Vendedor extends CI_Controller
 		$data = [
 			'titulo' => 'Carga de Saldo'
 		];
-
 		if ($this->input->method() == 'post') {
 			$documento = $this->input->post('numeroDni');
 			$usuario = $this->usuario_model->getUserByDocumento($documento);
-
 			if ($usuario) {
 				$data['usuario'] = $usuario;
 				//Seteo el numero de documento como variable de sesion
@@ -73,7 +71,7 @@ class Vendedor extends CI_Controller
 			}
 		}
 
-		//Confeccion del correo del recivo
+		//Confeccion del correo del recibo
 		$subject = "Carga de Saldo";
 		$message = $this->load->view('general/correos/carga_saldo', $data, true);
 		$this->generalticket->smtpSendEmail($correo, $subject, $message);
@@ -85,23 +83,45 @@ class Vendedor extends CI_Controller
 	{
 		if ($this->input->method() == 'post') {
 			$documento = $this->input->post('dni'); //obtengo el numero de documento
-			$carga = $this->input->post('carga'); // obtengo el monto a cargar
-			$usuario = $this->usuario_model->getUserByDocumento($documento); //obtengo el user de ese dni
-			$iduser = $usuario->id; //obtengo el id del user
-			$this->usuario_model->updateSaldoByUserId($iduser, $carga); // modifico el salodo del usuario
-
-			//Genero la carga en la tabla carga_saldo como log
-			$cargaLog = [
-				'fecha' => date('Y-m-d', time()),
-				'hora' => date('H:i:s', time()),
-				'id_usuario' => $iduser,
-				'monto' => $carga,
-				'id_vendedor' => $this->session->id_vendedor
+			$carga = $this->input->post('carga'); // obtengo el monto a cargar$data = [
+			$data['titulo'] = 'Carga de Saldo';
+			$data['usuario'] = $this->usuario_model->getUserByDocumento($documento);
+			// Contro la validez del formulario
+			$rules = [
+				[
+					'field' => 'carga',
+					'label' => 'Saldo a Cargar',
+					'rules' => 'trim|required|differs[0]|max_length[4]',
+					'errors' => [
+						'required' => 'Debe ingresar un monto a cargar',
+						'differs' => 'El monto debe ser distinto de 0 (cero)',
+						'max_length' => 'El monto a cargar no debe superar los $9999'
+					]
+				],
 			];
-			$this->carga_model->addCargaLog($cargaLog);
-			$this->correoCargaSaldo($this->session->id_vendedor);
+			$this->form_validation->set_rules($rules);
+			if ($this->form_validation->run() == FALSE) {
+				$this->load->view('header', $data);
+				$this->load->view('index', $data);
+				$this->load->view('general/footer');
+			} else {
+				$usuario = $this->usuario_model->getUserByDocumento($documento); //obtengo el user de ese dni
+				$iduser = $usuario->id; //obtengo el id del user
+				$this->usuario_model->updateSaldoByUserId($iduser, $carga); // modifico el salodo del usuario
 
-			redirect(base_url('admin'));
+				//Genero la carga en la tabla carga_saldo como log
+				$cargaLog = [
+					'fecha' => date('Y-m-d', time()),
+					'hora' => date('H:i:s', time()),
+					'id_usuario' => $iduser,
+					'monto' => $carga,
+					'id_vendedor' => $this->session->id_vendedor
+				];
+				$this->carga_model->addCargaLog($cargaLog);
+				$this->correoCargaSaldo($this->session->id_vendedor);
+
+				redirect(base_url('admin'));
+			}
 		} else {
 			redirect(base_url('admin'));
 		}
@@ -116,71 +136,159 @@ class Vendedor extends CI_Controller
 		// Verifico si se carga informacion en el formulario
 		if ($this->input->method() == 'post') {
 			// Si el methodo es POST, obtengo el dni y el legajo
-			$numerodni = $this->input->post('dni');
-			$legajo = $this->input->post('legajo');
-
-			//Crer Password aleatorio de la forma 3letras+3numeros
-			$numeros_permitidos = '0123456789';
-			$letras_permitidas = 'abcdefghijklmnopqrstuvwxyz';
-			$num3 = substr(str_shuffle($numeros_permitidos), 0, 3);
-			$pal3 = substr(str_shuffle($letras_permitidas), 0, 3);
-			$password = "{$pal3}{$num3}";
-
-			//Asigno el costo de la vianda segun el tipo de usuario
-			//1-Estudiante || 2-Becado || 3-Docente || 4-No Docente
-			if ($this->input->post('beca') == 'Si') {
-				$idPrecio = 2;
-			} else {
-				if ($this->input->post('claustro') == 'Estudiante') {
-					$idPrecio = 1;
-				} elseif ($this->input->post('claustro') == 'No Docente') {
-					$idPrecio = 4;
-				} elseif ($this->input->post('claustro') == 'Docente') {
-					$idPrecio = 3;
-				}
-			};
-
-			$newUser = [
-				'tipo' => $this->input->post('claustro'),
-				'legajo' => $legajo,
-				'documento' => $numerodni,
-				'pass' => md5($password),
-				'nombre' => ucwords($this->input->post('nombre')),
-				'apellido' => ucwords($this->input->post('apellido')),
-				'especialidad' => $this->input->post('especialidad'),
-				'mail' => strtolower($this->input->post('email')),
-				'saldo' => $this->input->post('saldo'),
-				'estado' => 1,
-				'id_precio' => $idPrecio
+			// Verifico la informcion del formulario
+			$rules = [
+				[
+					'field' => 'saldo',
+					'label' => 'Saldo a Ingresar',
+					'rules' => 'trim|max_length[4]',
+					'errors' => [
+						'max_length' => 'El monto a cargar no debe superar los $9999'
+					]
+				],
+				[
+					'field' => 'legajo',
+					'label' => 'Legajo',
+					'rules' => 'trim|min_length[5]|required|max_length[6]|numeric|integer|is_unique[usuarios.legajo]',
+					'errors' => [
+						'max_length' => 'El %s debe contener 5 y 6 digitos',
+						'min_length' => 'El %s debe contener 5 y 6 digitos',
+						'required' => 'Debe ingresar un %s',
+						'numeric' => 'El %s debe ser un numero',
+						'integer' => 'El %s debe ser un entero',
+						'is_unique' => 'Ese %s ya esta registrado',
+					]
+				],
+				[
+					'field' => 'dni',
+					'label' => 'Documento',
+					'rules' => 'trim|max_length[8]|numeric|required|integer|is_unique[usuarios.documento]',
+					'errors' => [
+						'required' => 'Debe ingresar un %s',
+						'max_length' => 'El %s debe contener 5 numeros como maximo',
+						'numeric' => 'El %s debe ser un numero',
+						'integer' => 'El %s debe ser un entero',
+						'is_unique' => 'Ese %s ya esta registrado',
+					]
+				],
+				[
+					'field' => 'nombre',
+					'label' => 'Nombre',
+					'rules' => 'trim|max_length[50]|alpha|required',
+					'errors' => [
+						'max_length' => 'El %s debe contener como maximo 50 caracteres',
+						'required' => 'Debe ingresar un %s',
+						'alpha' => 'Solo se aceptan letras en el %s',
+					]
+				],
+				[
+					'field' => 'apellido',
+					'label' => 'Apellido',
+					'rules' => 'trim|max_length[50]|alpha|required',
+					'errors' => [
+						'max_length' => 'El %s debe contener como maximo 50 caracteres',
+						'required' => 'Debe ingresar un %s',
+						'alpha' => 'Solo se aceptan letras en el %s',
+					]
+				],
+				[
+					'field' => 'claustro',
+					'label' => 'Claustro',
+					'rules' => 'trim|in_list[Estudiante,Docente,No Docente]|required',
+					'errors' => [
+						'required' => 'Debe elegir un %s',
+						'in_list' => 'No es un %s valido',
+					]
+				],
+				[
+					'field' => 'email',
+					'label' => 'E-Mail',
+					'rules' => 'trim|valid_email|required|is_unique[usuarios.mail]',
+					'errors' => [
+						'required' => 'Debe ingresar un %s',
+						'valid_email' => 'No es un %s valido',
+						'is_unique' => 'Ese %s ya esta registrado',
+					]
+				],
 			];
-			if ($this->usuario_model->addNewUser($newUser)) {
-				// realizamos la carga de saldo
-				$usuario = $this->usuario_model->getUserByDocumento($numerodni);
+			$this->form_validation->set_rules($rules);
+			if ($this->form_validation->run() == FALSE) {
+				$this->load->view('header', $data);
+				$this->load->view('crear_usuario', $data);
+				$this->load->view('general/footer');
+			} else {
+				$numerodni = $this->input->post('dni');
+				$legajo = $this->input->post('legajo');
 
-				if ($this->input->post('saldo') != 0) {
-					$newCarga = [
-						'fecha' => date('Y-m-d', time()),
-						'hora' => date('H:i:s', time()),
-						'id_usuario' => $usuario->id,
-						'monto' => $this->input->post('saldo'),
-						'id_vendedor' => $this->session->id_vendedor
-					];
-					$this->carga_model->addCargaLog($newCarga);
-					$this->correoCargaSaldo($this->session->id_vendedor);
+				//Crer Password aleatorio de la forma 3letras+3numeros
+				$numeros_permitidos = '0123456789';
+				$letras_permitidas = 'abcdefghijklmnopqrstuvwxyz';
+				$num3 = substr(str_shuffle($numeros_permitidos), 0, 3);
+				$pal3 = substr(str_shuffle($letras_permitidas), 0, 3);
+				$password = "{$pal3}{$num3}";
+
+				//Asigno el costo de la vianda segun el tipo de usuario
+				//1-Estudiante || 2-Becado || 3-Docente || 4-No Docente
+				if ($this->input->post('beca') == 'Si') {
+					$idPrecio = 2;
+				} else {
+					if ($this->input->post('claustro') == 'Estudiante') {
+						$idPrecio = 1;
+					} elseif ($this->input->post('claustro') == 'No Docente') {
+						$idPrecio = 4;
+					} elseif ($this->input->post('claustro') == 'Docente') {
+						$idPrecio = 3;
+					}
+				};
+				// Si la especialidad esta vacia, la guardo como null
+				if ($this->input->post('especialidad') == "") {
+					$especialidad = null;
+				} else {
+					$especialidad = $this->input->post('especialidad');
 				}
 
-				//Confeccion del correo del recivo
-				$correo = $this->input->post('email');
-				$dataCorreo['dni'] = $numerodni;
-				$dataCorreo['apellido'] = $this->input->post('apellido');
-				$dataCorreo['nombre'] = $this->input->post('nombre');
-				$dataCorreo['password'] = $password;
+				$newUser = [
+					'tipo' => $this->input->post('claustro'),
+					'legajo' => $legajo,
+					'documento' => $numerodni,
+					'pass' => md5($password),
+					'nombre' => ucwords($this->input->post('nombre')),
+					'apellido' => ucwords($this->input->post('apellido')),
+					'especialidad' => $especialidad,
+					'mail' => strtolower($this->input->post('email')),
+					'saldo' => $this->input->post('saldo'),
+					'estado' => 1,
+					'id_precio' => $idPrecio
+				];
+				if ($this->usuario_model->addNewUser($newUser)) {
+					// realizamos la carga de saldo
+					$usuario = $this->usuario_model->getUserByDocumento($numerodni);
 
-				$subject = "Bienvenido al Comedor Universitario UTN-FRLP";
-				$message = $this->load->view('general/correos/nuevo_usuario', $dataCorreo, true);
-				$this->generalticket->smtpSendEmail($correo, $subject, $message);
+					if ($this->input->post('saldo') != 0) {
+						$newCarga = [
+							'fecha' => date('Y-m-d', time()),
+							'hora' => date('H:i:s', time()),
+							'id_usuario' => $usuario->id,
+							'monto' => $this->input->post('saldo'),
+							'id_vendedor' => $this->session->id_vendedor
+						];
+						$this->carga_model->addCargaLog($newCarga);
+						$this->correoCargaSaldo($this->session->id_vendedor);
+					}
 
-				redirect(base_url('admin'));
+					//Confeccion del correo del recivo
+					$correo = $this->input->post('email');
+					$dataCorreo['dni'] = $numerodni;
+					$dataCorreo['apellido'] = $this->input->post('apellido');
+					$dataCorreo['nombre'] = $this->input->post('nombre');
+					$dataCorreo['password'] = $password;
+
+					$subject = "Bienvenido al Comedor Universitario UTN-FRLP";
+					$message = $this->load->view('general/correos/nuevo_usuario', $dataCorreo, true);
+					$this->generalticket->smtpSendEmail($correo, $subject, $message);
+
+					redirect(base_url('admin'));
+				}
 			}
 		} else {
 			$this->load->view('header', $data);
@@ -219,20 +327,103 @@ class Vendedor extends CI_Controller
 
 		// Verifico si se carga informacion en el formulario
 		if ($this->input->method() == 'post') {
-			$updateUser = [
-				'tipo' => $this->input->post('claustro'),
-				'legajo' => $this->input->post('legajo'),
-				'documento' => $this->input->post('documento'),
-				'nombre' => ucwords($this->input->post('nombre')),
-				'apellido' => ucwords($this->input->post('apellido')),
-				'tipo' => ucwords($this->input->post('claustro')),
-				'especialidad' => ucwords($this->input->post('especialidad')),
-				'mail' => strtolower($this->input->post('email')),
-				'id_precio' => $idPrecio
+			// Verifico la informcion del formulario
+			$unique_legajo =  '';
+			$unique_documento =  '';
+			$unique_email =  '';
+			if ($this->input->post('legajo') != $usuario->legajo) {
+				$unique_legajo =  '|is_unique[usuarios.legajo]';
+			} elseif ($this->input->post('documento') != $usuario->documento) {
+				$unique_documento = '|is_unique[usuarios.documento]';
+			} elseif ($this->input->post('documento') != $usuario->documento) {
+				$unique_email = '|is_unique[usuarios.mail]';
+			}
+			$rules = [
+				[
+					'field' => 'legajo',
+					'label' => 'Legajo',
+					'rules' => "trim|min_length[5]|required|max_length[6]|numeric|integer{$unique_legajo}",
+					'errors' => [
+						'max_length' => 'El %s debe contener 5 y 6 digitos',
+						'min_length' => 'El %s debe contener 5 y 6 digitos',
+						'required' => 'Debe ingresar un %s',
+						'numeric' => 'El %s debe ser un numero',
+						'integer' => 'El %s debe ser un entero',
+						'is_unique' => 'Ese %s ya esta registrado',
+					]
+				],
+				[
+					'field' => 'documento',
+					'label' => 'Documento',
+					'rules' => "trim|max_length[8]|numeric|required|integer{$unique_documento}",
+					'errors' => [
+						'required' => 'Debe ingresar un %s',
+						'max_length' => 'El %s debe contener 5 numeros como maximo',
+						'numeric' => 'El %s debe ser un numero',
+						'integer' => 'El %s debe ser un entero',
+						'is_unique' => 'Ese %s ya esta registrado',
+					]
+				],
+				[
+					'field' => 'nombre',
+					'label' => 'Nombre',
+					'rules' => 'trim|max_length[50]|alpha|required',
+					'errors' => [
+						'max_length' => 'El %s debe contener como maximo 50 caracteres',
+						'required' => 'Debe ingresar un %s',
+						'alpha' => 'Solo se aceptan letras en el %s',
+					]
+				],
+				[
+					'field' => 'apellido',
+					'label' => 'Apellido',
+					'rules' => 'trim|max_length[50]|alpha|required',
+					'errors' => [
+						'max_length' => 'El %s debe contener como maximo 50 caracteres',
+						'required' => 'Debe ingresar un %s',
+						'alpha' => 'Solo se aceptan letras en el %s',
+					]
+				],
+				[
+					'field' => 'claustro',
+					'label' => 'Claustro',
+					'rules' => 'trim|in_list[Estudiante,Docente,No Docente]|required',
+					'errors' => [
+						'required' => 'Debe elegir un %s',
+						'in_list' => 'No es un %s valido',
+					]
+				],
+				[
+					'field' => 'email',
+					'label' => 'E-Mail',
+					'rules' => "trim|valid_email|required{$unique_email}",
+					'errors' => [
+						'required' => 'Debe ingresar un %s',
+						'valid_email' => 'No es un %s valido',
+						'is_unique' => 'Ese %s ya esta registrado',
+					]
+				],
 			];
+			$this->form_validation->set_rules($rules);
+			if ($this->form_validation->run() == FALSE) {
+				$this->load->view('header', $data);
+				$this->load->view('modificar_usuario', $data);
+				$this->load->view('general/footer');
+			} else {
+				$updateUser = [
+					'legajo' => $this->input->post('legajo'),
+					'documento' => $this->input->post('documento'),
+					'nombre' => ucwords($this->input->post('nombre')),
+					'apellido' => ucwords($this->input->post('apellido')),
+					'tipo' => ucwords($this->input->post('claustro')),
+					'especialidad' => ucwords($this->input->post('especialidad')),
+					'mail' => strtolower($this->input->post('email')),
+					'id_precio' => $idPrecio
+				];
 
-			if ($this->usuario_model->updateUserById($iduser, $updateUser)) {
-				redirect(base_url('admin'));
+				if ($this->usuario_model->updateUserById($iduser, $updateUser)) {
+					redirect(base_url('admin'));
+				}
 			}
 		} else {
 			$this->load->view('header', $data);
@@ -327,11 +518,25 @@ class Vendedor extends CI_Controller
 
 		if ($this->input->method() == 'post') {
 			for ($i = 1; $i <= 5; $i++) {
-				$menu_item['menu1'] = $this->input->post("basico_{$i}");
-				$menu_item['menu2'] = $this->input->post("veggie_{$i}");
-				$this->vendedor_model->updateMenu($i, $menu_item);
+				$this->form_validation->set_rules("basico_{$i}", 'Menu Basico', 'alpha_numeric_spaces', [
+					'alpha_numeric_spaces' => 'Solo deben contener caracteres alfanumerico',
+				]);
+				$this->form_validation->set_rules("veggie_{$i}", 'Menu Veggie', 'alpha_numeric_spaces', [
+					'alpha_numeric_spaces' => 'Solo deben contener caracteres alfanumerico',
+				]);
 			}
-			redirect(base_url('admin/menu'));
+			if ($this->form_validation->run() == FALSE) {
+				$this->load->view('header', $data);
+				$this->load->view('menu', $data);
+				$this->load->view('general/footer');
+			} else {
+				for ($i = 1; $i <= 5; $i++) {
+					$menu_item['menu1'] = $this->input->post("basico_{$i}");
+					$menu_item['menu2'] = $this->input->post("veggie_{$i}");
+					$this->vendedor_model->updateMenu($i, $menu_item);
+				}
+				redirect(base_url('admin/menu'));
+			}
 		} else {
 			$this->load->view('header', $data);
 			$this->load->view('menu', $data);

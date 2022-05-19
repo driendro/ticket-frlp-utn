@@ -10,32 +10,36 @@ class Vendedor_model extends CI_Model
 
 	public function getUserById($id)
 	{
-		return $this->db->select('*')->where('id_vendedor', $id)->get('vendedor')->row();
+		return $this->db->select('*')->where('id_vendedor', $id)->get('vendedores')->row();
 	}
 
-	public function getLastNameByDocumento($documento)
+	public function getLastNameByUserName($nickName)
 	{
-		return $this->db->select('apellido')->where('dni', $documento)->get('vendedor')->row('apellido');
+		$this->db->select('apellido');
+		$this->db->where('nombre_usuario', $nickName);
+		$query = $this->db->get('vendedores')->row('apellido');
+		return $query;
 	}
 
-	public function getFirstNameByDocumento($documento)
+	public function getFirstNameByUserName($nickName)
 	{
-		return $this->db->select('nombre')->where('dni', $documento)->get('vendedor')->row('nombre');
+		$this->db->select('nombre');
+		$this->db->where('nombre_usuario', $nickName);
+		$query = $this->db->get('vendedores')->row('nombre');
+		return $query;
 	}
 
-	public function getDocumentoByNickName($nickName)
+	public function getIdByUserName($nickName)
 	{
-		return $this->db->select('dni')->where('nombre_usuario', $nickName)->get('vendedor')->row('dni');
-	}
-
-	public function getIdByDocumento($documento)
-	{
-		return $this->db->select('id_vendedor')->where('dni', $documento)->get('vendedor')->row('id_vendedor');
+		$this->db->select('id_vendedor');
+		$this->db->where('nombre_usuario', $nickName);
+		$query = $this->db->get('vendedores')->row('id_vendedor');
+		return $query;
 	}
 
 	public function getPasswordById($id)
 	{
-		return $this->db->select('pass')->where('id_vendedor', $id)->get('vendedor')->row('pass');
+		return $this->db->select('pass')->where('id_vendedor', $id)->get('vendedores')->row('pass');
 	}
 
 	public function updatePassword($password)
@@ -45,7 +49,7 @@ class Vendedor_model extends CI_Model
 		];
 
 		$this->db->where('id_vendedor', $this->session->userdata('id_vendedor'));
-		$this->db->update('vendedor', $data);
+		$this->db->update('vendedores', $data);
 		return true;
 	}
 
@@ -65,7 +69,7 @@ class Vendedor_model extends CI_Model
 	{
 		$this->db->select('*');
 		$this->db->from('log_carga');
-		$this->db->join('vendedor', 'log_carga.id_vendedor=vendedor.id_vendedor');
+		$this->db->join('vendedores', 'log_carga.id_vendedor=vendedores.id_vendedor');
 		$this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
 		$this->db->order_by('log_carga.id', 'DESC');
 		$this->db->where('fecha', $fecha);
@@ -77,7 +81,7 @@ class Vendedor_model extends CI_Model
 	{
 		$this->db->where('nombre_usuario', $nickName);
 		$this->db->where('pass', $password);
-		return $this->db->get('vendedor')->row();
+		return $this->db->get('vendedores')->row();
 	}
 
 	public function updateMenu($id, $data)

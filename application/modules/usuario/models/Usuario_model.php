@@ -99,7 +99,12 @@ class Usuario_model extends CI_Model
 
 	public function getHistorialByIdUser($id)
 	{
-		return $this->db->select('*')->where('id', $id)->limit(20)->order_by('dia_comprado', 'DESC')->get('log_compra')->result();
+		$this->db->select('*');
+		$this->db->where('id_usuario', $id);
+		$this->db->limit(20);
+		$this->db->order_by('dia_comprado', 'DESC');
+		$query = $this->db->get('log_compra');
+		return $query->result();
 	}
 
 	public function getHistorial()
