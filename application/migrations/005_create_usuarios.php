@@ -18,7 +18,7 @@ class Migration_create_usuarios extends CI_Migration
 			],
 			'legajo' => [
 				'type' => 'INT',
-				'constraint' => '5'
+				'constraint' => '6'
 			],
 			'documento' => [
 				'type' => 'INT',
