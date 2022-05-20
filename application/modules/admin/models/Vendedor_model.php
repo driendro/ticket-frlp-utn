@@ -77,6 +77,17 @@ class Vendedor_model extends CI_Model
 		return $query->result();
 	}
 
+	public function getComprasByFechaForExls($fecha)
+	{
+		$this->db->select('*');
+		$this->db->from('log_compra');
+		$this->db->join('usuarios', 'log_compra.id_usuario=usuarios.id');
+		$this->db->order_by('usuarios.apellido', 'DESC');
+		$this->db->where('dia_comprado', $fecha);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
 	public function validateVendedor($nickName, $password)
 	{
 		$this->db->where('nombre_usuario', $nickName);
@@ -96,5 +107,12 @@ class Vendedor_model extends CI_Model
 		$this->db->select('*');
 		$query = $this->db->get('menu');
 		return $query->result();
+	}
+
+	public function addNewVendedor($data)
+	{
+		$this->db->insert('vendedores', $data);
+
+		return true;
 	}
 }

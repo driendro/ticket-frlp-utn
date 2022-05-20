@@ -442,7 +442,7 @@ class Vendedor extends CI_Controller
 			$fecha_dowload = date('Y-m-d', $strtime);
 
 			$filename = "Listado_{$fecha_dowload}.xlsx";
-			$compras = $this->vendedor_model->getHistorialByIdFecha($fecha_dowload);
+			$compras = $this->vendedor_model->getComprasByFechaForExls($fecha_dowload);
 			$spreadsheet = new Spreadsheet();
 			$sheet = $spreadsheet->getActiveSheet();
 			$sheet->setCellValue('A1', 'Legajo');
@@ -450,7 +450,7 @@ class Vendedor extends CI_Controller
 			$sheet->setCellValue('C1', 'Nombre');
 			$sheet->setCellValue('D1', 'Turno');
 			$sheet->setCellValue('E1', 'Menu');
-			$sheet->setCellValue('F1', 'Retira/Lleva');
+			$sheet->setCellValue('F1', 'Claustro');
 			$rows = 2;
 			foreach ($compras as $compra) {
 				$usuario = $this->usuario_model->getUserById($compra->id_usuario);
