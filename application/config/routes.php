@@ -51,7 +51,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 $route['default_controller'] = 'comedor/ticket';
-$route['404_override'] = '';
+$route['404_override'] = 'general/errores/error404';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['usuario'] = 'comedor/ticket/index';
