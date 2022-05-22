@@ -53,7 +53,7 @@
                         </li>
                         <?php if ($this->session->userdata('admin_lvl') == 1) : ?>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= base_url('admin/crear_vendedor'); ?>">Menu</a>
+                                <a class="nav-link" href="<?= base_url('admin/crear_vendedor'); ?>">Nuevo Vendedor</a>
                             </li>
                         <?php endif; ?>
                     <?php endif; ?>
