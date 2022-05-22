@@ -19,7 +19,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav mr-auto">
-                    <?php if ($this->session->userdata('id_vendedor')) : ?>
+                    <?php if ($this->session->userdata('is_admin')) : ?>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('admin/menu'); ?>">Menu</a>
                         </li>
@@ -51,6 +51,11 @@
                                 </li>
                             </ul>
                         </li>
+                        <?php if ($this->session->userdata('admin_lvl') == 1) : ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= base_url('admin/crear_vendedor'); ?>">Menu</a>
+                            </li>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </ul>
             </div>

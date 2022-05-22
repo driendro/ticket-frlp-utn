@@ -34,6 +34,7 @@ class Login extends CI_Controller
 					'nombre' => $this->usuario_model->getFirstNameByDocumento($documento),
 					'is_user' => TRUE,
 					'is_admin' => FALSE,
+					'admin_lvl' => FALSE,
 				];
 				$this->session->set_userdata($session);
 				redirect(base_url('usuario'));

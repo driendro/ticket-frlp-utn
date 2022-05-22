@@ -29,12 +29,14 @@ class Login extends MX_Controller
             $nickName = strtolower($nickName);
 
             if ($this->vendedor_model->validateVendedor($nickName, md5($password))) {
+                $vendedor = $this->vendedor_model->getUserByUserName($nickName);
                 $session = [
-                    'id_vendedor'  => $this->vendedor_model->getIdByUserName($nickName),
+                    'id_vendedor'  => $vendedor->id_vendedor,
                     'nick_name' => $nickName,
-                    'apellido' => $this->vendedor_model->getLastNameByUserName($nickName),
-                    'nombre' => $this->vendedor_model->getFirstNameByUserName($nickName),
+                    'apellido' => $vendedor->apellido,
+                    'nombre' => $vendedor->nombre,
                     'is_user' => FALSE,
+                    'admin_lvl' => $vendedor->nivel,
                     'is_admin' => TRUE
                 ];
 
