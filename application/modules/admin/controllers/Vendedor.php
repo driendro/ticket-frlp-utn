@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use	PhpOffice\PhpSpreadsheet\Spreadsheet;
+use    PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Dompdf\Dompdf;
 
@@ -151,8 +151,8 @@ class Vendedor extends CI_Controller
 					'label' => 'Legajo',
 					'rules' => 'trim|min_length[5]|required|max_length[6]|numeric|integer|is_unique[usuarios.legajo]',
 					'errors' => [
-						'max_length' => 'El %s debe contener 5 y 6 digitos',
-						'min_length' => 'El %s debe contener 5 y 6 digitos',
+						'max_length' => 'El %s debe contener entre 5 y 6 digitos',
+						'min_length' => 'El %s debe contener entre 5 y 6 digitos',
 						'required' => 'Debe ingresar un %s',
 						'numeric' => 'El %s debe ser un numero',
 						'integer' => 'El %s debe ser un entero',
@@ -174,21 +174,19 @@ class Vendedor extends CI_Controller
 				[
 					'field' => 'nombre',
 					'label' => 'Nombre',
-					'rules' => 'trim|max_length[50]|alpha|required',
+					'rules' => 'trim|max_length[50]|required',
 					'errors' => [
 						'max_length' => 'El %s debe contener como maximo 50 caracteres',
 						'required' => 'Debe ingresar un %s',
-						'alpha' => 'Solo se aceptan letras en el %s',
 					]
 				],
 				[
 					'field' => 'apellido',
 					'label' => 'Apellido',
-					'rules' => 'trim|max_length[50]|alpha|required',
+					'rules' => 'trim|max_length[50]|required',
 					'errors' => [
 						'max_length' => 'El %s debe contener como maximo 50 caracteres',
 						'required' => 'Debe ingresar un %s',
-						'alpha' => 'Solo se aceptan letras en el %s',
 					]
 				],
 				[
@@ -367,21 +365,19 @@ class Vendedor extends CI_Controller
 				[
 					'field' => 'nombre',
 					'label' => 'Nombre',
-					'rules' => 'trim|max_length[50]|alpha|required',
+					'rules' => 'trim|max_length[50]|required',
 					'errors' => [
 						'max_length' => 'El %s debe contener como maximo 50 caracteres',
 						'required' => 'Debe ingresar un %s',
-						'alpha' => 'Solo se aceptan letras en el %s',
 					]
 				],
 				[
 					'field' => 'apellido',
 					'label' => 'Apellido',
-					'rules' => 'trim|max_length[50]|alpha|required',
+					'rules' => 'trim|max_length[50]|required',
 					'errors' => [
 						'max_length' => 'El %s debe contener como maximo 50 caracteres',
 						'required' => 'Debe ingresar un %s',
-						'alpha' => 'Solo se aceptan letras en el %s',
 					]
 				],
 				[

@@ -131,7 +131,6 @@ class Login extends CI_Controller
 		}
 	}
 
-
 	public function recoveryPassword()
 	{
 		$data['titulo'] = 'Recuperacion de Contraseña';

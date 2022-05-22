@@ -3,133 +3,133 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Usuario_model extends CI_Model
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-	public function getUserById($id)
-	{
-		return $this->db->select('*')->where('id', $id)->get('usuarios')->row();
-	}
+    public function getUserById($id)
+    {
+        return $this->db->select('*')->where('id', $id)->get('usuarios')->row();
+    }
 
-	public function getUserByDocumento($documento)
-	{
-		return $this->db->select('*')->where('documento', $documento)->get('usuarios')->row();
-	}
+    public function getUserByDocumento($documento)
+    {
+        return $this->db->select('*')->where('documento', $documento)->get('usuarios')->row();
+    }
 
-	public function getUserByLegajo($legajo)
-	{
-		return $this->db->select('*')->where('legajo', $legajo)->get('usuarios')->row();
-	}
+    public function getUserByLegajo($legajo)
+    {
+        return $this->db->select('*')->where('legajo', $legajo)->get('usuarios')->row();
+    }
 
-	public function getLastNameByDocumento($documento)
-	{
-		return $this->db->select('apellido')->where('documento', $documento)->get('usuarios')->row('apellido');
-	}
+    public function getLastNameByDocumento($documento)
+    {
+        return $this->db->select('apellido')->where('documento', $documento)->get('usuarios')->row('apellido');
+    }
 
-	public function getFirstNameByDocumento($documento)
-	{
-		return $this->db->select('nombre')->where('documento', $documento)->get('usuarios')->row('nombre');
-	}
+    public function getFirstNameByDocumento($documento)
+    {
+        return $this->db->select('nombre')->where('documento', $documento)->get('usuarios')->row('nombre');
+    }
 
-	public function getIdByDocumento($documento)
-	{
-		return $this->db->select('id')->where('documento', $documento)->get('usuarios')->row('id');
-	}
+    public function getIdByDocumento($documento)
+    {
+        return $this->db->select('id')->where('documento', $documento)->get('usuarios')->row('id');
+    }
 
-	public function getPasswordById($id)
-	{
-		return $this->db->select('pass')->where('id', $id)->get('usuarios')->row('pass');
-	}
+    public function getPasswordById($id)
+    {
+        return $this->db->select('pass')->where('id', $id)->get('usuarios')->row('pass');
+    }
 
-	public function getSaldoById($id)
-	{
-		return $this->db->select('saldo')->where('id', $id)->get('usuarios')->row('saldo');
-	}
+    public function getSaldoById($id)
+    {
+        return $this->db->select('saldo')->where('id', $id)->get('usuarios')->row('saldo');
+    }
 
-	public function updateSaldoByUserId($iduser, $saldo)
-	{
-		$saldoActual = $this->db->select('saldo')->where('id', $iduser)->get('usuarios')->row('saldo');
-		$saldoNuevo = $saldoActual + $saldo;
+    public function updateSaldoByUserId($iduser, $saldo)
+    {
+        $saldoActual = $this->db->select('saldo')->where('id', $iduser)->get('usuarios')->row('saldo');
+        $saldoNuevo = $saldoActual + $saldo;
 
-		$this->db->set('saldo', $saldoNuevo)->where('id', $iduser)->update('usuarios');
-	}
+        $this->db->set('saldo', $saldoNuevo)->where('id', $iduser)->update('usuarios');
+    }
 
-	public function updatePassword($password)
-	{
-		$data = [
-			'pass' => md5($password)
-		];
+    public function updatePassword($password)
+    {
+        $data = [
+            'pass' => md5($password)
+        ];
 
-		$this->db->where('id', $this->session->userdata('id_usuario'));
-		$this->db->update('usuarios', $data);
-		return true;
-	}
+        $this->db->where('id', $this->session->userdata('id_usuario'));
+        $this->db->update('usuarios', $data);
+        return true;
+    }
 
-	public function updatePasswordById($password, $iduser)
-	{
-		$data = [
-			'pass' => md5($password)
-		];
+    public function updatePasswordById($password, $iduser)
+    {
+        $data = [
+            'pass' => md5($password)
+        ];
 
-		$this->db->where('id', $iduser);
-		$this->db->update('usuarios', $data);
-		return true;
-	}
+        $this->db->where('id', $iduser);
+        $this->db->update('usuarios', $data);
+        return true;
+    }
 
-	public function deleteRecoverylogById($id)
-	{
-		$this->db->delete('log_passrecovery', ['id' => $id]);
-		return true;
-	}
+    public function deleteRecoverylogById($id)
+    {
+        $this->db->delete('log_passrecovery', ['id' => $id]);
+        return true;
+    }
 
-	public function updateUserById($iduser, $data)
-	{
-		$this->db->where('id', $iduser)->update('usuarios', $data);
-		return true;
-	}
+    public function updateUserById($iduser, $data)
+    {
+        $this->db->where('id', $iduser)->update('usuarios', $data);
+        return true;
+    }
 
-	public function validateUser($documento, $password)
-	{
-		$this->db->where('documento', $documento);
-		$this->db->where('pass', $password);
-		return $this->db->get('usuarios')->row();
-	}
+    public function validateUser($documento, $password)
+    {
+        $this->db->where('documento', $documento);
+        $this->db->where('pass', $password);
+        return $this->db->get('usuarios')->row();
+    }
 
-	public function getHistorialByIdUser($id)
-	{
-		$this->db->select('*');
-		$this->db->where('id_usuario', $id);
-		$this->db->limit(20);
-		$this->db->order_by('dia_comprado', 'DESC');
-		$query = $this->db->get('log_compra');
-		return $query->result();
-	}
+    public function getHistorialByIdUser($id)
+    {
+        $this->db->select('*');
+        $this->db->where('id_usuario', $id);
+        $this->db->limit(20);
+        $this->db->order_by('dia_comprado', 'DESC');
+        $query = $this->db->get('log_compra');
+        return $query->result();
+    }
 
-	public function getHistorial()
-	{
-		return $this->db->select('*')->order_by('dia_comprado', 'DESC')->get('log_compra')->result();
-	}
+    public function getHistorial()
+    {
+        return $this->db->select('*')->order_by('dia_comprado', 'DESC')->get('log_compra')->result();
+    }
 
-	public function addLogPassrecovery($data)
-	{
-		$this->db->insert('log_passrecovery', $data);
+    public function addLogPassrecovery($data)
+    {
+        $this->db->insert('log_passrecovery', $data);
 
-		return true;
-	}
+        return true;
+    }
 
-	public function getRecoveryByToken($token)
-	{
-		$this->db->select('*');
-		$this->db->where('token', $token);
-		return $this->db->get('log_passrecovery')->row();
-	}
+    public function getRecoveryByToken($token)
+    {
+        $this->db->select('*');
+        $this->db->where('token', $token);
+        return $this->db->get('log_passrecovery')->row();
+    }
 
-	public function addNewUser($data)
-	{
-		$this->db->insert('usuarios', $data);
+    public function addNewUser($data)
+    {
+        $this->db->insert('usuarios', $data);
 
-		return true;
-	}
+        return true;
+    }
 }
