@@ -15,7 +15,6 @@
                 </div>
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-success">Ingresar</button>
-                    <button type="button" class="btn btn-primary mt-2">Restablecer contraseña</button>
                 </div>
                 <?= form_close(); ?>
             </div>
