@@ -258,7 +258,12 @@ class Vendedor extends CI_Controller
                     'estado' => 1,
                     'id_precio' => $idPrecio
                 ];
-                if ($this->usuario_model->addNewUser($newUser)) {
+                $logNewUser = [
+                    'fecha' => date('Y-m-d', time()),
+                    'hora' => date('H:i:s', time()),
+                    'id_vendedor' => $this->session->id_vendedor
+                ];
+                if ($this->usuario_model->addNewUser($newUser, $logNewUser)) {
                     // realizamos la carga de saldo
                     $usuario = $this->usuario_model->getUserByDocumento($numerodni);
 

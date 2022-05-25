@@ -80,7 +80,7 @@ class Usuario_model extends CI_Model
 
     public function deleteRecoverylogById($id)
     {
-        $this->db->delete('log_passrecovery', ['id' => $id]);
+        $this->db->delete('passrecovery', ['id' => $id]);
         return true;
     }
 
@@ -103,18 +103,19 @@ class Usuario_model extends CI_Model
         $this->db->where('id_usuario', $id);
         $this->db->limit(20);
         $this->db->order_by('dia_comprado', 'DESC');
-        $query = $this->db->get('log_compra');
+        $query = $this->db->get('compra');
         return $query->result();
     }
 
     public function getHistorial()
     {
-        return $this->db->select('*')->order_by('dia_comprado', 'DESC')->get('log_compra')->result();
+        return $this->db->select('*')->order_by('dia_comprado', 'DESC')->get('compra')->result();
     }
 
     public function addLogPassrecovery($data)
     {
         $this->db->insert('log_passrecovery', $data);
+        $this->db->insert('passrecovery', $data);
 
         return true;
     }
@@ -123,12 +124,14 @@ class Usuario_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->where('token', $token);
-        return $this->db->get('log_passrecovery')->row();
+        return $this->db->get('passrecovery')->row();
     }
 
-    public function addNewUser($data)
+    public function addNewUser($data, $data_log)
     {
         $this->db->insert('usuarios', $data);
+        $data_log['id_usuario'] = $this->db->select('id')->where('documento', $data['documento'])->get('usuarios')->row('id');
+        $this->db->insert('log_alta_usuarios', $data_log);
 
         return true;
     }
