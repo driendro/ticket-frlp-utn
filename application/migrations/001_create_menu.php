@@ -26,6 +26,16 @@ class Migration_create_menu extends CI_Migration
 
         $this->dbforge->add_key('id', TRUE);
         $this->dbforge->create_table('menu');
+
+        $data = [
+            ['id' => 1, 'dia' => 'Lunes',     'menu1' => '', 'menu2' => ''],
+            ['id' => 2, 'dia' => 'Martes',    'menu1' => '', 'menu2' => ''],
+            ['id' => 3, 'dia' => 'Miércoles', 'menu1' => '', 'menu2' => ''],
+            ['id' => 4, 'dia' => 'Jueves',    'menu1' => '', 'menu2' => ''],
+            ['id' => 5, 'dia' => 'Viernes',   'menu1' => '', 'menu2' => '']
+        ];
+
+        $this->db->insert_batch('menu', $data);
     }
     public function down()
     {
