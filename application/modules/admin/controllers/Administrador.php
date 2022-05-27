@@ -44,21 +44,31 @@ class Administrador extends CI_Controller
                     [
                         'field' => 'nombre',
                         'label' => 'Nombre',
-                        'rules' => 'trim|max_length[50]|alpha|required',
+                        'rules' => 'trim|max_length[50]|alpha_numeric_spaces|required',
                         'errors' => [
                             'max_length' => 'El %s debe contener como maximo 50 caracteres',
                             'required' => 'Debe ingresar un %s',
-                            'alpha' => 'Solo se aceptan letras en el %s',
+                            'alpha_numeric_spaces' => 'Solo se aceptan letras en el %s',
                         ]
                     ],
                     [
                         'field' => 'apellido',
                         'label' => 'Apellido',
-                        'rules' => 'trim|max_length[50]|alpha|required',
+                        'rules' => 'trim|max_length[50]|alpha_numeric_spaces|required',
                         'errors' => [
                             'max_length' => 'El %s debe contener como maximo 50 caracteres',
                             'required' => 'Debe ingresar un %s',
-                            'alpha' => 'Solo se aceptan letras en el %s',
+                            'alpha_numeric_spaces' => 'Solo se aceptan letras en el %s',
+                        ]
+                    ],
+                    [
+                        'field' => 'documento',
+                        'label' => 'Documento',
+                        'rules' => 'trim|max_length[8]|numeric|required',
+                        'errors' => [
+                            'max_length' => 'El %s debe contener como maximo 8 digitos',
+                            'required' => 'Debe ingresar un %s',
+                            'numeric' => 'Solo se aceptan numeros %s',
                         ]
                     ],
                     [
@@ -78,12 +88,8 @@ class Administrador extends CI_Controller
                     $this->load->view('crear_vendedor', $data);
                     $this->load->view('general/footer');
                 } else {
-                    //Crer Password aleatorio de la forma 3letras+3numeros
-                    $numeros_permitidos = '0123456789';
-                    $letras_permitidas = 'abcdefghijklmnopqrstuvwxyz';
-                    $num3 = substr(str_shuffle($numeros_permitidos), 0, 3);
-                    $pal3 = substr(str_shuffle($letras_permitidas), 0, 3);
-                    $password = "{$pal3}{$num3}";
+
+                    $password = $this->input->post('documento');
 
                     $newUser = [
                         'nombre_usuario' => $this->input->post('nickName'),

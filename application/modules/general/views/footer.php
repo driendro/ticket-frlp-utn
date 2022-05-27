@@ -2,13 +2,10 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <p class="text-center mb-0" style="font-size:110%" >Desarrollado por <strong>RONCONI, Jorge</strong> y <strong>PAGANI,
+                <p class="text-center mb-0" style="font-size:110%">Desarrollado por <strong>RONCONI, Jorge</strong> y <strong>PAGANI,
                         Walter</strong>.</p>
-                <p class=" text-center mb-0" style="font-size:70%" >Basado en el sistema desarrollado por BIFANO, Lautaro
-                       ,RUMBO, Dario y DORCE, Jose.</p>
-                <p class="text-center mb-0">Actualizado por <strong>Secretaria de Asuntos Universitarios </strong> -
-                    <strong>UTN-FRLP</strong>.
-                </p>
+                <p class="text-center mb-0">Actualizado por <strong>Secretaria de Asuntos Universitarios </strong> - <strong>UTN-FRLP</strong>.</p>
+                <p class=" text-center mb-0" style="font-size:70%">Basado en el sistema desarrollado por BIFANO, Lautaro, RUMBO, Dario y DORCE, Jose.</p>
                 <p class="text-center mb-0"><strong>Ticket-Web © Copyright <?= date('Y'); ?></strong></p>
             </div>
         </div>

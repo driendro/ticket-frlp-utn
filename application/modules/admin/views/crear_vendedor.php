@@ -24,6 +24,12 @@
                         </div>
                     </div>
                     <div class="row">
+                        <label class="col-sm-2 col-form-label">DNI:</label>
+                        <div class="mb-2 col-sm-3">
+                            <input type="number" class="form-control" name="documento">
+                        </div>
+                    </div>
+                    <div class="row">
                         <label class="col-sm-2 col-form-label">E-Mail:</label>
                         <div class="mb-2 col-sm-3">
                             <input type="text" class="form-control" name="email">
