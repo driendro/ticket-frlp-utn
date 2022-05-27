@@ -1,4 +1,4 @@
-    <div class="container">
+    <div class="container" style="min-height: 25em;">
         <div class="row form-center text-center">
             <h2>Ingrese un Documento a buscar</h2>
             <div class="col-4 my-3">
