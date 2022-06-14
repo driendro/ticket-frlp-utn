@@ -33,11 +33,11 @@
                 </tr>
                 <tr>
                     <td><b> Monto cargado: </b></td>
-                    <td><?= $monto; ?></td>
+                    <td> $ <?= $monto; ?>.-</td>
                 </tr>
                 <tr>
                     <td><b> Saldo actual: </b></td>
-                    <td><?= $saldo; ?></td>
+                    <td>$ <?= $saldo; ?>.-</td>
                 </tr>
             </table>
         </div>
