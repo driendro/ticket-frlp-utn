@@ -56,7 +56,7 @@
                                     Listados</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="<?= base_url('admin/informe'); ?>" target="_blank">Cierre
+                                <a class="dropdown-item" href="<?= base_url('admin/informe'); ?>">Cierre
                                     de Caja</a>
                             </li>
                             <li>
