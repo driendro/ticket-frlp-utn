@@ -13,7 +13,7 @@
         <h2 style="margin: 1%;"><?= $fecha; ?></h2>
         <p style="margin: 1%;"> Vendedor: <strong><?= $vendedor->nombre_usuario; ?></strong> -
             Cantidad de cargas: <strong><?= $cantidad; ?></strong> -
-            Total de cargas: <strong>$ <?= $total; ?> -. </strong>
+            Monto total: <strong>$ <?= $total; ?> -. </strong>
         </p>
     </div>
 
@@ -22,6 +22,7 @@
             <thead style="border-bottom: 3px solid #000">
                 <tr>
                     <th>Hora</th>
+                    <th>Documento</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Monto</th>
@@ -30,13 +31,14 @@
             </thead>
             <tbody>
                 <?php foreach ($cargas as $key => $carga) : ?>
-                    <tr>
-                        <td style="border-bottom: 1px solid #ddd"><?= $carga->hora; ?></td>
-                        <td style="border-bottom: 1px solid #ddd"><?= $carga->nombre; ?></td>
-                        <td style="border-bottom: 1px solid #ddd"><?= $carga->apellido; ?></td>
-                        <td style="border-bottom: 1px solid #ddd"><?= $carga->monto; ?></td>
-                        <td style="border-bottom: 1px solid #ddd"><?= $carga->nombre_usuario; ?></td>
-                    </tr>
+                <tr>
+                    <td style="border-bottom: 1px solid #ddd"><?= $carga->hora; ?></td>
+                    <td style="border-bottom: 1px solid #ddd"><?= $carga->documento; ?></td>
+                    <td style="border-bottom: 1px solid #ddd"><?= $carga->nombre; ?></td>
+                    <td style="border-bottom: 1px solid #ddd"><?= $carga->apellido; ?></td>
+                    <td style="border-bottom: 1px solid #ddd"><?= $carga->monto; ?></td>
+                    <td style="border-bottom: 1px solid #ddd"><?= $carga->nombre_usuario; ?></td>
+                </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
