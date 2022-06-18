@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use    PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Dompdf\Dompdf;
 
@@ -83,19 +83,20 @@ class Vendedor extends CI_Controller
     {
         if ($this->input->method() == 'post') {
             $documento = $this->input->post('dni'); //obtengo el numero de documento
-            $carga = $this->input->post('carga'); // obtengo el monto a cargar$data = [
+            $carga = $this->input->post('carga'); // obtengo el monto a cargar
             $data['titulo'] = 'Carga de Saldo';
             $data['usuario'] = $this->usuario_model->getUserByDocumento($documento);
-            // Contro la validez del formulario
+            // reglas de validez del formulario
             $rules = [
                 [
                     'field' => 'carga',
                     'label' => 'Saldo a Cargar',
-                    'rules' => 'trim|required|differs[0]|max_length[4]',
+                    'rules' => 'trim|required|differs[0]|greater_than[-10000]|less_than[10000]',
                     'errors' => [
                         'required' => 'Debe ingresar un monto a cargar',
                         'differs' => 'El monto debe ser distinto de 0 (cero)',
-                        'max_length' => 'El monto a cargar no debe superar los $9999'
+                        'greater_than' => 'El monto a cargar no puede ser menor que -9999$',
+                        'less_than' => 'El monto a cargar no debe superar los 9999$'
                     ]
                 ],
             ];
