@@ -76,7 +76,10 @@ $route['admin/nuevo_usuario'] = 'admin/vendedor/createUser';
 $route['admin/cargar_saldo'] = 'admin/vendedor/cargarSaldo';
 $route['admin/modificar_usuario/(:num)'] = 'admin/vendedor/updateUser/$1';
 $route['admin/listados'] = 'admin/vendedor/descarcgarExcel';
-$route['admin/informe'] = 'admin/vendedor/descargarInformes';
+$route['admin/informe'] = 'admin/vendedor/viewDescargarInformes';
+$route['admin/informe/diario'] = 'admin/vendedor/descargarCierreCajaDiario';
+$route['admin/informe/semana'] = 'admin/vendedor/descargarCierreCajaSemana';
+$route['admin/informe/pedido'] = 'admin/vendedor/descargarResumenPedidosSemana';
 $route['admin/historial'] = 'admin/vendedor/historialCargas';
 $route['admin/menu'] = 'admin/vendedor/updateMenu';
 

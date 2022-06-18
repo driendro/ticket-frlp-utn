@@ -77,6 +77,26 @@ class Vendedor_model extends CI_Model
         return $query->result();
     }
 
+    public function getCargasByRangeFechaForPDF($fecha1, $fecha2)
+    {
+        $this->db->select('*');
+        $this->db->from('log_carga');
+        $this->db->where('fecha>=', $fecha1);
+        $this->db->where('fecha<=', $fecha2);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function getComprasByRangeFechaForPDF($fecha1, $fecha2)
+    {
+        $this->db->select('*');
+        $this->db->from('compra');
+        $this->db->where('dia_comprado>=', $fecha1);
+        $this->db->where('dia_comprado<=', $fecha2);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
     public function getComprasByFechaForExls($fecha)
     {
         $this->db->select('*');

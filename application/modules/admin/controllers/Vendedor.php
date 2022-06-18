@@ -447,13 +447,14 @@ class Vendedor extends CI_Controller
             $compras = $this->vendedor_model->getComprasByFechaForExls($fecha_dowload);
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setCellValue('A1', 'Legajo');
-            $sheet->setCellValue('B1', 'Apellido');
-            $sheet->setCellValue('C1', 'Nombre');
-            $sheet->setCellValue('D1', 'Turno');
-            $sheet->setCellValue('E1', 'Menu');
-            $sheet->setCellValue('F1', 'Claustro');
-            $rows = 2;
+            $sheet->setCellValue('A1', $fecha_dowload);
+            $sheet->setCellValue('A2', 'Legajo');
+            $sheet->setCellValue('B2', 'Apellido');
+            $sheet->setCellValue('C2', 'Nombre');
+            $sheet->setCellValue('D2', 'Turno');
+            $sheet->setCellValue('E2', 'Menu');
+            $sheet->setCellValue('F2', 'Claustro');
+            $rows = 3;
             foreach ($compras as $compra) {
                 $usuario = $this->usuario_model->getUserById($compra->id_usuario);
                 if ($usuario != null) {
@@ -477,23 +478,137 @@ class Vendedor extends CI_Controller
         }
     }
 
-    public function descargarInformes()
+    public function viewDescargarInformes()
     {
-        $id_vendedor = $this->session->userdata('id_vendedor');
-        $fecha = date('Y-m-d');
-        $cargas = $this->vendedor_model->getCargasByFechaForPDF($fecha);
+        $data['titulo'] = 'Descarga de Informes';
+        $this->load->view('header', $data);
+        $this->load->view('descarga_informe', $data);
+        $this->load->view('general/footer');
+    }
 
-        $data['cargas'] = $cargas;
-        $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
-        $data['total'] = array_sum(array_column($cargas, 'monto'));
-        $data['fecha'] = date('d-m-Y');
-        $data['cantidad'] = count(array_column($cargas, 'id'));
+    public function descargarCierreCajaDiario()
+    {
+        if ($this->input->method() == 'post') {
+            $id_vendedor = $this->session->userdata('id_vendedor');
+            $strtime = strtotime($this->input->post('cierre_fecha'));
+            $fecha = date('Y-m-d', $strtime);
+            $cargas = $this->vendedor_model->getCargasByFechaForPDF($fecha);
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($this->load->view('pdf_view/cajaDiaria', $data, true));
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("Cierre {$fecha}.pdf", array("Attachment" => 0)); //0 para ver, 1 para descargar
+            $data['cargas'] = $cargas;
+            $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
+            $data['total'] = array_sum(array_column($cargas, 'monto'));
+            $data['fecha'] = date("d-m-Y", $strtime);
+            $data['cantidad'] = count(array_column($cargas, 'id'));
+
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($this->load->view('pdf_view/cajaDiaria', $data, true));
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            $dompdf->stream("Cierre_{$fecha}.pdf", array("Attachment" => 0)); //0 para ver, 1 para descargar
+        } else {
+            redirect(base_url('admin/informe'));
+        }
+    }
+
+    public function descargarCierreCajaSemana()
+    {
+        if ($this->input->method() == 'post') {
+            $id_vendedor = $this->session->userdata('id_vendedor');
+            $strtime1 = strtotime($this->input->post('cierre_fecha_1'));
+            $strtime2 = strtotime($this->input->post('cierre_fecha_2'));
+            $fecha1 = date('Y-m-d', $strtime1);
+            $fecha2 = date('Y-m-d', $strtime2);
+            $cargas = $this->vendedor_model->getCargasByRangeFechaForPDF($fecha1, $fecha2);
+
+            $fecha  = $fecha1;
+            $i = 0;
+            $detalle = array();
+            while ($fecha <= $fecha2) {
+                $cantidad = 0;
+                $total = 0;
+                foreach ($cargas as $carga) {
+                    if ($carga->fecha == $fecha) {
+                        $cantidad = $cantidad + 1;
+                        $total = $total + $carga->monto;
+                    }
+                }
+                $detalle[$i]['fecha'] = $fecha;
+                $detalle[$i]['cantidad'] = $cantidad;
+                $detalle[$i]['total'] = $total;
+                $i = $i + 1;
+                $fecha = date('Y-m-d', $strtime1 + ($i * 24 * 60 * 60));
+            }
+
+            $data['detalle'] = $detalle;
+            $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
+            $data['total'] = array_sum(array_column($detalle, 'total'));
+            $data['fecha1'] = date("d-m-Y", $strtime1);
+            $data['fecha2'] = date("d-m-Y", $strtime2);
+            $data['cantidad'] = array_sum(array_column($detalle, 'cantidad'));
+
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($this->load->view('pdf_view/cajaSemanal', $data, true));
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            $dompdf->stream("Cierre_{$fecha1}_{$fecha2}.pdf", array("Attachment" => 0)); //0 para ver, 1 para descargar
+        } else {
+            redirect(base_url('admin/informe'));
+        }
+    }
+
+
+
+    public function descargarResumenPedidosSemana()
+    {
+        if ($this->input->method() == 'post') {
+            $id_vendedor = $this->session->userdata('id_vendedor');
+            $strtime1 = strtotime($this->input->post('semana_fecha_1'));
+            $strtime2 = strtotime($this->input->post('semana_fecha_2'));
+            $fecha1 = date('Y-m-d', $strtime1);
+            $fecha2 = date('Y-m-d', $strtime2);
+            $compras = $this->vendedor_model->getComprasByRangeFechaForPDF($fecha1, $fecha2);
+
+            $fecha  = $fecha1;
+            $i = 0;
+            $detalle = array();
+            while ($fecha <= $fecha2) {
+                $basico = 0;
+                $vegano = 0;
+                $celiaco = 0;
+                foreach ($compras as $compra) {
+                    if ($compra->dia_comprado == $fecha) {
+                        if ($compra->menu == 'Basico') {
+                            $basico = $basico + 1;
+                        } else if ($compra->menu == 'Veggie') {
+                            $vegano = $vegano + 1;
+                        } else if ($compra->menu == 'Celiaco') {
+                            $celiaco = $celiaco + 1;
+                        }
+                    }
+                }
+                $detalle[$i]['fecha'] = $fecha;
+                $detalle[$i]['basico'] = $basico;
+                $detalle[$i]['vegano'] = $vegano;
+                $detalle[$i]['celiaco'] = $celiaco;
+                $i = $i + 1;
+                $fecha = date('Y-m-d', $strtime1 + ($i * 24 * 60 * 60));
+            }
+
+            $data['detalle'] = $detalle;
+            $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
+            $data['total'] = array_sum(array_column($detalle, 'total'));
+            $data['fecha1'] = date("d-m-Y", $strtime1);
+            $data['fecha2'] = date("d-m-Y", $strtime2);
+            $data['cantidad'] = array_sum(array_column($detalle, 'cantidad'));
+
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($this->load->view('pdf_view/resumenSemanal', $data, true));
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            $dompdf->stream("Cierre_{$fecha1}_{$fecha2}.pdf", array("Attachment" => 0)); //0 para ver, 1 para descargar
+        } else {
+            redirect(base_url('admin/informe'));
+        }
     }
 
     public function historialCargas()
