@@ -447,23 +447,26 @@ class Vendedor extends CI_Controller
             $compras = $this->vendedor_model->getComprasByFechaForExls($fecha_dowload);
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setCellValue('A1', $fecha_dowload);
-            $sheet->setCellValue('A2', 'Legajo');
-            $sheet->setCellValue('B2', 'Apellido');
-            $sheet->setCellValue('C2', 'Nombre');
-            $sheet->setCellValue('D2', 'Turno');
+            $sheet->setCellValue('C1', $fecha_dowload);
+            $sheet->setCellValue('A2', '#');
+            $sheet->setCellValue('B2', 'Documento');
+            $sheet->setCellValue('C2', 'Apellido');
+            $sheet->setCellValue('D2', 'Nombre');
             $sheet->setCellValue('E2', 'Menu');
-            $sheet->setCellValue('F2', 'Claustro');
+            //$sheet->setCellValue('D2', 'Turno');
+            //$sheet->setCellValue('F2', 'Claustro');
             $rows = 3;
+            $i = 1;
             foreach ($compras as $compra) {
                 $usuario = $this->usuario_model->getUserById($compra->id_usuario);
                 if ($usuario != null) {
-                    $sheet->setCellValue("A{$rows}", $usuario->legajo);
-                    $sheet->setCellValue("B{$rows}", $usuario->apellido);
-                    $sheet->setCellValue("C{$rows}", $usuario->nombre);
-                    $sheet->setCellValue("D{$rows}", $compra->turno);
+                    $sheet->setCellValue("A{$rows}", $i++);
+                    $sheet->setCellValue("B{$rows}", $usuario->documento);
+                    $sheet->setCellValue("C{$rows}", $usuario->apellido);
+                    $sheet->setCellValue("D{$rows}", $usuario->nombre);
                     $sheet->setCellValue("E{$rows}", $compra->menu);
-                    $sheet->setCellValue("F{$rows}", $compra->tipo);
+                    //$sheet->setCellValue("D{$rows}", $compra->turno);
+                    //$sheet->setCellValue("F{$rows}", $compra->tipo);
                     $rows++;
                 }
             }
