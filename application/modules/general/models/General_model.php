@@ -37,8 +37,8 @@ class General_model extends CI_Model
 
         if ($this->email->send()) {
             return True;
-        } else {
-            show_error($this->email->print_debugger());
+        //} else {
+        //    show_error($this->email->print_debugger());
         };
     }
 }
