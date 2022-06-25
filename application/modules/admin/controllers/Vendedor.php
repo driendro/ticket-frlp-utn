@@ -116,7 +116,8 @@ class Vendedor extends CI_Controller
                     'hora' => date('H:i:s', time()),
                     'id_usuario' => $iduser,
                     'monto' => $carga,
-                    'id_vendedor' => $this->session->id_vendedor
+                    'id_vendedor' => $this->session->id_vendedor,
+                    'tipo' => 'Efectivo'
                 ];
                 $this->carga_model->addCargaLog($cargaLog);
                 $this->correoCargaSaldo($this->session->id_vendedor);
