@@ -172,4 +172,73 @@ class Administrador extends CI_Controller
             $this->load->view('general/footer');
         }
     }
+
+    public function confirmarCargasCVS()
+    {
+        if ($this->input->method() == 'post') {
+            $i = 0;
+            while ($this->input->post("documento_{$i}")) {
+                $documento = $this->input->post("documento_{$i}");
+                $monto = $this->input->post("monto_{$i}");
+                $nombre = $this->input->post("nombre_{$i}");
+                $apellido = $this->input->post("apellido_{$i}");
+                $tipo = $this->input->post("tipo_{$i}");
+
+                if ($this->usuario_model->getUserByDocumento($documento)) {
+                    $usuario = $this->usuario_model->getUserByDocumento($documento); //obtengo el user de ese dni
+                    $iduser = $usuario->id; //obtengo el id del user
+                    $this->usuario_model->updateSaldoByUserId($iduser, $monto); // modifico el salodo del usuario
+                    //Genero la carga en la tabla carga_saldo como log
+                    $cargaLog = [
+                        'fecha' => date('Y-m-d', time()),
+                        'hora' => date('H:i:s', time()),
+                        'id_usuario' => $iduser,
+                        'monto' => $monto,
+                        'id_vendedor' => $this->session->id_vendedor,
+                        'formato' => $tipo
+                    ];
+                    $this->carga_model->addCargaLog($cargaLog);
+                    // Correo
+                    $cargas = $this->vendedor_model->getCargaByIdvendedorParaEmail($this->session->id_vendedor);
+
+                    foreach ($cargas as $a) {
+                        //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
+                        $data['fecha'] = date('d-m-Y', strtotime($a->fecha));
+                        $data['hora'] = $a->hora;
+                        $data['documento'] = $a->documento;
+                        $data['apellido'] = $a->apellido;
+                        $data['nombre'] = $a->nombre;
+                        $data['monto'] = $a->monto;
+                        $data['saldo'] = $a->saldo;
+                        $data['tipo'] = $a->formato;
+                        $correo = $a->mail;
+                    }
+
+                    //Confeccion del correo del recibo
+                    $subject = "Carga de Saldo";
+                    $message = $this->load->view('general/correos/carga_saldo', $data, true);
+                    $this->generalticket->smtpSendEmail($correo, $subject, $message);
+                } else {
+                    $errores[] = array(
+                        $documento,
+                        $nombre,
+                        $apellido,
+                        $monto
+                    );
+                }
+                $i++;
+            }
+            if (isset($errores)) {
+                $data['errores'] = $errores;
+            } else {
+                $data['correcto'] = True;
+            }
+            $data['titulo'] = 'Carga CSV';
+            $this->load->view('header', $data);
+            $this->load->view('carga_csv', $data);
+            $this->load->view('general/footer');
+        } else {
+            redirect(base_url('admin/csv_carga'));
+        }
+    }
 }

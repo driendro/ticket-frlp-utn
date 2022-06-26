@@ -8,8 +8,8 @@
                     <td width=100></td>
                 </tr>
                 <tr>
-                    <td><b> Codigo de carga: </b></td>
-                    <td><?= $codigo; ?></td>
+                    <td><b> Formato de pago: </b></td>
+                    <td><?= $tipo; ?></td>
                 </tr>
                 <tr>
                     <td><b> Fecha: </b></td>

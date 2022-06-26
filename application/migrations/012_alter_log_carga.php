@@ -6,7 +6,7 @@ class Migration_alter_log_carga extends CI_Migration
     public function up()
     {
         $this->dbforge->add_column('log_carga', [
-            'tipo' => [
+            'formato' => [
                 'type' => 'VARCHAR',
                 'constraint' => '10',
                 'default' => 'Efectivo'
@@ -16,6 +16,6 @@ class Migration_alter_log_carga extends CI_Migration
 
     public function down()
     {
-        $this->dbforge->drop_column('log_carga', 'tipo');
+        $this->dbforge->drop_column('log_carga', 'formato');
     }
 }

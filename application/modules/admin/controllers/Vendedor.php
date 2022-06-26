@@ -52,23 +52,19 @@ class Vendedor extends CI_Controller
 
     public function correoCargaSaldo($id_vendedor)
     {
-        $cargas = $this->vendedor_model->getCargasByIdvendedor($id_vendedor);
+        $cargas = $this->vendedor_model->getCargaByIdvendedorParaEmail($id_vendedor);
 
-        $i = 1;
         foreach ($cargas as $a) {
-            if ($i == 1) {
-                //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
-                $data['codigo'] = $a->id;
-                $data['fecha'] = date('d-m-Y', strtotime($a->fecha));
-                $data['hora'] = $a->hora;
-                $data['documento'] = $a->documento;
-                $data['apellido'] = $a->apellido;
-                $data['nombre'] = $a->nombre;
-                $data['monto'] = $a->monto;
-                $data['saldo'] = $a->saldo;
-                $correo = $a->mail;
-                $i = $i + 1;
-            }
+            //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
+            $data['fecha'] = date('d-m-Y', strtotime($a->fecha));
+            $data['hora'] = $a->hora;
+            $data['documento'] = $a->documento;
+            $data['apellido'] = $a->apellido;
+            $data['nombre'] = $a->nombre;
+            $data['monto'] = $a->monto;
+            $data['saldo'] = $a->saldo;
+            $data['tipo'] = $a->formato;
+            $correo = $a->mail;
         }
 
         //Confeccion del correo del recibo
@@ -117,7 +113,7 @@ class Vendedor extends CI_Controller
                     'id_usuario' => $iduser,
                     'monto' => $carga,
                     'id_vendedor' => $this->session->id_vendedor,
-                    'tipo' => 'Efectivo'
+                    'formato' => 'Efectivo'
                 ];
                 $this->carga_model->addCargaLog($cargaLog);
                 $this->correoCargaSaldo($this->session->id_vendedor);
@@ -275,7 +271,8 @@ class Vendedor extends CI_Controller
                             'hora' => date('H:i:s', time()),
                             'id_usuario' => $usuario->id,
                             'monto' => $this->input->post('saldo'),
-                            'id_vendedor' => $this->session->id_vendedor
+                            'id_vendedor' => $this->session->id_vendedor,
+                            'formato' => 'Efectivo'
                         ];
                         $this->carga_model->addCargaLog($newCarga);
                         $this->correoCargaSaldo($this->session->id_vendedor);

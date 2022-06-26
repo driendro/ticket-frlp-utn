@@ -65,6 +65,18 @@ class Vendedor_model extends CI_Model
         return $query->result();
     }
 
+    public function getCargaByIdvendedorParaEmail($idvendedor)
+    {
+        $this->db->select('*');
+        $this->db->from('log_carga');
+        $this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
+        $this->db->where('id_vendedor', $idvendedor);
+        $this->db->order_by('log_carga.id', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
     public function getCargasByFechaForPDF($fecha)
     {
         $this->db->select('*');
