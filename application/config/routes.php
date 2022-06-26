@@ -84,3 +84,4 @@ $route['admin/historial'] = 'admin/vendedor/historialCargas';
 $route['admin/menu'] = 'admin/vendedor/updateMenu';
 
 $route['admin/crear_vendedor'] = 'admin/administrador/createVendedor';
+$route['admin/csv_carga_masiva'] = 'admin/administrador/cargar_archivo_csv';

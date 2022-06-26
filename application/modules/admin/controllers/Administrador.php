@@ -126,4 +126,50 @@ class Administrador extends CI_Controller
             redirect(base_url('admin'));
         }
     }
+
+    public function cargar_archivo_csv()
+    {
+        $data['uploadSuccess'] = array();
+        $data['titulo'] = 'Carga CSV';
+
+        if ($this->input->method() == 'post') {
+            $mi_archivo = 'archivo_csv';
+            $separador = $this->input->post('separador');
+            $config['upload_path'] = "uploads";
+            $config['file_name'] = "carga";
+            $config['overwrite'] = TRUE;
+            $config['allowed_types'] = "csv";
+            $config['max_size'] = "50000";
+            $config['max_width'] = "2000";
+            $config['max_height'] = "2000";
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload($mi_archivo)) {
+                //*** ocurrio un error
+                $data['subidoError'] = $this->upload->display_errors();
+                $this->load->view('header', $data);
+                $this->load->view('carga_csv', $data);
+                $this->load->view('general/footer');
+            } else {
+                $data['subidoCorrecto'] = $this->upload->data();
+                $file = fopen('uploads/carga.csv', 'r');
+                $head = fgetcsv($file, 0, $separador);
+                while ((!feof($file)) && ($file != '')) {
+                    $cargas[] = fgetcsv($file, 0, $separador);
+                }
+                fclose($file);
+
+                $data['cargas'] = $cargas;
+
+                $this->load->view('header', $data);
+                $this->load->view('carga_csv', $data);
+                $this->load->view('general/footer');
+            }
+        } else {
+            $this->load->view('header', $data);
+            $this->load->view('carga_csv', $data);
+            $this->load->view('general/footer');
+        }
+    }
 }

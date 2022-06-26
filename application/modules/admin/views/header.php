@@ -71,6 +71,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('admin/crear_vendedor'); ?>">Nuevo Vendedor</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('admin/csv_carga_masiva'); ?>">Cargar desde CSV</a>
+                    </li>
                     <?php endif; ?>
                     <?php endif; ?>
                 </ul>
