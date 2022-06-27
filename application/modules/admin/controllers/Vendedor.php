@@ -525,27 +525,38 @@ class Vendedor extends CI_Controller
             $i = 0;
             $detalle = array();
             while ($fecha <= $fecha2) {
-                $cantidad = 0;
-                $total = 0;
+                $cantidad_efec = 0;
+                $total_efec = 0;
+                $cantidad_virt = 0;
+                $total_virt = 0;
                 foreach ($cargas as $carga) {
                     if ($carga->fecha == $fecha) {
-                        $cantidad = $cantidad + 1;
-                        $total = $total + $carga->monto;
+                        if ($carga->formato == 'Efectivo') {
+                            $cantidad_efec = $cantidad_efec + 1;
+                            $total_efec = $total_efec + $carga->monto;
+                        } elseif ($carga->formato == 'Virtual') {
+                            $cantidad_virt = $cantidad_virt + 1;
+                            $total_virt = $total_virt + $carga->monto;
+                        }
                     }
                 }
                 $detalle[$i]['fecha'] = $fecha;
-                $detalle[$i]['cantidad'] = $cantidad;
-                $detalle[$i]['total'] = $total;
+                $detalle[$i]['cantidad_efectivo'] = $cantidad_efec;
+                $detalle[$i]['total_efectivo'] = $total_efec;
+                $detalle[$i]['cantidad_virtual'] = $cantidad_virt;
+                $detalle[$i]['total_virtual'] = $total_virt;
                 $i = $i + 1;
                 $fecha = date('Y-m-d', $strtime1 + ($i * 24 * 60 * 60));
             }
 
             $data['detalle'] = $detalle;
             $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
-            $data['total'] = array_sum(array_column($detalle, 'total'));
             $data['fecha1'] = date("d-m-Y", $strtime1);
             $data['fecha2'] = date("d-m-Y", $strtime2);
-            $data['cantidad'] = array_sum(array_column($detalle, 'cantidad'));
+            $data['cantidad_efectivo'] = array_sum(array_column($detalle, 'cantidad_efectivo'));
+            $data['cantidad_virtual'] = array_sum(array_column($detalle, 'cantidad_virtual'));
+            $data['total_efectivo'] = array_sum(array_column($detalle, 'total_efectivo'));
+            $data['total_virtual'] = array_sum(array_column($detalle, 'total_virtual'));
 
             $dompdf = new Dompdf();
             $dompdf->loadHtml($this->load->view('pdf_view/cajaSemanal', $data, true));
@@ -556,8 +567,6 @@ class Vendedor extends CI_Controller
             redirect(base_url('admin/informe'));
         }
     }
-
-
 
     public function descargarResumenPedidosSemana()
     {
