@@ -17,6 +17,8 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <?php endif; ?>
+        <h5 class="col-12 text-center">El CSV a subir debe ser como el del <a
+                href="<?= base_url('download/carga.csv'); ?>">modelo</a></h5>
         <form action="<?= base_url('admin/csv_carga'); ?>" method="post" enctype="multipart/form-data">
             <div class="row form-center g-3">
                 <div class="col-sm-4">
