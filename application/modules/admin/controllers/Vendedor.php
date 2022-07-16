@@ -52,23 +52,19 @@ class Vendedor extends CI_Controller
 
     public function correoCargaSaldo($id_vendedor)
     {
-        $cargas = $this->vendedor_model->getCargasByIdvendedor($id_vendedor);
+        $cargas = $this->vendedor_model->getCargaByIdvendedorParaEmail($id_vendedor);
 
-        $i = 1;
         foreach ($cargas as $a) {
-            if ($i == 1) {
-                //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
-                $data['codigo'] = $a->id;
-                $data['fecha'] = date('d-m-Y', strtotime($a->fecha));
-                $data['hora'] = $a->hora;
-                $data['documento'] = $a->documento;
-                $data['apellido'] = $a->apellido;
-                $data['nombre'] = $a->nombre;
-                $data['monto'] = $a->monto;
-                $data['saldo'] = $a->saldo;
-                $correo = $a->mail;
-                $i = $i + 1;
-            }
+            //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
+            $data['fecha'] = date('d-m-Y', strtotime($a->fecha));
+            $data['hora'] = $a->hora;
+            $data['documento'] = $a->documento;
+            $data['apellido'] = $a->apellido;
+            $data['nombre'] = $a->nombre;
+            $data['monto'] = $a->monto;
+            $data['saldo'] = $a->saldo;
+            $data['tipo'] = $a->formato;
+            $correo = $a->mail;
         }
 
         //Confeccion del correo del recibo
@@ -116,7 +112,8 @@ class Vendedor extends CI_Controller
                     'hora' => date('H:i:s', time()),
                     'id_usuario' => $iduser,
                     'monto' => $carga,
-                    'id_vendedor' => $this->session->id_vendedor
+                    'id_vendedor' => $this->session->id_vendedor,
+                    'formato' => 'Efectivo'
                 ];
                 $this->carga_model->addCargaLog($cargaLog);
                 $this->correoCargaSaldo($this->session->id_vendedor);
@@ -274,7 +271,8 @@ class Vendedor extends CI_Controller
                             'hora' => date('H:i:s', time()),
                             'id_usuario' => $usuario->id,
                             'monto' => $this->input->post('saldo'),
-                            'id_vendedor' => $this->session->id_vendedor
+                            'id_vendedor' => $this->session->id_vendedor,
+                            'formato' => 'Efectivo'
                         ];
                         $this->carga_model->addCargaLog($newCarga);
                         $this->correoCargaSaldo($this->session->id_vendedor);
@@ -491,17 +489,42 @@ class Vendedor extends CI_Controller
 
     public function descargarCierreCajaDiario()
     {
+        // En esta funcion, se imprime el detalle de todas las cargas de la fecha,
+        // mostrandos quien a quien y cuanto se cargo, ademas de informar el total
+        // de cargas y el total de ingresos, detallando el efectivo del virtual
         if ($this->input->method() == 'post') {
             $id_vendedor = $this->session->userdata('id_vendedor');
+            // Del formulario obtenemos la fecha para realizar el cierre
             $strtime = strtotime($this->input->post('cierre_fecha'));
             $fecha = date('Y-m-d', $strtime);
+            // Obtenemos todas las cargas de esa fecha
             $cargas = $this->vendedor_model->getCargasByFechaForPDF($fecha);
+            // Recorremos la cargas para separarlas por formato
+            // Iniciamos contadores
+            $nVirtual = 0; //cargas en efectivo
+            $totalVirtual = 0; // dinero total en eefectivo
+            $nEfectivo = 0; //cargas virtuales
+            $totalEfectivo = 0; //dinero total virtual
+            foreach ($cargas as $carga) {
+                if ($carga->formato == 'Efectivo') {
+                    // Si la carga fue en efectivo
+                    $totalEfectivo = $totalEfectivo + $carga->monto;
+                    $nEfectivo = $nEfectivo + 1;
+                } elseif ($carga->formato == 'Virtual') {
+                    // Si la carga fue virtual
+                    $totalVirtual = $totalVirtual + $carga->monto;
+                    $nVirtual = $nVirtual + 1;
+                }
+            }
 
+            //Guardamos todo en $data
             $data['cargas'] = $cargas;
+            $data['total_virtual'] = $totalVirtual;
+            $data['cantidad_virtual'] = $nVirtual;
+            $data['total_efectivo'] = $totalEfectivo;
+            $data['cantidad_efectivo'] = $nEfectivo;
             $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
-            $data['total'] = array_sum(array_column($cargas, 'monto'));
             $data['fecha'] = date("d-m-Y", $strtime);
-            $data['cantidad'] = count(array_column($cargas, 'id'));
 
             $dompdf = new Dompdf();
             $dompdf->loadHtml($this->load->view('pdf_view/cajaDiaria', $data, true));
@@ -527,27 +550,38 @@ class Vendedor extends CI_Controller
             $i = 0;
             $detalle = array();
             while ($fecha <= $fecha2) {
-                $cantidad = 0;
-                $total = 0;
+                $cantidad_efec = 0;
+                $total_efec = 0;
+                $cantidad_virt = 0;
+                $total_virt = 0;
                 foreach ($cargas as $carga) {
                     if ($carga->fecha == $fecha) {
-                        $cantidad = $cantidad + 1;
-                        $total = $total + $carga->monto;
+                        if ($carga->formato == 'Efectivo') {
+                            $cantidad_efec = $cantidad_efec + 1;
+                            $total_efec = $total_efec + $carga->monto;
+                        } elseif ($carga->formato == 'Virtual') {
+                            $cantidad_virt = $cantidad_virt + 1;
+                            $total_virt = $total_virt + $carga->monto;
+                        }
                     }
                 }
                 $detalle[$i]['fecha'] = $fecha;
-                $detalle[$i]['cantidad'] = $cantidad;
-                $detalle[$i]['total'] = $total;
+                $detalle[$i]['cantidad_efectivo'] = $cantidad_efec;
+                $detalle[$i]['total_efectivo'] = $total_efec;
+                $detalle[$i]['cantidad_virtual'] = $cantidad_virt;
+                $detalle[$i]['total_virtual'] = $total_virt;
                 $i = $i + 1;
                 $fecha = date('Y-m-d', $strtime1 + ($i * 24 * 60 * 60));
             }
 
             $data['detalle'] = $detalle;
             $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
-            $data['total'] = array_sum(array_column($detalle, 'total'));
             $data['fecha1'] = date("d-m-Y", $strtime1);
             $data['fecha2'] = date("d-m-Y", $strtime2);
-            $data['cantidad'] = array_sum(array_column($detalle, 'cantidad'));
+            $data['cantidad_efectivo'] = array_sum(array_column($detalle, 'cantidad_efectivo'));
+            $data['cantidad_virtual'] = array_sum(array_column($detalle, 'cantidad_virtual'));
+            $data['total_efectivo'] = array_sum(array_column($detalle, 'total_efectivo'));
+            $data['total_virtual'] = array_sum(array_column($detalle, 'total_virtual'));
 
             $dompdf = new Dompdf();
             $dompdf->loadHtml($this->load->view('pdf_view/cajaSemanal', $data, true));
@@ -558,8 +592,6 @@ class Vendedor extends CI_Controller
             redirect(base_url('admin/informe'));
         }
     }
-
-
 
     public function descargarResumenPedidosSemana()
     {
