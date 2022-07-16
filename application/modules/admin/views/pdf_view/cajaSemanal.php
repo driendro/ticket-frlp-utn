@@ -26,6 +26,7 @@
             </thead>
             <tbody>
                 <?php foreach ($detalle as $key => $det) : ?>
+                <?php if ($detalle[$key]['cantidad_efectivo'] !== 0) : ?>
                 <tr>
                     <td style="border-bottom: 1px solid #ddd"><?= date('d-M', strtotime($detalle[$key]['fecha'])); ?>
                     </td>
@@ -33,6 +34,7 @@
                     <td style="border-bottom: 1px solid #ddd">$
                         <?= number_format($detalle[$key]['total_efectivo'], 0, ',', '.'); ?></td>
                 </tr>
+                <?php endif; ?>
                 <?php endforeach; ?>
                 <tr>
                     <td style="border-bottom: 2px solid #000; border-top: 1px solid #000"> Total </td>
@@ -57,6 +59,7 @@
             </thead>
             <tbody>
                 <?php foreach ($detalle as $key => $det) : ?>
+                <?php if ($detalle[$key]['cantidad_virtual'] !== 0) : ?>
                 <tr>
                     <td style="border-bottom: 1px solid #ddd"><?= date('d-M', strtotime($detalle[$key]['fecha'])); ?>
                     </td>
@@ -64,6 +67,7 @@
                     <td style="border-bottom: 1px solid #ddd">$
                         <?= number_format($detalle[$key]['total_virtual'], 0, ',', '.'); ?></td>
                 </tr>
+                <?php endif; ?>
                 <?php endforeach; ?>
                 <tr>
                     <td style="border-bottom: 2px solid #000; border-top: 1px solid #000"> Total </td>

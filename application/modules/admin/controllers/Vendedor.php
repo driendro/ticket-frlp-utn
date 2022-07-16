@@ -489,17 +489,42 @@ class Vendedor extends CI_Controller
 
     public function descargarCierreCajaDiario()
     {
+        // En esta funcion, se imprime el detalle de todas las cargas de la fecha,
+        // mostrandos quien a quien y cuanto se cargo, ademas de informar el total
+        // de cargas y el total de ingresos, detallando el efectivo del virtual
         if ($this->input->method() == 'post') {
             $id_vendedor = $this->session->userdata('id_vendedor');
+            // Del formulario obtenemos la fecha para realizar el cierre
             $strtime = strtotime($this->input->post('cierre_fecha'));
             $fecha = date('Y-m-d', $strtime);
+            // Obtenemos todas las cargas de esa fecha
             $cargas = $this->vendedor_model->getCargasByFechaForPDF($fecha);
+            // Recorremos la cargas para separarlas por formato
+            // Iniciamos contadores
+            $nVirtual = 0; //cargas en efectivo
+            $totalVirtual = 0; // dinero total en eefectivo
+            $nEfectivo = 0; //cargas virtuales
+            $totalEfectivo = 0; //dinero total virtual
+            foreach ($cargas as $carga) {
+                if ($carga->formato == 'Efectivo') {
+                    // Si la carga fue en efectivo
+                    $totalEfectivo = $totalEfectivo + $carga->monto;
+                    $nEfectivo = $nEfectivo + 1;
+                } elseif ($carga->formato == 'Virtual') {
+                    // Si la carga fue virtual
+                    $totalVirtual = $totalVirtual + $carga->monto;
+                    $nVirtual = $nVirtual + 1;
+                }
+            }
 
+            //Guardamos todo en $data
             $data['cargas'] = $cargas;
+            $data['total_virtual'] = $totalVirtual;
+            $data['cantidad_virtual'] = $nVirtual;
+            $data['total_efectivo'] = $totalEfectivo;
+            $data['cantidad_efectivo'] = $nEfectivo;
             $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
-            $data['total'] = array_sum(array_column($cargas, 'monto'));
             $data['fecha'] = date("d-m-Y", $strtime);
-            $data['cantidad'] = count(array_column($cargas, 'id'));
 
             $dompdf = new Dompdf();
             $dompdf->loadHtml($this->load->view('pdf_view/cajaDiaria', $data, true));

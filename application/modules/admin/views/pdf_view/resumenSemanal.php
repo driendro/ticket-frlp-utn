@@ -26,6 +26,7 @@
             </thead>
             <tbody>
                 <?php foreach ($detalle as $key => $det) : ?>
+                <?php if ($detalle[$key]['basico'] + $detalle[$key]['vegano'] + $detalle[$key]['celiaco'] !== 0) : ?>
                 <tr>
                     <td style="border-bottom: 1px solid #ddd"><?= date('d-M', strtotime($detalle[$key]['fecha'])); ?>
                     </td>
@@ -33,6 +34,7 @@
                     <td style="border-bottom: 1px solid #ddd"><?= $detalle[$key]['vegano']; ?></td>
                     <td style="border-bottom: 1px solid #ddd"><?= $detalle[$key]['celiaco']; ?></td>
                 </tr>
+                <?php endif; ?>
                 <?php endforeach; ?>
             </tbody>
         </table>
