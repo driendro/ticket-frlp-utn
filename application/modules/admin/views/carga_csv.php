@@ -20,14 +20,14 @@
         <h5 class="col-12 text-center">El CSV a subir debe ser como el del <a
                 href="<?= base_url('download/carga.csv'); ?>">modelo</a></h5>
         <form action="<?= base_url('admin/csv_carga'); ?>" method="post" enctype="multipart/form-data">
-            <div class="row form-center g-3">
-                <div class="col-sm-4">
+            <div class="row d-flex justify-content-center align-items-stretch flex-row form-center g-3">
+                <div class="col-12 col-md-6">
                     <input class="form-control" type="file" name="archivo_csv">
                 </div>
-                <div class="col-1">
+                <div class="col-2 col-md-1">
                     <span style="background-color: #f7f7f7;" class="col-3 fw-bold border-0 input-group-text">Sep:</span>
                 </div>
-                <div class="col-1">
+                <div class="col-3 col-md-1">
                     <select class="mb-1 form-select" name="separador">
                         <option selected value=";">;</option>
                         <option value=",">,</option>

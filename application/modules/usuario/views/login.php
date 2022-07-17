@@ -5,7 +5,7 @@
             </div>
         </div>
         <div class="row form-center">
-            <div class="col-4 my-3">
+            <div class="col-6 col-md-5 col-xl-4 my-3">
                 <?= form_open(current_url()); ?>
                 <div class="form-group mb-4">
                     <input type="number" class="form-control" placeholder="Ingrese su DNI" name="documento">
@@ -14,7 +14,7 @@
                     <input type="password" class="form-control" placeholder="Su contraseña" name="password">
                 </div>
                 <?php if ($this->session->flashdata('error') != null) : ?>
-                    <div class="alert alert-danger"><?= $this->session->flashdata('error'); ?></div>
+                <div class="alert alert-danger"><?= $this->session->flashdata('error'); ?></div>
                 <?php endif; ?>
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-success">Ingresar</button>
