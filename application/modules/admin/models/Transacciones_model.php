@@ -57,6 +57,17 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
         $this->db->update('compra');
     }
 
+    public function updateTransactionInLogCompraByID($id_compra, $id_trans)
+    {
+        $array = [
+            'transaccion_id' => $id_trans,
+            'transaccion_tipo' => 'Compra'
+        ];
+        $this->db->set($array);
+        $this->db->where('id', $id_compra);
+        $this->db->update('log_compra');
+    }
+
     public function updateTransactionInCargaByID($id_carga, $id_trans)
     {
         $this->db->set('transaccion_id', $id_trans);
@@ -69,33 +80,4 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
         $this->db->insert('transacciones', $data);
         return $this->db->insert_id();
     }
-    /*
-    public function getCargasByIDUser($id_usuario)
-    {
-        $this->db->select('*');
-        $this->db->where('id_usuario', $id_usuario);
-        $query = $this->db->get('log_carga');
-        return $query->result();
-    }
-
-    public function getComprasByIDUser($id_usuario)
-    {
-        $this->db->select('*');
-        $this->db->where('id_usuario', $id_usuario);
-        $query = $this->db->get('compra');
-        return $query->result();
-    }
-
-
-    public function getLastTransation()
-    {
-        $this->db->select('*');
-        $this->db->order_by('id', 'DESC');
-        $query = $this->db->limit(1);
-        return $query->result();
-    }
-
-
-
-    */
 }

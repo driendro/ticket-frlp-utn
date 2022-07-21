@@ -76,6 +76,7 @@ class Transaction_init extends CI_Controller
                 foreach ($compras_user as $key => $compra) {
                     $id_compra = $compra->id;
                     $this->transacciones_model->updateTransactionInCompraByID($id_compra, $id_insert);
+                    $this->transacciones_model->updateTransactionInLogCompraByID($id_compra, $id_insert);
                 };
                 //Paso $fecha al dia siguiente
                 $i = $i + 1;
