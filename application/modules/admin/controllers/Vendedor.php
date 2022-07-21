@@ -50,21 +50,22 @@ class Vendedor extends CI_Controller
         }
     }
 
-    public function correoCargaSaldo($id_vendedor)
+    public function correoCargaSaldo($id_transaccion)
     {
-        $cargas = $this->vendedor_model->getCargaByIdvendedorParaEmail($id_vendedor);
+        $cargas = $this->vendedor_model->getCargaByTransaccion($id_transaccion);
 
-        foreach ($cargas as $a) {
-            //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
-            $data['fecha'] = date('d-m-Y', strtotime($a->fecha));
-            $data['hora'] = $a->hora;
-            $data['documento'] = $a->documento;
-            $data['apellido'] = $a->apellido;
-            $data['nombre'] = $a->nombre;
-            $data['monto'] = $a->monto;
-            $data['saldo'] = $a->saldo;
-            $data['tipo'] = $a->formato;
-            $correo = $a->mail;
+        foreach ($cargas as $carga) {
+            //Solo tomo datos del unico elemento que trae el array
+            $data['transaccion'] = $id_transaccion;
+            $data['fecha'] = date('d-m-Y', strtotime($carga->fecha));
+            $data['hora'] = $carga->hora;
+            $data['documento'] = $carga->documento;
+            $data['apellido'] = $carga->apellido;
+            $data['nombre'] = $carga->nombre;
+            $data['monto'] = $carga->monto;
+            $data['saldo'] = $carga->saldo;
+            $data['tipo'] = $carga->formato;
+            $correo = $carga->mail;
         }
 
         //Confeccion del correo del recibo
@@ -104,19 +105,38 @@ class Vendedor extends CI_Controller
             } else {
                 $usuario = $this->usuario_model->getUserByDocumento($documento); //obtengo el user de ese dni
                 $iduser = $usuario->id; //obtengo el id del user
-                $this->usuario_model->updateSaldoByUserId($iduser, $carga); // modifico el salodo del usuario
+                $saldo = $this->vendedor_model->updateAndGetSaldoByUserId($iduser, $carga); // modifico y luego obtengo el saldo
 
-                //Genero la carga en la tabla carga_saldo como log
+                //Genero y guardo la transaccion
+                $transaction_carga = [
+                    'fecha' => date('Y-m-d', time()),
+                    'hora' => date('H:i:s', time()),
+                    'id_usuario' => $iduser,
+                    'monto' => $carga
+                ];
+                //Verifico si es una devolucion o una carga
+                if ($carga >= 0) {
+                    $transaction_carga['transaccion'] = 'Carga de Saldo';
+                } else {
+                    $transaction_carga['transaccion'] = 'Devolucion de Saldo';
+                };
+                //Seteo el saldo al final de la transaccion
+                $transaction_carga['saldo'] = $saldo;
+                //Inserto la transaccion y obtengo su ID
+                $id_insert = $this->vendedor_model->addTransaccion($transaction_carga);
+
+                //Genero la carga en la tabla log_carga
                 $cargaLog = [
                     'fecha' => date('Y-m-d', time()),
                     'hora' => date('H:i:s', time()),
                     'id_usuario' => $iduser,
                     'monto' => $carga,
                     'id_vendedor' => $this->session->id_vendedor,
-                    'formato' => 'Efectivo'
+                    'formato' => 'Efectivo',
+                    'transaccion_id' => $id_insert
                 ];
                 $this->carga_model->addCargaLog($cargaLog);
-                $this->correoCargaSaldo($this->session->id_vendedor);
+                $this->correoCargaSaldo($id_insert);
 
                 redirect(base_url('admin'));
             }
@@ -264,18 +284,37 @@ class Vendedor extends CI_Controller
                 if ($this->usuario_model->addNewUser($newUser, $logNewUser)) {
                     // realizamos la carga de saldo
                     $usuario = $this->usuario_model->getUserByDocumento($numerodni);
-
                     if ($this->input->post('saldo') != 0) {
+
+                        //Genero y guardo la transaccion
+                        $transaction_carga = [
+                            'fecha' => date('Y-m-d', time()),
+                            'hora' => date('H:i:s', time()),
+                            'id_usuario' => $usuario->id,
+                            'monto' => $this->input->post('saldo')
+                        ];
+                        //Verifico si es una devolucion o una carga
+                        if ($this->input->post('saldo') >= 0) {
+                            $transaction_carga['transaccion'] = 'Carga de Saldo';
+                        } else {
+                            $transaction_carga['transaccion'] = 'Devolucion de Saldo';
+                        };
+                        //Seteo el saldo al final de la transaccion
+                        $transaction_carga['saldo'] = $this->input->post('saldo');
+                        //Inserto la transaccion y obtengo su ID
+                        $id_insert = $this->vendedor_model->addTransaccion($transaction_carga);
+
                         $newCarga = [
                             'fecha' => date('Y-m-d', time()),
                             'hora' => date('H:i:s', time()),
                             'id_usuario' => $usuario->id,
                             'monto' => $this->input->post('saldo'),
                             'id_vendedor' => $this->session->id_vendedor,
-                            'formato' => 'Efectivo'
+                            'formato' => 'Efectivo',
+                            'transaccion_id' => $id_insert
                         ];
                         $this->carga_model->addCargaLog($newCarga);
-                        $this->correoCargaSaldo($this->session->id_vendedor);
+                        $this->correoCargaSaldo($id_insert);
                     }
 
                     //Confeccion del correo del recivo

@@ -65,14 +65,29 @@ class Vendedor_model extends CI_Model
         return $query->result();
     }
 
-    public function getCargaByIdvendedorParaEmail($idvendedor)
+    public function updateAndGetSaldoByUserId($iduser, $saldo)
     {
+        $saldoActual = $this->db->select('saldo')->where('id', $iduser)->get('usuarios')->row('saldo');
+        $saldoNuevo = $saldoActual + $saldo;
+
+        $this->db->set('saldo', $saldoNuevo);
+        $this->db->where('id', $iduser);
+        $this->db->update('usuarios');
+        return $saldoNuevo;
+    }
+
+    public function addTransaccion($data)
+    {
+        $this->db->insert('transacciones', $data);
+        return $this->db->insert_id();
+    }
+
+    public function getCargaByTransaccion($id_transaccion)
+    {   //Obtengo la carga de la transaccion
         $this->db->select('*');
         $this->db->from('log_carga');
         $this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
-        $this->db->where('id_vendedor', $idvendedor);
-        $this->db->order_by('log_carga.id', 'DESC');
-        $this->db->limit(1);
+        $this->db->where('log_carga.transaccion_id', $id_transaccion);
         $query = $this->db->get();
         return $query->result();
     }
