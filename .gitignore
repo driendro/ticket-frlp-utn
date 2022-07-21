@@ -33,3 +33,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 
 .vscode
 uploads/carga.csv
+script/
