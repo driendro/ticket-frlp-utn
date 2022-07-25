@@ -25,15 +25,16 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes']; ?>
                             <?php foreach ($compras as $compra) : ?>
-                                <tr>
-                                    <td><?= date('d-m-Y', strtotime($compra->dia_comprado)); ?></td>
-                                    <td><?= date('l', strtotime($compra->dia_comprado)); ?></td>
-                                    <td><?= $compra->turno; ?></td>
-                                    <td><?= $compra->menu; ?></td>
-                                    <!-- <td><?= $compra->tipo; ?></td> -->
-                                    <td><?= $compra->precio; ?></td>
-                                </tr>
+                            <tr>
+                                <td><?= date('d-m-Y', strtotime($compra->dia_comprado)); ?></td>
+                                <td><?= $dias[date('N', strtotime($compra->dia_comprado)) - 1]; ?></td>
+                                <td><?= $compra->turno; ?></td>
+                                <td><?= $compra->menu; ?></td>
+                                <!-- <td><?= $compra->tipo; ?></td> -->
+                                <td><?= $compra->precio; ?></td>
+                            </tr>
                             <?php endforeach; ?>
                             <tr>
                                 <td></td>

@@ -31,7 +31,7 @@ class Transaction_init extends CI_Controller
                 //Recorro las cargas de ese usuario en ese dia
                 foreach ($cargas_user as $key => $carga) {
                     $id_carga = $carga->id;
-                    //Genero el array para insertar en al db transacciones
+                    //Genero el array para insertar en al tabla 'transacciones'
                     $transaction_carga = [
                         'fecha' => $carga->fecha,
                         'hora' => $carga->hora,
@@ -49,7 +49,7 @@ class Transaction_init extends CI_Controller
                     $transaction_carga['saldo'] = $saldo;
                     //Inserto la transaccion y obtengo su ID
                     $id_insert = $this->transacciones_model->addTransaccion($transaction_carga);
-                    //Asigno el ID de la transaccion en la tabla log_cargas
+                    //Asigno el ID de la transaccion en la tabla 'log_cargas'
                     $this->transacciones_model->updateTransactionInCargaByID($id_carga, $id_insert);
                 };
                 //Obtengo todas las compras del usuario en esa fecha
@@ -64,7 +64,7 @@ class Transaction_init extends CI_Controller
                         'hora' => $this->transacciones_model->getHoraCompraByFechaByIDUser($fecha, $user_id),
                         'id_usuario' => $user_id,
                         'transaccion' => 'Compra',
-                        'monto' => -180 * $n_compras,
+                        'monto' => -180 * $n_compras
                     ];
                     //Calculo el saldo final de la transaccion y lo seteo
                     $saldo = $saldo - 180 * $n_compras;
@@ -84,11 +84,11 @@ class Transaction_init extends CI_Controller
             }
             //Verificamos que el saldo obtenido sea el mismo que el del usuario
             if ($saldo !== $this->transacciones_model->getSaldoByIDUser($user_id)) {
-                $errores[] = array(
+                $errores[] = [
                     $user_id,
                     $saldo,
                     $this->transacciones_model->getSaldoByIDUser($user_id)
-                );
+                ];
             }
             //Paso la Id siguiente
             $user_id = $user_id + 1;
