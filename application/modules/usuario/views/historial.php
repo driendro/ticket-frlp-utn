@@ -19,20 +19,13 @@
                         </thead>
                         <tbody>
                             <?php foreach ($compras as $compra) : ?>
-                                <tr>
-                                    <td><?= $compra->fecha; ?></td>
-                                    <td><?= $compra->hora; ?></td>
-                                    <td><?= $compra->dia_comprado; ?></td>
-                                    <td><?= $compra->precio; ?></td>
-                                    <td><?= $compra->menu; ?></td>
-                                    <?php if (isset($devolucion)) : ?>
-                                        <td><?= form_open(current_url()); ?>
-                                            <input type="text" name='compraId' id='compraId' value="<?= $compra->id ?>" hidden>
-                                            <button type="submit" id="btnDevolverCompra" class="btn btn-danger mx-3">Devolver</button>
-                                        </td>
-                                        <?= form_close(); ?>
-                                    <?php endif; ?>
-                                </tr>
+                            <tr>
+                                <td><?= $compra->fecha; ?></td>
+                                <td><?= $compra->hora; ?></td>
+                                <td><?= $compra->dia_comprado; ?></td>
+                                <td><?= $compra->precio; ?></td>
+                                <td><?= $compra->menu; ?></td>
+                            </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>

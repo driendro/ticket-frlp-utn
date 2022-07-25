@@ -10,17 +10,28 @@ class Ticket_model extends CI_Model
 
     public function addCompra($data)
     {
-        $idusuario = $this->session->userdata('id_usuario');
-        $idPrecio = $this->db->select('id_precio')->where('id', $idusuario)->get('usuarios')->row('id_precio');
-        $costoVianda = $this->db->select('costo')->where('id', $idPrecio)->get('precios')->row('costo');
-        $saldo = $this->db->select('saldo')->where('id', $idusuario)->get('usuarios')->row('saldo');
-        if ($saldo >= 180) {
-            if ($this->db->insert('compra', $data)) {
-                $this->db->insert('log_compra', $data);
-                $saldo = $saldo - $costoVianda;
-                return $this->db->insert_id();
-            }
-            $this->db->set('saldo', $saldo)->where('id', $this->session->userdata('id_usuario'))->update('usuarios');
+        if ($this->db->insert('compra', $data)) {
+            return true;
+        } else {
+            false;
+        }
+    }
+
+    public function addLogCompra($data)
+    {
+        if ($this->db->insert('log_compra', $data)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function updateSaldoByIDUser($id_user, $saldo_nuevo)
+    {
+        $this->db->set('saldo', $saldo_nuevo);
+        $this->db->where('id', $id_user);
+        if ($this->db->update('usuarios')) {
+            return true;
         } else {
             return false;
         }
@@ -30,6 +41,14 @@ class Ticket_model extends CI_Model
     {
         $idPrecio = $this->db->select('id_precio')->where('id', $id)->get('usuarios')->row('id_precio');
         return $this->db->select('costo')->where('id', $idPrecio)->get('precios')->row('costo');
+    }
+
+    public function getCompraById($id)
+    {
+        $this->db->select('*');
+        $this->db->where('id', $id);
+        $query = $this->db->get('compra');
+        return $query->result();
     }
 
     public function getSaldoByIDUser($id_user)
@@ -46,6 +65,7 @@ class Ticket_model extends CI_Model
         $this->db->where('id_usuario', $idusuario);
         $this->db->where('dia_comprado >=', $fecha_i);
         $this->db->where('dia_comprado <=', $fecha_f);
+        $this->db->order_by('dia_comprado');
         $query = $this->db->get('compra');
         return $query->result();
     }
@@ -55,6 +75,14 @@ class Ticket_model extends CI_Model
         $this->db->select('*');
         $this->db->where('transaccion_id', $id_trans);
         $query = $this->db->get('compra');
+        return $query->result();
+    }
+
+    public function getLogComprasByIDTransaccion($id_trans)
+    {
+        $this->db->select('*');
+        $this->db->where('transaccion_id', $id_trans);
+        $query = $this->db->get('log_compra');
         return $query->result();
     }
 
@@ -71,13 +99,9 @@ class Ticket_model extends CI_Model
         $this->db->update('compra');
     }
 
-    public function updateTransactionInLogCompraByID($id_compra, $id_trans, $tipo_trans)
+    public function updateTransactionInLogCompraByID($id_compra, $id_trans)
     {
-        $array = [
-            'transaccion_id' => $id_trans,
-            'transaccion_tipo' => $tipo_trans
-        ];
-        $this->db->set($array);
+        $this->db->set('transaccion_id', $id_trans);
         $this->db->where('id', $id_compra);
         $this->db->update('log_compra');
     }
@@ -89,14 +113,12 @@ class Ticket_model extends CI_Model
         $this->db->update('log_carga');
     }
 
-    public function removeCompra($idcompra, $idusuario)
+    public function removeCompra($idcompra)
     {
-        $idPrecio = $this->db->select('id_precio')->where('id', $idusuario)->get('usuarios')->row('id_precio');
-        $costoVianda = $this->db->select('costo')->where('id', $idPrecio)->get('precios')->row('costo');
-        $saldo = $this->db->select('saldo')->where('id', $idusuario)->get('usuarios')->row('saldo');
-        $saldo = $saldo + $costoVianda;
-
-        $this->db->set('saldo', $saldo)->where('id', $idusuario)->update('usuarios');
-        $this->db->delete('compra', array('id' => $idcompra));
+        if ($this->db->delete('compra', ['id' => $idcompra])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

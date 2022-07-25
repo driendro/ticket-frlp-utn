@@ -52,23 +52,21 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 $route['default_controller'] = 'comedor/ticket';
 $route['404_override'] = 'general/errores/error404';
-$route['translate_uri_dashes'] = FALSE;
+$route['translate_uri_dashes'] = false;
 
 $route['usuario'] = 'comedor/ticket/index';
 $route['usuario/cambio-password'] = 'usuario/changePassword';
-$route['usuario/devolver_compra'] = 'usuario/devolverCompra';
+$route['usuario/comprar'] = 'comedor/ticket/compra';
+$route['usuario/devolver_compra'] = 'comedor/ticket/devolverCompra';
 $route['usuario/historial'] = 'usuario/historial';
 $route['login'] = 'usuario/login';
 $route['logout'] = 'usuario/login/logout';
 $route['usuario/recovery/(:any)'] = 'usuario/login/recoveryPassword';
 
-$route['ticket'] = 'comedor/ticket/index';
 $route['contacto'] = 'comedor/contacto/index';
+$route['menu'] = 'comedor/menu/index';
 
 $route['dbmigrate'] = 'admin/migrate/index';
-
-$route['menu'] = 'comedor/menu/index';
-$route['datos'] = 'comedor/ticket/datos';
 
 $route['admin'] = 'admin/vendedor/index';
 $route['admin/login'] = 'admin/login/index';
