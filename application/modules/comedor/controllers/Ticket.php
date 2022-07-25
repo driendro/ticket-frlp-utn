@@ -36,6 +36,7 @@ class Ticket extends CI_Controller
             //Segundo semestre
             return true;
         }
+        return true;
     }
 
     public function estadoCompra()
@@ -55,6 +56,7 @@ class Ticket extends CI_Controller
             //y si es viernes hasta las 12:00AM
             return true;
         }
+        return true;
     }
 
     public function index()
@@ -120,7 +122,7 @@ class Ticket extends CI_Controller
         $n_compras = 0;
         foreach ($dias as $id => $dia) {
             if ($this->input->post("check{$dia}")) {
-                $saldoUser = $this->ticket_model->getSaldoByIDUser($id_usuario);
+                $saldo = $this->ticket_model->getSaldoByIDUser($id_usuario);
                 $nroDia = date('N');
                 $proximo = time() + ((7 - $nroDia + ($id + 1)) * 24 * 60 * 60);
 
@@ -151,7 +153,7 @@ class Ticket extends CI_Controller
 
                 if ($this->ticket_model->addCompra($data_compra)) {
                     //Actualizamos el saldo
-                    $this->ticket_model->updateSaldoByIDUser($id_usuario, $saldoUser - $costoVianda);
+                    $this->ticket_model->updateSaldoByIDUser($id_usuario, $saldo - $costoVianda);
                     $this->ticket_model->addLogCompra($data_log);
                     $n_compras = $n_compras + 1;
                 };
@@ -212,6 +214,7 @@ class Ticket extends CI_Controller
                 $proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
                 $proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
                 $proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
+                $saldoUser = $this->ticket_model->getSaldoByIDUser($id_usuario);
                 $data = [
                     'titulo' => 'Devolucion de compras',
                     'compras' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
@@ -222,7 +225,7 @@ class Ticket extends CI_Controller
                     $n_devolucion = 0;
                     foreach (range(0, 4) as $numero) {
                         if ($this->input->post("devolver_{$numero}")) {
-                            $saldoUser = $this->ticket_model->getSaldoByIDUser($id_usuario);
+                            $saldo = $this->ticket_model->getSaldoByIDUser($id_usuario);
                             $costoVianda = $this->ticket_model->getCostoById($id_usuario);
                             $id_compra = $this->input->post("devolver_{$numero}");
                             $compra = $this->ticket_model->getCompraById($id_compra);
@@ -240,7 +243,7 @@ class Ticket extends CI_Controller
                                     'transaccion_id' => -$id_usuario //Seteamos un id unico y negativo para poder obtenerlas luego
                                 ];
                                 if ($this->ticket_model->removeCompra($id_compra, $id_usuario)) {
-                                    $this->ticket_model->updateSaldoByIDUser($id_usuario, $saldoUser + $costoVianda);
+                                    $this->ticket_model->updateSaldoByIDUser($id_usuario, $saldo + $costoVianda);
                                     $this->ticket_model->addLogCompra($data_log);
                                     $n_devolucion = $n_devolucion + 1;
                                 };
