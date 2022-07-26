@@ -15,7 +15,6 @@
                                 <th class="col">Movimiento</th>
                                 <th class="col">Monto</th>
                                 <th class="col">Saldo</th>
-                                <th class="col">Detalle</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -26,7 +25,6 @@
                                 <td><?= $compra->transaccion; ?></td>
                                 <td><?= $compra->monto; ?></td>
                                 <td><?= $compra->saldo; ?></td>
-                                <td>info</td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

@@ -172,17 +172,4 @@ class Usuario extends CI_Controller
         $this->load->view('historial', $data);
         $this->load->view('general/footer');
     }
-
-    public function detalleTransaccion($id_transaccion)
-    {
-        $id_usuario = $this->session->userdata('id_usuario');
-        $data = [
-            'titulo' => 'Movimientos de compras',
-            'compras' => $this->usuario_model->getHistorialByIdUser($id_usuario)
-        ];
-
-        $this->load->view('header', $data);
-        $this->load->view('historial', $data);
-        $this->load->view('general/footer');
-    }
 }
