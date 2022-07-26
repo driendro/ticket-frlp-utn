@@ -1,7 +1,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col mt-5">
-                <h2 class="text-center">Recibo de compra</h2>
+                <h2 class="text-center">Recibo de Devolucion</h2>
                 <p>
                     Codigo: <?= $recivoNumero; ?> <br>
                     Fecha: <?= $fechaHoy; ?> <br>

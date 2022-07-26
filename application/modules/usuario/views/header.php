@@ -26,7 +26,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="<?= base_url('ticket'); ?>">Ticket</a>
+            <a class="navbar-brand" href="<?= base_url('usuario'); ?>">Ticket</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader"
                 aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -47,8 +47,8 @@
                             <?= $this->session->userdata('nombre'); ?></a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li>
-                                <a class="dropdown-item" href="<?= base_url('usuario/historial'); ?>">Historial de
-                                    compras</a>
+                                <a class="dropdown-item" href="<?= base_url('usuario/ultimos-movimientos'); ?>">Ultimos
+                                    movimientos</a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="<?= base_url('usuario/devolver_compra'); ?>">Devolver

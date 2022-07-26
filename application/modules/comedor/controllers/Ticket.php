@@ -1,4 +1,7 @@
 <?php
+
+use phpDocumentor\Reflection\PseudoTypes\True_;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Ticket extends CI_Controller
@@ -33,6 +36,7 @@ class Ticket extends CI_Controller
             //Segundo semestre
             return true;
         }
+        return true;
     }
 
     public function estadoCompra()
@@ -52,6 +56,7 @@ class Ticket extends CI_Controller
             //y si es viernes hasta las 12:00AM
             return true;
         }
+        return true;
     }
 
     public function index()
@@ -99,57 +104,212 @@ class Ticket extends CI_Controller
         }
     }
 
-    public function datos()
+    public function compra()
     {
         $totalCompra = $this->input->post('total');
 
         $id_usuario = $this->session->userdata('id_usuario');
         $costoVianda = $this->ticket_model->getCostoById($id_usuario);
+        $saldoUser = $this->ticket_model->getSaldoByIDUser($id_usuario);
         $nroDia = date('N');
-        $proximo_lunes = time() + ((7 - ($nroDia - 1)) * 24 * 60 * 60);
-        $proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
-        $proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
-        $proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
 
-        if ($totalCompra > $this->usuario_model->getSaldoById($this->session->userdata('id_usuario'))) {
+        if ($totalCompra > $saldoUser) {
             redirect(base_url('menu'));
         }
 
         $dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
         // carga de la comppra en la DB
+        $n_compras = 0;
         foreach ($dias as $id => $dia) {
             if ($this->input->post("check{$dia}")) {
+                $saldo = $this->ticket_model->getSaldoByIDUser($id_usuario);
                 $nroDia = date('N');
                 $proximo = time() + ((7 - $nroDia + ($id + 1)) * 24 * 60 * 60);
 
-                $data = [
+                $data_compra = [
                     'fecha' => date('Y-m-d', time()),
                     'hora' => date('H:i:s', time()),
                     'dia_comprado' => date('Y-m-d', $proximo),
-                    'id_usuario' => $this->session->userdata('id_usuario'),
+                    'id_usuario' => $id_usuario,
                     'precio' => $costoVianda,
                     //'tipo' => $this->input->post("selectTipo{$dia}"),
                     'turno' => $this->input->post("selectTurno{$dia}"),
                     'menu' => $this->input->post("selectMenu{$dia}"),
+                    'transaccion_id' => -$id_usuario //Seteamos un id unico y negativo para poder obtenerlas luego
                 ];
 
-                $this->ticket_model->addCompra($data);
+                $data_log = [
+                    'fecha' => date('Y-m-d', time()),
+                    'hora' => date('H:i:s', time()),
+                    'dia_comprado' => date('Y-m-d', $proximo),
+                    'id_usuario' => $id_usuario,
+                    'precio' => $costoVianda,
+                    //'tipo' => $this->input->post("selectTipo{$dia}"),
+                    'turno' => $this->input->post("selectTurno{$dia}"),
+                    'menu' => $this->input->post("selectMenu{$dia}"),
+                    'transaccion_tipo' => 'Compra',
+                    'transaccion_id' => -$id_usuario //Seteamos un id unico y negativo para poder obtenerlas luego
+                ];
+
+                if ($this->ticket_model->addCompra($data_compra)) {
+                    //Actualizamos el saldo
+                    $this->ticket_model->updateSaldoByIDUser($id_usuario, $saldo - $costoVianda);
+                    $this->ticket_model->addLogCompra($data_log);
+                    $n_compras = $n_compras + 1;
+                };
+            }
+        }
+        //Si se generaron compras asiento la transaccion
+        if ($n_compras > 0) {
+            //Genero los datos de la transaccion
+            $transaction_compra = [
+                'fecha' => date('Y-m-d', time()),
+                'hora' => date('H:i:s', time()),
+                'id_usuario' => $id_usuario,
+                'transaccion' => 'Compra',
+                'monto' => -$costoVianda * $n_compras,
+            ];
+            //Calculo el saldo final de la transaccion y lo seteo
+            $saldo = $saldoUser - $costoVianda  * $n_compras;
+            $transaction_compra['saldo'] = $saldo;
+            //Inserto la transaccion y obtengo su ID
+            $id_insert = $this->ticket_model->addTransaccion($transaction_compra);
+            //Obtenemos los registros en la tabla 'compra' con el id provisorio y lo actualizamos
+            $compras = $this->ticket_model->getComprasByIDTransaccion(-$id_usuario);
+            foreach ($compras as $compra) {
+                $id_compra = $compra->id;
+                $this->ticket_model->updateTransactionInCompraByID($id_compra, $id_insert);
+            }
+            //Obtenemos los registros en la tabla 'log_compra' con el id provisorio y lo actualizamos
+            $logcompras = $this->ticket_model->getLogComprasByIDTransaccion(-$id_usuario);
+            foreach ($logcompras as $compra) {
+                $id_compra = $compra->id;
+                $this->ticket_model->updateTransactionInLogCompraByID($id_compra, $id_insert);
             }
         }
         //Confeccion del correo del recivo
-        $usuario = $this->usuario_model->getUserById($this->session->userdata('id_usuario'));
-        $compras = $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario);
+        $usuario = $this->usuario_model->getUserById($id_usuario);
+        $compras = $this->ticket_model->getComprasByIDTransaccion($id_insert);
         $dataRecivo['compras'] = $compras;
-        $dataRecivo['total'] = array_sum(array_column($compras, 'precio'));
+        $dataRecivo['total'] = $costoVianda * $n_compras;
         $dataRecivo['fechaHoy'] = date('d/m/Y', time());
         $dataRecivo['horaAhora'] = date('H:i:s', time());
-        $dataRecivo['recivoNumero'] = implode(array_column($compras, 'id'));
+        $dataRecivo['recivoNumero'] = $id_insert;
 
         $subject = "Recibo de compra del comedor";
         $message = $this->load->view('general/correos/recibo_compra', $dataRecivo, true);
 
-        if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message))
-
+        if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message)) {
             redirect(base_url('usuario'));
+        }
+    }
+
+    public function devolverCompra()
+    {
+        if ($this->estadoComedor()) {
+            if ($this->estadoCompra()) {
+                $id_usuario = $this->session->userdata('id_usuario');
+                $nroDia = date('N');
+                $proximo_lunes = time() + ((7 - ($nroDia - 1)) * 24 * 60 * 60);
+                $proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
+                $proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
+                $proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
+                $saldoUser = $this->ticket_model->getSaldoByIDUser($id_usuario);
+                $data = [
+                    'titulo' => 'Devolucion de compras',
+                    'compras' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
+                    'devolucion' => TRUE
+                ];
+
+                if ($this->input->method() == 'post') {
+                    $n_devolucion = 0;
+                    foreach (range(0, 4) as $numero) {
+                        if ($this->input->post("devolver_{$numero}")) {
+                            $saldo = $this->ticket_model->getSaldoByIDUser($id_usuario);
+                            $costoVianda = $this->ticket_model->getCostoById($id_usuario);
+                            $id_compra = $this->input->post("devolver_{$numero}");
+                            $compra = $this->ticket_model->getCompraById($id_compra);
+                            foreach ($compra as $c) {
+                                $data_log = [
+                                    'fecha' => date('Y-m-d', time()),
+                                    'hora' => date('H:i:s', time()),
+                                    'dia_comprado' => $c->dia_comprado,
+                                    'id_usuario' => $id_usuario,
+                                    'precio' => $c->precio,
+                                    //'tipo' => $this->input->post("selectTipo{$dia}"),
+                                    'turno' => $c->turno,
+                                    'menu' => $c->menu,
+                                    'transaccion_tipo' => 'Devolucion', //Seteamos un id unico y negativo para poder obtenerlas luego
+                                    'transaccion_id' => -$id_usuario //Seteamos un id unico y negativo para poder obtenerlas luego
+                                ];
+                                if ($this->ticket_model->removeCompra($id_compra, $id_usuario)) {
+                                    $this->ticket_model->updateSaldoByIDUser($id_usuario, $saldo + $costoVianda);
+                                    $this->ticket_model->addLogCompra($data_log);
+                                    $n_devolucion = $n_devolucion + 1;
+                                };
+                            }
+                        }
+                    }
+                    //Si se generaron compras asiento la transaccion
+                    if ($n_devolucion > 0) {
+                        //Genero los datos de la transaccion
+                        $transaction_devolucion = [
+                            'fecha' => date('Y-m-d', time()),
+                            'hora' => date('H:i:s', time()),
+                            'id_usuario' => $id_usuario,
+                            'transaccion' => 'Devolucion',
+                            'monto' => $costoVianda * $n_devolucion,
+                        ];
+                        //Calculo el saldo final de la transaccion y lo seteo
+                        $saldo = $saldoUser + $costoVianda  * $n_devolucion;
+                        $transaction_devolucion['saldo'] = $saldo;
+                        //Inserto la transaccion y obtengo su ID
+                        $id_insert = $this->ticket_model->addTransaccion($transaction_devolucion);
+                        //Obtenemos los registros en la tabla 'log_compra' con el id provisorio y lo actualizamos
+                        $logcompras = $this->ticket_model->getLogComprasByIDTransaccion(-$id_usuario);
+                        foreach ($logcompras as $compra) {
+                            $id_compra = $compra->id;
+                            $this->ticket_model->updateTransactionInLogCompraByID($id_compra, $id_insert);
+                        }
+                    }
+                    //Confeccion del correo del recivo
+                    $usuario = $this->usuario_model->getUserById($id_usuario);
+                    $compras = $this->ticket_model->getlogComprasByIDTransaccion($id_insert);
+                    $dataRecivo['compras'] = $compras;
+                    $dataRecivo['total'] = $costoVianda * $n_devolucion;
+                    $dataRecivo['fechaHoy'] = date('d/m/Y', time());
+                    $dataRecivo['horaAhora'] = date('H:i:s', time());
+                    $dataRecivo['recivoNumero'] = $id_insert;
+
+                    $subject = "Recibo de devolucion del comedor";
+                    $message = $this->load->view('general/correos/recibo_devolucion', $dataRecivo, true);
+
+                    if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message))
+                        redirect(base_url('usuario/devolver_compra'));
+                } else {
+                    $this->load->view('usuario/header', $data);
+                    $this->load->view('usuario/devolver_compra', $data);
+                    $this->load->view('general/footer');
+                }
+            } else {
+                $data = [
+                    'titulo' => 'Devolver Compras',
+                    'alerta' => "<p>Fuera del horario de devolucion</p><p>La devolucion se realiza desde el Lunes hasta el Viernes a las {$this->config->item('hora_final')}</p>"
+                ];
+
+                $this->load->view('usuario/header', $data);
+                $this->load->view('alerta_comedor_cerrado', $data);
+                $this->load->view('general/footer');
+            }
+        } else {
+            $data = [
+                'titulo' => 'Devolver Compras',
+                'alerta' => "<p>Comedor cerrado</p>"
+            ];
+
+            $this->load->view('usuario/header', $data);
+            $this->load->view('alerta_comedor_cerrado', $data);
+            $this->load->view('general/footer');
+        }
     }
 }

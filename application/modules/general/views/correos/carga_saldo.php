@@ -2,7 +2,7 @@
             <table>
                 <tr>
                     <td>
-                        <p><b><u> Carga de saldo<br></u></b></p>
+                        <p><b><u> Carga de saldo: <?= $transaccion; ?> <br></u></b></p>
                     </td>
                     <td></td>
                     <td width=100></td>

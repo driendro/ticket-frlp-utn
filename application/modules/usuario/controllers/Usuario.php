@@ -119,63 +119,57 @@ class Usuario extends CI_Controller
         }
     }
 
-    public function historial()
+    public function ultimosMovimientos()
     {
+        $data['titulo'] = 'Ultimos movimientos';
+
         $id_usuario = $this->session->userdata('id_usuario');
-        $data = [
-            'titulo' => 'Historial de compras',
-            'compras' => $this->usuario_model->getHistorialByIdUser($id_usuario)
-        ];
+        $id_usuario = 9;
+        $limit_por_pagina = 10;
+        $start_index = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+        $total_records = count($this->usuario_model->getTransaccionesByIdUser($id_usuario));
+
+        $data['ultimo'] = floor($total_records / $limit_por_pagina) * 10;
+
+        $data['compras'] = $this->usuario_model->getTransaccinesInRangeByIDUser($limit_por_pagina, $start_index, $id_usuario);
+        if ($start_index == 0) {
+            $data['primera'] = 1;
+            $links[] = [
+                'id' => 0,
+                'num' => 1,
+                'act' => 'active'
+            ];
+            $links[] = [
+                'id' => 10,
+                'num' => 2
+            ];
+            $links[] = [
+                'id' => 20,
+                'num' => 3
+            ];
+        } else {
+            $links[] = [
+                'id' => $start_index - 10,
+                'num' => floor($start_index / 10)
+            ];
+            $links[] = [
+                'id' => $start_index,
+                'num' => floor($start_index / 10) + 1,
+                'act' => 'active'
+            ];
+            if ($start_index + 10 <= $total_records) {
+                $links[] = [
+                    'id' => $start_index + 10,
+                    'num' => floor($start_index / 10) + 2
+                ];
+            } else {
+                $data['ultima'] = 1;
+            }
+        }
+        $data['links'] = $links;
 
         $this->load->view('header', $data);
         $this->load->view('historial', $data);
         $this->load->view('general/footer');
-    }
-
-    public function devolverCompra()
-    {
-        if ($this->estadoComedor()) {
-            if ($this->estadoCompra()) {
-                $id_usuario = $this->session->userdata('id_usuario');
-                $nroDia = date('N');
-                $proximo_lunes = time() + ((7 - ($nroDia - 1)) * 24 * 60 * 60);
-                $proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
-                $proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
-                $proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
-                $data = [
-                    'titulo' => 'Devolucion de compras',
-                    'compras' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
-                    'devolucion' => TRUE
-                ];
-
-                if ($this->input->method() == 'post') {
-                    $id_compra = $this->input->post('compraId');
-                    $this->ticket_model->removeCompra($id_compra, $id_usuario);
-                    redirect(base_url('usuario/devolver_compra'));
-                } else {
-                    $this->load->view('header', $data);
-                    $this->load->view('historial', $data);
-                    $this->load->view('general/footer');
-                }
-            } else {
-                $data = [
-                    'titulo' => 'Devolver Compras',
-                    'alerta' => "<p>Fuera del horario de devolucion</p><p>La devolucion se realiza desde el Lunes hasta el Viernes a las {$this->config->item('hora_final')}</p>"
-                ];
-
-                $this->load->view('usuario/header', $data);
-                $this->load->view('alerta_comedor_cerrado', $data);
-                $this->load->view('general/footer');
-            }
-        } else {
-            $data = [
-                'titulo' => 'Devolver Compras',
-                'alerta' => "<p>Comedor cerrado</p>"
-            ];
-
-            $this->load->view('usuario/header', $data);
-            $this->load->view('alerta_comedor_cerrado', $data);
-            $this->load->view('general/footer');
-        }
     }
 }
