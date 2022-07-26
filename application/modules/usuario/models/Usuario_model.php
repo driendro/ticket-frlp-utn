@@ -97,13 +97,12 @@ class Usuario_model extends CI_Model
         return $this->db->get('usuarios')->row();
     }
 
-    public function getHistorialByIdUser($id)
+    public function getTransaccionesByIdUser($id)
     {
         $this->db->select('*');
         $this->db->where('id_usuario', $id);
-        $this->db->limit(20);
-        $this->db->order_by('dia_comprado', 'DESC');
-        $query = $this->db->get('compra');
+        $this->db->order_by('fecha', 'DESC');
+        $query = $this->db->get('transacciones');
         return $query->result();
     }
 
@@ -132,7 +131,23 @@ class Usuario_model extends CI_Model
         $this->db->insert('usuarios', $data);
         $data_log['id_usuario'] = $this->db->select('id')->where('documento', $data['documento'])->get('usuarios')->row('id');
         $this->db->insert('log_alta_usuarios', $data_log);
-
         return true;
+    }
+
+    public function getTransaccinesInRangeByIDUser($limit, $start, $id_user)
+    {
+        $this->db->select('*');
+        $this->db->where('id_usuario', $id_user);
+        $this->db->limit($limit, $start);
+        $this->db->order_by('fecha', 'DESC');
+        $query = $this->db->get("transacciones");
+
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return false;
     }
 }

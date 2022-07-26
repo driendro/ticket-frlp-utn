@@ -47,8 +47,8 @@
                             <?= $this->session->userdata('nombre'); ?></a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li>
-                                <a class="dropdown-item" href="<?= base_url('usuario/historial'); ?>">Historial de
-                                    compras</a>
+                                <a class="dropdown-item" href="<?= base_url('usuario/ultimos-movimientos'); ?>">Ultimos
+                                    movimientos</a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="<?= base_url('usuario/devolver_compra'); ?>">Devolver
