@@ -176,4 +176,18 @@ class Ticket_model extends CI_Model
         $query = $this->db->get('feriado');
         return $query->result();
     }
+
+
+    public function getUserById($id)
+    {
+        /* Usado en:
+        index
+        compra
+        devolverCompra
+        */
+        $this->db->select('*');
+        $this->db->where('id', $id);
+        $query = $this->db->get('usuarios');
+        return $query->row();
+    }
 }
