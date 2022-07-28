@@ -11,8 +11,6 @@ class Ticket extends CI_Controller
         parent::__construct();
 
         $this->load->model('ticket_model');
-        $this->load->model('usuario/usuario_model');
-        $this->load->model('feriado_model');
 
         if (!$this->session->userdata('is_user')) {
             redirect(base_url('login'));
@@ -35,8 +33,10 @@ class Ticket extends CI_Controller
         } elseif ($hoy >= $vaca_fin && $hoy <= $cierre) {
             //Segundo semestre
             return true;
+        } elseif ($_SERVER['CI_ENV'] == 'development') {
+            return true;
         }
-        return true;
+        return false;
     }
 
     public function estadoCompra()
@@ -55,8 +55,10 @@ class Ticket extends CI_Controller
         } elseif ($hoy == $dia_fin && $ahora <= $hora_fin) {
             //y si es viernes hasta las 12:00AM
             return true;
+        } elseif ($_SERVER['CI_ENV'] == 'development') {
+            return true;
         }
-        return true;
+        return false;
     }
 
     public function index()
@@ -67,16 +69,16 @@ class Ticket extends CI_Controller
         $proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
         $proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
         $proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
-        $usuario = $this->usuario_model->getUserById($id_usuario);
+        $usuario = $this->ticket_model->getUserById($id_usuario);
 
         if ($this->estadoComedor()) {
             if ($this->estadoCompra()) {
                 $data = [
                     'titulo' => 'Comprar',
                     'usuario' => $usuario,
-                    'feriados' => $this->feriado_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
+                    'feriados' => $this->ticket_model->getFeriadosInRange($proximo_lunes_fecha, $proximo_viernes_fecha),
                     'comprados' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
-                    'costoVianda' => $this->ticket_model->getCostoById($usuario->id)
+                    'costoVianda' => $this->ticket_model->getCostoByID($usuario->id_precio)
                 ];
 
                 $this->load->view('usuario/header', $data);
@@ -109,8 +111,9 @@ class Ticket extends CI_Controller
         $totalCompra = $this->input->post('total');
 
         $id_usuario = $this->session->userdata('id_usuario');
-        $costoVianda = $this->ticket_model->getCostoById($id_usuario);
-        $saldoUser = $this->ticket_model->getSaldoByIDUser($id_usuario);
+        $usuario = $this->ticket_model->getUserById($id_usuario);
+        $costoVianda = $this->ticket_model->getCostoByID($usuario->id_precio);
+        $saldoUser = $usuario->saldo;
         $nroDia = date('N');
 
         if ($totalCompra > $saldoUser) {
@@ -122,6 +125,7 @@ class Ticket extends CI_Controller
         $n_compras = 0;
         foreach ($dias as $id => $dia) {
             if ($this->input->post("check{$dia}")) {
+                //obtenemos el saldo actualizado luego de cada compra
                 $saldo = $this->ticket_model->getSaldoByIDUser($id_usuario);
                 $nroDia = date('N');
                 $proximo = time() + ((7 - $nroDia + ($id + 1)) * 24 * 60 * 60);
@@ -188,7 +192,7 @@ class Ticket extends CI_Controller
             }
         }
         //Confeccion del correo del recivo
-        $usuario = $this->usuario_model->getUserById($id_usuario);
+        $usuario = $this->ticket_model->getUserById($id_usuario);
         $compras = $this->ticket_model->getComprasByIDTransaccion($id_insert);
         $dataRecivo['compras'] = $compras;
         $dataRecivo['total'] = $costoVianda * $n_compras;
@@ -214,7 +218,8 @@ class Ticket extends CI_Controller
                 $proximo_lunes_fecha = date('Y-m-d', $proximo_lunes);
                 $proximo_viernes = time() + ((7 - ($nroDia - 5)) * 24 * 60 * 60);
                 $proximo_viernes_fecha = date('Y-m-d', $proximo_viernes);
-                $saldoUser = $this->ticket_model->getSaldoByIDUser($id_usuario);
+                $usuario = $this->ticket_model->getUserById($id_usuario);
+                $saldoUser = $usuario->saldo;
                 $data = [
                     'titulo' => 'Devolucion de compras',
                     'compras' => $this->ticket_model->getComprasInRangeByIdUser($proximo_lunes_fecha, $proximo_viernes_fecha, $id_usuario),
@@ -226,27 +231,25 @@ class Ticket extends CI_Controller
                     foreach (range(0, 4) as $numero) {
                         if ($this->input->post("devolver_{$numero}")) {
                             $saldo = $this->ticket_model->getSaldoByIDUser($id_usuario);
-                            $costoVianda = $this->ticket_model->getCostoById($id_usuario);
+                            $costoVianda = $this->ticket_model->getCostoById($usuario->id_precio);
                             $id_compra = $this->input->post("devolver_{$numero}");
                             $compra = $this->ticket_model->getCompraById($id_compra);
-                            foreach ($compra as $c) {
-                                $data_log = [
-                                    'fecha' => date('Y-m-d', time()),
-                                    'hora' => date('H:i:s', time()),
-                                    'dia_comprado' => $c->dia_comprado,
-                                    'id_usuario' => $id_usuario,
-                                    'precio' => $c->precio,
-                                    //'tipo' => $this->input->post("selectTipo{$dia}"),
-                                    'turno' => $c->turno,
-                                    'menu' => $c->menu,
-                                    'transaccion_tipo' => 'Devolucion', //Seteamos un id unico y negativo para poder obtenerlas luego
-                                    'transaccion_id' => -$id_usuario //Seteamos un id unico y negativo para poder obtenerlas luego
-                                ];
-                                if ($this->ticket_model->removeCompra($id_compra, $id_usuario)) {
-                                    $this->ticket_model->updateSaldoByIDUser($id_usuario, $saldo + $costoVianda);
-                                    $this->ticket_model->addLogCompra($data_log);
-                                    $n_devolucion = $n_devolucion + 1;
-                                };
+                            $data_log = [
+                                'fecha' => date('Y-m-d', time()),
+                                'hora' => date('H:i:s', time()),
+                                'dia_comprado' => $compra->dia_comprado,
+                                'id_usuario' => $id_usuario,
+                                'precio' => $compra->precio,
+                                //'tipo' => $compra->tipo,
+                                'turno' => $compra->turno,
+                                'menu' => $compra->menu,
+                                'transaccion_tipo' => 'Devolucion', //Seteamos un id unico y negativo para poder obtenerlas luego
+                                'transaccion_id' => -$id_usuario //Seteamos un id unico y negativo para poder obtenerlas luego
+                            ];
+                            if ($this->ticket_model->removeCompra($id_compra, $id_usuario)) {
+                                $this->ticket_model->updateSaldoByIDUser($id_usuario, $saldo + $costoVianda);
+                                $this->ticket_model->addLogCompra($data_log);
+                                $n_devolucion = $n_devolucion + 1;
                             }
                         }
                     }
@@ -273,7 +276,7 @@ class Ticket extends CI_Controller
                         }
                     }
                     //Confeccion del correo del recivo
-                    $usuario = $this->usuario_model->getUserById($id_usuario);
+                    $usuario = $this->ticket_model->getUserById($id_usuario);
                     $compras = $this->ticket_model->getlogComprasByIDTransaccion($id_insert);
                     $dataRecivo['compras'] = $compras;
                     $dataRecivo['total'] = $costoVianda * $n_devolucion;

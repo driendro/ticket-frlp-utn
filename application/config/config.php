@@ -22,10 +22,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | If you need to allow multiple domains, remember that this file is still
 | a PHP script and you can easily do that on your own.
 |
-*/
-$protocol = is_https() ? 'https://' : 'http://';
-$config['base_url'] = $protocol . $_SERVER['HTTP_HOST'] . '/ticket';
 
+*/
+
+if (!isset($_SERVER['CI_ENV'])) {
+    $config['base_url'] = '';
+} elseif ($_SERVER['CI_ENV'] == 'development') {
+    $config['base_url'] = '';
+} elseif ($_SERVER['CI_ENV'] == 'production') {
+    $config['base_url'] = "https://{$_SERVER['HTTP_HOST']}/ticket";
+}
 /*
 |--------------------------------------------------------------------------
 | Index File

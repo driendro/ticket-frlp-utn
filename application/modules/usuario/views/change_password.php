@@ -5,7 +5,13 @@
             </div>
         </div>
         <div class="row form-center">
-            <div class="col-7 col-md-5 col-xl-4 my-3">
+            <div class="col-6 col-md-5 col-xl-4 my-3">
+                <?php if ($this->session->flashdata('error') != null) : ?>
+                <div class="alert alert-danger"><?= $this->session->flashdata('error'); ?></div>
+                <?php endif; ?>
+                <?php if ($this->session->flashdata('success') != null) : ?>
+                <div class="alert alert-success"><?= $this->session->flashdata('success'); ?></div>
+                <?php endif; ?>
                 <?= validation_errors('<div><p class="text-center alert alert-danger">', '</p></div>'); ?>
                 <?= form_open(current_url()); ?>
                 <div class="mb-4">

@@ -6,7 +6,7 @@ class Login extends MX_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('vendedor_model');
+        $this->load->model('login_model');
     }
 
     public function index()
@@ -28,8 +28,8 @@ class Login extends MX_Controller
             $password = $this->input->post('password');
             $nickName = strtolower($nickName);
 
-            if ($this->vendedor_model->validateVendedor($nickName, md5($password))) {
-                $vendedor = $this->vendedor_model->getUserByUserName($nickName);
+            if ($this->login_model->validateVendedor($nickName, md5($password))) {
+                $vendedor = $this->login_model->getVendedorByUserName($nickName);
                 $session = [
                     'id_vendedor'  => $vendedor->id_vendedor,
                     'nick_name' => $nickName,

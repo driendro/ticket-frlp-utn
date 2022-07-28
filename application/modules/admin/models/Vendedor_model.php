@@ -8,53 +8,89 @@ class Vendedor_model extends CI_Model
         parent::__construct();
     }
 
+    public function getVendedorById($id)
+    {
+        /*Usado en:
+        descargarCierreCajaDiario
+        descargarCierreCajaSemana
+        descargarResumenPedidosSemana
+        */
+        $this->db->select('*');
+        $this->db->where('id_vendedor', $id);
+        $query = $this->db->get('vendedores');
+        return $query->row();
+    }
+
+    public function addCargaLog($data)
+    {
+        /*Usado en:
+        cargarSaldo
+        */
+        $this->db->insert('log_carga', $data);
+        return true;
+    }
+
+    public function getUserByDocumento($documento)
+    {
+        /*Usado en:
+        index
+        createUser
+        cargarSaldo
+        */
+        $this->db->select('*');
+        $this->db->where('documento', $documento);
+        $query = $this->db->get('usuarios');
+        return $query->row();
+    }
+
+    public function addNewUser($data)
+    {
+        /*Usado en:
+        createUser
+        */
+        if ($this->db->insert('usuarios', $data)) {
+            return $this->db->insert_id();
+        } else {
+            return false;
+        };
+    }
+
+    public function addLogNewUser($data)
+    {
+        /*Usado en:
+        createUser
+        */
+        $this->db->insert('log_alta_usuarios', $data);
+        return true;
+    }
+
     public function getUserById($id)
     {
-        return $this->db->select('*')->where('id_vendedor', $id)->get('vendedores')->row();
-    }
-
-    public function getUserByUserName($nickName)
-    {
+        /*Usado en:
+        createUser
+        descargarExcel
+        */
         $this->db->select('*');
-        $this->db->where('nombre_usuario', $nickName);
-        $query = $this->db->get('vendedores')->row();
-        return $query;
+        $this->db->where('id', $id);
+        $query = $this->db->get('usuarios');
+        return $query->row();
     }
 
-    public function getFirstNameByUserName($nickName)
+    public function updateUserById($iduser, $data)
     {
-        $this->db->select('nombre');
-        $this->db->where('nombre_usuario', $nickName);
-        $query = $this->db->get('vendedores')->row('nombre');
-        return $query;
-    }
-
-    public function getIdByUserName($nickName)
-    {
-        $this->db->select('id_vendedor');
-        $this->db->where('nombre_usuario', $nickName);
-        $query = $this->db->get('vendedores')->row('id_vendedor');
-        return $query;
-    }
-
-    public function getPasswordById($id)
-    {
-        return $this->db->select('pass')->where('id_vendedor', $id)->get('vendedores')->row('pass');
-    }
-
-    public function updatePassword($password)
-    {
-        $data = [
-            'pass' => md5($password)
-        ];
-
-        $this->db->where('id_vendedor', $this->session->userdata('id_vendedor'));
-        $this->db->update('vendedores', $data);
+        /*Usado en:
+        updateUser
+        */
+        $this->db->where('id', $iduser);
+        $this->db->update('usuarios', $data);
         return true;
     }
 
     public function getCargasByIdvendedor($idvendedor)
     {
+        /*Usado en:
+        historialCargas
+        */
         $this->db->select('*');
         $this->db->from('log_carga');
         $this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
@@ -67,6 +103,9 @@ class Vendedor_model extends CI_Model
 
     public function updateAndGetSaldoByUserId($iduser, $saldo)
     {
+        /*Usado en:
+        cargaSaldo
+        */
         $saldoActual = $this->db->select('saldo')->where('id', $iduser)->get('usuarios')->row('saldo');
         $saldoNuevo = $saldoActual + $saldo;
 
@@ -78,12 +117,19 @@ class Vendedor_model extends CI_Model
 
     public function addTransaccion($data)
     {
+        /* Usdo en:
+        cargarSaldo
+        createUser
+        */
         $this->db->insert('transacciones', $data);
         return $this->db->insert_id();
     }
 
     public function getCargaByTransaccion($id_transaccion)
-    {   //Obtengo la carga de la transaccion
+    {
+        /* Usdo en:
+        correoCargaSaldo
+        */
         $this->db->select('*');
         $this->db->from('log_carga');
         $this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
@@ -94,6 +140,9 @@ class Vendedor_model extends CI_Model
 
     public function getCargasByFechaForPDF($fecha)
     {
+        /* Usado en:
+        descargarCierreCajaDiario
+        */
         $this->db->select('*');
         $this->db->from('log_carga');
         $this->db->join('vendedores', 'log_carga.id_vendedor=vendedores.id_vendedor');
@@ -106,6 +155,9 @@ class Vendedor_model extends CI_Model
 
     public function getCargasByRangeFechaForPDF($fecha1, $fecha2)
     {
+        /* Usado en:
+        descargarCierreCajaSemana
+        */
         $this->db->select('*');
         $this->db->from('log_carga');
         $this->db->where('fecha>=', $fecha1);
@@ -116,6 +168,9 @@ class Vendedor_model extends CI_Model
 
     public function getComprasByRangeFechaForPDF($fecha1, $fecha2)
     {
+        /* Usado en:
+        descargarResumenPedidosSemana
+        */
         $this->db->select('*');
         $this->db->from('compra');
         $this->db->where('dia_comprado>=', $fecha1);
@@ -126,6 +181,9 @@ class Vendedor_model extends CI_Model
 
     public function getComprasByFechaForExls($fecha)
     {
+        /* Usado en:
+        descarcgarExcel
+        */
         $this->db->select('*');
         $this->db->from('compra');
         $this->db->join('usuarios', 'compra.id_usuario=usuarios.id');
@@ -135,15 +193,11 @@ class Vendedor_model extends CI_Model
         return $query->result();
     }
 
-    public function validateVendedor($nickName, $password)
-    {
-        $this->db->where('nombre_usuario', $nickName);
-        $this->db->where('pass', $password);
-        return $this->db->get('vendedores')->row();
-    }
-
     public function updateMenu($id, $data)
     {
+        /*Usado en:
+        updateMenu
+        */
         $this->db->where('id', $id);
         $this->db->update('menu', $data);
         return true;
@@ -151,15 +205,11 @@ class Vendedor_model extends CI_Model
 
     public function getMenu()
     {
+        /*Usado en:
+        updateMenu
+        */
         $this->db->select('*');
         $query = $this->db->get('menu');
         return $query->result();
-    }
-
-    public function addNewVendedor($data)
-    {
-        $this->db->insert('vendedores', $data);
-
-        return true;
     }
 }

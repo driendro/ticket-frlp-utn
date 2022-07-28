@@ -16,9 +16,12 @@
                 <?php if ($this->session->flashdata('error') != null) : ?>
                 <div class="alert alert-danger"><?= $this->session->flashdata('error'); ?></div>
                 <?php endif; ?>
+                <?php if ($this->session->flashdata('success') != null) : ?>
+                <div class="alert alert-success"><?= $this->session->flashdata('success'); ?></div>
+                <?php endif; ?>
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-success">Ingresar</button>
-                    <a href="<?= base_url('usuario/recovery/recovery'); ?>" class="btn btn-primary mt-2">Restablecer
+                    <a href="<?= base_url('usuario/recovery'); ?>" class="btn btn-primary mt-2">Restablecer
                         contraseña</a>
                 </div>
                 <?= form_close(); ?>

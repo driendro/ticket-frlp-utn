@@ -1,3 +1,3 @@
-documento;nombre;apellido;monto;tipo
-12345678;nombre1;apelldio1;200;Efectivo
-87654321;nombre2;apelldio2;200;Virtual
+fecha;documento;nombre;apellido;monto;tipo
+2022-03-12;12345678;nombre1;apelldio1;200;Efectivo
+2022-03-12;87654321;nombre2;apelldio2;200;Virtual
