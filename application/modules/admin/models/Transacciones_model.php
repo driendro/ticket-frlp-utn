@@ -10,6 +10,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function getCargasByFechaByIDUser($fecha, $id_user)
     {
+        /*Usado en:
+        index
+        */
         $this->db->select('*');
         $this->db->where('id_usuario', $id_user);
         $this->db->where('fecha', $fecha);
@@ -19,6 +22,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function getHoraCompraByFechaByIDUser($fecha, $id_user)
     {
+        /*Usado en:
+        index
+        */
         $this->db->select('hora');
         $this->db->where('id_usuario', $id_user);
         $this->db->where('fecha', $fecha);
@@ -28,6 +34,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function getComprasByFechaByIDUser($fecha, $id_user)
     {
+        /*Usado en:
+        index
+        */
         $this->db->select('*');
         $this->db->where('id_usuario', $id_user);
         $this->db->where('fecha', $fecha);
@@ -37,6 +46,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function getAllUser()
     {
+        /*Usado en:
+        index
+        */
         $this->db->select('*');
         $query = $this->db->get('usuarios');
         return $query->result();
@@ -44,6 +56,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function getSaldoByIDUser($id_user)
     {
+        /*Usado en:
+        index
+        */
         $this->db->select('saldo');
         $this->db->where('id', $id_user);
         $query = $this->db->get('usuarios');
@@ -52,6 +67,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function updateTransactionInCompraByID($id_compra, $id_trans)
     {
+        /*Usado en:
+        index
+        */
         $this->db->set('transaccion_id', $id_trans);
         $this->db->where('id', $id_compra);
         $this->db->update('compra');
@@ -59,6 +77,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function updateTransactionInLogCompraByID($id_compra, $id_trans)
     {
+        /*Usado en:
+        index
+        */
         $array = [
             'transaccion_id' => $id_trans,
             'transaccion_tipo' => 'Compra'
@@ -70,6 +91,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function updateTransactionInCargaByID($id_carga, $id_trans)
     {
+        /*Usado en:
+        index
+        */
         $this->db->set('transaccion_id', $id_trans);
         $this->db->where('id', $id_carga);
         $this->db->update('log_carga');
@@ -77,6 +101,9 @@ class Transacciones_model extends CI_Model //Tabla -log_carga-
 
     public function addTransaccion($data)
     {
+        /*Usado en:
+        index
+        */
         $this->db->insert('transacciones', $data);
         return $this->db->insert_id();
     }
