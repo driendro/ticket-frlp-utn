@@ -10,6 +10,7 @@
                     <table class="table table-sm text-center dataTables">
                         <thead>
                             <tr>
+                                <th class="col">ID</th>
                                 <th class="col">Fecha</th>
                                 <th class="col">Hora</th>
                                 <th class="col">Movimiento</th>
@@ -20,6 +21,7 @@
                         <tbody>
                             <?php foreach ($compras as $compra) : ?>
                             <tr>
+                                <td><?= $compra->id; ?></td>
                                 <td><?= $compra->fecha; ?></td>
                                 <td><?= $compra->hora; ?></td>
                                 <td><?= $compra->transaccion; ?></td>
