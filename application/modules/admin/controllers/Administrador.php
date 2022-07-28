@@ -7,9 +7,7 @@ class Administrador extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->model('vendedor_model');
-        $this->load->model('usuario/usuario_model');
-        $this->load->model('carga_model');
+        $this->load->model('administrador_model');
 
         if ($this->session->userdata('is_user')) {
             redirect(base_url('usuario'));
@@ -23,7 +21,7 @@ class Administrador extends CI_Controller
     public function createVendedor()
     {
         $id_vendedor = $this->session->userdata('id_vendedor');
-        $admin = $this->vendedor_model->getUserById($id_vendedor);
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
         if ($admin->nivel == 1) {
             $data['titulo'] = 'Crear nuevo Vendedor';
 
@@ -101,7 +99,7 @@ class Administrador extends CI_Controller
                         'nivel' => 0
                     ];
 
-                    if ($this->vendedor_model->addNewVendedor($newUser)) {
+                    if ($this->administrador_model->addNewVendedor($newUser)) {
                         //Confeccion del correo para el nuevo vendedor
                         $correo = $this->input->post('email');
                         $dataCorreo['apellido'] = $this->input->post('apellido');
@@ -178,41 +176,63 @@ class Administrador extends CI_Controller
         if ($this->input->method() == 'post') {
             $i = 0;
             while ($this->input->post("documento_{$i}")) {
+                $fecha = $this->input->post("fecha_{$i}");
                 $documento = $this->input->post("documento_{$i}");
                 $monto = $this->input->post("monto_{$i}");
                 $nombre = $this->input->post("nombre_{$i}");
                 $apellido = $this->input->post("apellido_{$i}");
                 $tipo = $this->input->post("tipo_{$i}");
 
-                if ($this->usuario_model->getUserByDocumento($documento)) {
-                    $usuario = $this->usuario_model->getUserByDocumento($documento); //obtengo el user de ese dni
-                    $iduser = $usuario->id; //obtengo el id del user
-                    $this->usuario_model->updateSaldoByUserId($iduser, $monto); // modifico el salodo del usuario
+                if ($this->administrador_model->getUserByDocumento($documento)) {
+                    //obtengo el user de ese dni
+                    $usuario = $this->administrador_model->getUserByDocumento($documento);
+                    //obtengo el id del user
+                    $iduser = $usuario->id;
+                    //modifico y obtengo el saldo del usuario
+                    $saldo = $this->administrador_model->updateAndGetSaldoByUserId($iduser, $monto);
+                    //Genero y guardo la transaccion
+                    $transaction_carga = [
+                        'fecha' => date('Y-m-d', time()),
+                        'hora' => date('H:i:s', time()),
+                        'id_usuario' => $iduser,
+                        'monto' => $monto
+                    ];
+                    //Verifico si es una devolucion o una carga
+                    if ($monto >= 0) {
+                        $transaction_carga['transaccion'] = 'Carga de Saldo';
+                    } else {
+                        $transaction_carga['transaccion'] = 'Devolucion de Saldo';
+                    };
+                    //Seteo el saldo al final de la transaccion
+                    $transaction_carga['saldo'] = $saldo;
+                    //Inserto la transaccion y obtengo su ID
+                    $id_insert = $this->administrador_model->addTransaccion($transaction_carga);
                     //Genero la carga en la tabla carga_saldo como log
                     $cargaLog = [
-                        'fecha' => date('Y-m-d', time()),
+                        'fecha' => date('Y-m-d', strtotime($fecha)),
                         'hora' => date('H:i:s', time()),
                         'id_usuario' => $iduser,
                         'monto' => $monto,
                         'id_vendedor' => $this->session->id_vendedor,
-                        'formato' => $tipo
+                        'formato' => $tipo,
+                        'transaccion_id' => $id_insert
                     ];
-                    $this->carga_model->addCargaLog($cargaLog);
+                    $this->administrador_model->addCargaLog($cargaLog);
                     // Correo
-                    $cargas = $this->vendedor_model->getCargaByIdvendedorParaEmail($this->session->id_vendedor);
+                    $carga = $this->administrador_model->getCargaByIdvendedorForEmailCSV($this->session->id_vendedor);
 
-                    foreach ($cargas as $a) {
-                        //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
-                        $data['fecha'] = date('d-m-Y', strtotime($a->fecha));
-                        $data['hora'] = $a->hora;
-                        $data['documento'] = $a->documento;
-                        $data['apellido'] = $a->apellido;
-                        $data['nombre'] = $a->nombre;
-                        $data['monto'] = $a->monto;
-                        $data['saldo'] = $a->saldo;
-                        $data['tipo'] = $a->formato;
-                        $correo = $a->mail;
-                    }
+                    //foreach ($cargas as $carga) {
+                    //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
+                    $data['fecha'] = date('d-m-Y', strtotime($carga->fecha));
+                    $data['hora'] = $carga->hora;
+                    $data['documento'] = $carga->documento;
+                    $data['apellido'] = $carga->apellido;
+                    $data['nombre'] = $carga->nombre;
+                    $data['monto'] = $carga->monto;
+                    $data['saldo'] = $carga->saldo;
+                    $data['tipo'] = $carga->formato;
+                    $correo = $carga->mail;
+                    //}
 
                     //Confeccion del correo del recibo
                     $subject = "Carga de Saldo";

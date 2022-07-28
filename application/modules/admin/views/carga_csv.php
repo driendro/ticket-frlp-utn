@@ -49,6 +49,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
+                                        <th scope="col">Fecha</th>
                                         <th scope="col">Documento</th>
                                         <th scope="col">Apellido</th>
                                         <th scope="col">Nombre</th>
@@ -61,16 +62,18 @@
                                     <?php if (isset($cargas[$key][1])) : ?>
                                     <tr>
                                         <th scope="row"><?= $key + 1 ?></th>
-                                        <td> <input type="numero" hidden name="<?= "documento_{$key}"; ?>" readonly
+                                        <td> <input type="numero" hidden name="<?= "fecha_{$key}"; ?>" readonly
                                                 value="<?= $cargas[$key][0]; ?>"> <?= $cargas[$key][0]; ?> </td>
-                                        <td> <input type="numero" hidden name="<?= "apellido_{$key}"; ?>" readonly
+                                        <td> <input type="numero" hidden name="<?= "documento_{$key}"; ?>" readonly
                                                 value="<?= $cargas[$key][1]; ?>"> <?= $cargas[$key][1]; ?> </td>
-                                        <td> <input type="numero" hidden name="<?= "nombre_{$key}"; ?>" readonly
+                                        <td> <input type="numero" hidden name="<?= "apellido_{$key}"; ?>" readonly
                                                 value="<?= $cargas[$key][2]; ?>"> <?= $cargas[$key][2]; ?> </td>
-                                        <td> <input type="numero" hidden name="<?= "monto_{$key}"; ?>" readonly
+                                        <td> <input type="numero" hidden name="<?= "nombre_{$key}"; ?>" readonly
                                                 value="<?= $cargas[$key][3]; ?>"> <?= $cargas[$key][3]; ?> </td>
-                                        <td> <input type="numero" hidden name="<?= "tipo_{$key}"; ?>" readonly
+                                        <td> <input type="numero" hidden name="<?= "monto_{$key}"; ?>" readonly
                                                 value="<?= $cargas[$key][4]; ?>"> <?= $cargas[$key][4]; ?> </td>
+                                        <td> <input type="numero" hidden name="<?= "tipo_{$key}"; ?>" readonly
+                                                value="<?= $cargas[$key][5]; ?>"> <?= $cargas[$key][5]; ?> </td>
                                     </tr>
                                     <?php endif; ?>
                                     <?php endforeach; ?>
@@ -87,7 +90,7 @@
         </div>
         <div class="text-center">
             <?php if (isset($errores)) : ?>
-            <h6 class="alert alert-danger">No se puieron realizar las siguientes cargas</h6>
+            <h6 class="alert alert-danger">No se pudieron realizar las siguientes cargas</h6>
             <div class="row">
                 <div class="col">
                     <div style="max-height: 500px; overflow: scroll" class="table-responsive">
