@@ -62,7 +62,8 @@ $route['usuario/ultimos-movimientos'] = 'usuario/ultimosMovimientos';
 $route['usuario/ultimos-movimientos/(:num)'] = 'usuario/ultimosMovimientos';
 $route['login'] = 'usuario/login';
 $route['logout'] = 'usuario/login/logout';
-$route['usuario/recovery/(:any)'] = 'usuario/login/recoveryPassword';
+$route['usuario/recovery'] = 'usuario/login/passwordRecoveryRequest';
+$route['usuario/recovery/(:any)'] = 'usuario/login/newPasswordRequest';
 
 $route['contacto'] = 'comedor/contacto/index';
 $route['menu'] = 'comedor/menu/index';
