@@ -12,8 +12,6 @@ class Vendedor extends CI_Controller
         parent::__construct();
 
         $this->load->model('vendedor_model');
-        $this->load->model('usuario/usuario_model');
-        $this->load->model('carga_model');
 
         if ($this->session->userdata('is_user')) {
             redirect(base_url('usuario'));
@@ -31,7 +29,7 @@ class Vendedor extends CI_Controller
         ];
         if ($this->input->method() == 'post') {
             $documento = $this->input->post('numeroDni');
-            $usuario = $this->usuario_model->getUserByDocumento($documento);
+            $usuario = $this->vendedor_model->getUserByDocumento($documento);
             if ($usuario) {
                 $data['usuario'] = $usuario;
                 //Seteo el numero de documento como variable de sesion
@@ -82,7 +80,7 @@ class Vendedor extends CI_Controller
             $documento = $this->input->post('dni'); //obtengo el numero de documento
             $carga = $this->input->post('carga'); // obtengo el monto a cargar
             $data['titulo'] = 'Carga de Saldo';
-            $data['usuario'] = $this->usuario_model->getUserByDocumento($documento);
+            $data['usuario'] = $this->vendedor_model->getUserByDocumento($documento);
             // reglas de validez del formulario
             $rules = [
                 [
@@ -103,7 +101,7 @@ class Vendedor extends CI_Controller
                 $this->load->view('index', $data);
                 $this->load->view('general/footer');
             } else {
-                $usuario = $this->usuario_model->getUserByDocumento($documento); //obtengo el user de ese dni
+                $usuario = $this->vendedor_model->getUserByDocumento($documento); //obtengo el user de ese dni
                 $iduser = $usuario->id; //obtengo el id del user
                 $saldo = $this->vendedor_model->updateAndGetSaldoByUserId($iduser, $carga); // modifico y luego obtengo el saldo
 
@@ -135,7 +133,7 @@ class Vendedor extends CI_Controller
                     'formato' => 'Efectivo',
                     'transaccion_id' => $id_insert
                 ];
-                $this->carga_model->addCargaLog($cargaLog);
+                $this->vendedor_model->addCargaLog($cargaLog);
                 $this->correoCargaSaldo($id_insert);
 
                 redirect(base_url('admin'));
@@ -276,14 +274,19 @@ class Vendedor extends CI_Controller
                     'estado' => 1,
                     'id_precio' => $idPrecio
                 ];
-                $logNewUser = [
-                    'fecha' => date('Y-m-d', time()),
-                    'hora' => date('H:i:s', time()),
-                    'id_vendedor' => $this->session->id_vendedor
-                ];
-                if ($this->usuario_model->addNewUser($newUser, $logNewUser)) {
+                $id_usuario = $this->vendedor_model->addNewUser($newUser);
+                if ($id_usuario) {
+                    // Creamos el log de alta
+                    $logNewUser = [
+                        'fecha' => date('Y-m-d', time()),
+                        'hora' => date('H:i:s', time()),
+                        'id_vendedor' => $this->session->id_vendedor,
+                        'id_usuario' => $id_usuario
+                    ];
+                    $this->vendedor_model->addLogNewUser($logNewUser);
+
                     // realizamos la carga de saldo
-                    $usuario = $this->usuario_model->getUserByDocumento($numerodni);
+                    $usuario = $this->vendedor_model->getUserByDocumento($numerodni);
                     if ($this->input->post('saldo') != 0) {
 
                         //Genero y guardo la transaccion
@@ -313,7 +316,7 @@ class Vendedor extends CI_Controller
                             'formato' => 'Efectivo',
                             'transaccion_id' => $id_insert
                         ];
-                        $this->carga_model->addCargaLog($newCarga);
+                        $this->vendedor_model->addCargaLog($newCarga);
                         $this->correoCargaSaldo($id_insert);
                     }
 
@@ -345,11 +348,11 @@ class Vendedor extends CI_Controller
         ];
         $iduser = $this->uri->segment(3);
 
-        if (null == $this->usuario_model->getUserById($iduser)) {
+        if (null == $this->vendedor_model->getUserById($iduser)) {
             redirect(base_url('admin'));
         }
 
-        $usuario = $this->usuario_model->getUserById($iduser);
+        $usuario = $this->vendedor_model->getUserById($iduser);
         $data['usuario'] = $usuario;
 
         //Asigno el costo de la vianda segun el tipo de usuario
@@ -460,7 +463,7 @@ class Vendedor extends CI_Controller
                     'id_precio' => $idPrecio
                 ];
 
-                if ($this->usuario_model->updateUserById($iduser, $updateUser)) {
+                if ($this->vendedor_model->updateUserById($iduser, $updateUser)) {
                     redirect(base_url('admin'));
                 }
             }
@@ -471,7 +474,7 @@ class Vendedor extends CI_Controller
         }
     }
 
-    public function descarcgarExcel()
+    public function descargarExcel()
     {
         $data = [
             'titulo' => 'Descarga de Planilla'
@@ -495,7 +498,7 @@ class Vendedor extends CI_Controller
             $rows = 3;
             $i = 1;
             foreach ($compras as $compra) {
-                $usuario = $this->usuario_model->getUserById($compra->id_usuario);
+                $usuario = $this->vendedor_model->getUserById($compra->id_usuario);
                 if ($usuario != null) {
                     $sheet->setCellValue("A{$rows}", $i++);
                     $sheet->setCellValue("B{$rows}", $usuario->documento);
@@ -562,7 +565,7 @@ class Vendedor extends CI_Controller
             $data['cantidad_virtual'] = $nVirtual;
             $data['total_efectivo'] = $totalEfectivo;
             $data['cantidad_efectivo'] = $nEfectivo;
-            $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
+            $data['vendedor'] = $this->vendedor_model->getVendedorById($id_vendedor);
             $data['fecha'] = date("d-m-Y", $strtime);
 
             $dompdf = new Dompdf();
@@ -614,7 +617,7 @@ class Vendedor extends CI_Controller
             }
 
             $data['detalle'] = $detalle;
-            $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
+            $data['vendedor'] = $this->vendedor_model->getVendedorById($id_vendedor);
             $data['fecha1'] = date("d-m-Y", $strtime1);
             $data['fecha2'] = date("d-m-Y", $strtime2);
             $data['cantidad_efectivo'] = array_sum(array_column($detalle, 'cantidad_efectivo'));
@@ -669,7 +672,7 @@ class Vendedor extends CI_Controller
             }
 
             $data['detalle'] = $detalle;
-            $data['vendedor'] = $this->vendedor_model->getUserById($id_vendedor);
+            $data['vendedor'] = $this->vendedor_model->getVendedorById($id_vendedor);
             $data['total'] = array_sum(array_column($detalle, 'total'));
             $data['fecha1'] = date("d-m-Y", $strtime1);
             $data['fecha2'] = date("d-m-Y", $strtime2);
