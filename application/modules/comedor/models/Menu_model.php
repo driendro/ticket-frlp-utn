@@ -10,6 +10,11 @@ class Menu_model extends CI_Model
 
     public function getMenu()
     {
-        return $this->db->select('*')->get('menu')->result();
+        /* USado en:
+        index
+        */
+        $this->db->select('*');
+        $query = $this->db->get('menu');
+        return $query->result();
     }
 }
