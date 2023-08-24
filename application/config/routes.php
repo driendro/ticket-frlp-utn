@@ -67,6 +67,8 @@ $route['usuario/recovery/(:any)'] = 'usuario/login/newPasswordRequest';
 
 $route['contacto'] = 'comedor/contacto/index';
 $route['menu'] = 'comedor/menu/index';
+$route['comentarios'] = 'comedor/comentarios/index';
+$route['comedor/agregar_comentario'] = 'comedor/comentarios/agregar_comentario';
 
 $route['dbmigrate'] = 'admin/migrate/index';
 
