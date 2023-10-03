@@ -212,4 +212,19 @@ class Vendedor_model extends CI_Model
         $query = $this->db->get('menu');
         return $query->result();
     }
+
+    // public function addHistorialMenu($data)
+    // {
+    //     /*Usado en:
+    //     addHistorialMenu
+    //     */
+    //     $this->db->insert('historial_menu', $data);
+    //     return true;
+    // }
+
+    // public function getHistorialMenu()
+    // {
+    //     $query = $this->db->get('historial_menu');
+    //     return $query->result();
+    // }
 }

@@ -84,6 +84,8 @@ $route['admin/informe/semana'] = 'admin/vendedor/descargarCierreCajaSemana';
 $route['admin/informe/pedido'] = 'admin/vendedor/descargarResumenPedidosSemana';
 $route['admin/historial'] = 'admin/vendedor/historialCargas';
 $route['admin/menu'] = 'admin/vendedor/updateMenu';
+$route['admin/ver_comentarios'] = 'admin/administrador/ver_comentarios';
+// $route['admin/ver_historial_menu'] = 'admin/vendedor/ver_historial_menu';
 
 $route['admin/crear_vendedor'] = 'admin/administrador/createVendedor';
 $route['admin/csv_carga'] = 'admin/administrador/cargar_archivo_csv';

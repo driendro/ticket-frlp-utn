@@ -11,9 +11,9 @@
                     <h3><?= $item->dia; ?></h3>
                 </div>
                 <div class="card-body" style="background-color: #ffffff">
-                    <h5 style=" text-align: center;">Básico: <?= $item->menu1; ?></h5>
-                    <h6 style="text-align: center;">Vegano: <?= $item->menu2; ?></h6>
-                    <!-- <h6 style="text-align: center;">Sin TACC: <?= $item->menu2; ?></h6> -->
+                    <h5 style="text-align: center;">Básico: <?= $item->menu1; ?></h5>
+                    <h5 style="text-align: center;">Veggie: <?= $item->menu2; ?></h5>
+                    <h5 style="text-align: center;">Sin TACC: <?= $item->menu3; ?></h5>
                 </div>
             </div>
             <?php endforeach; ?>

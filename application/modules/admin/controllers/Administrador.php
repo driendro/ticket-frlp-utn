@@ -261,4 +261,15 @@ class Administrador extends CI_Controller
             redirect(base_url('admin/csv_carga'));
         }
     }
+
+    public function ver_comentarios() 
+    {
+        $data['titulo'] = 'Comentarios';
+        $this->load->view('header', $data);
+
+        $data['comentarios'] = $this->administrador_model->getComentarios();
+        $this->load->view('comentarios', $data);
+
+        $this->load->view('general/footer');
+    }
 }

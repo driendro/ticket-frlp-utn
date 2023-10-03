@@ -62,7 +62,7 @@
     	                            <option value="Industrial">Industrial</option>
     	                            <option value="Mecanica">Mecanica</option>
     	                            <option value="Quimica">Quimica</option>
-    	                            <option value="Sistmeas">Sistemas</option>
+    	                            <option value="Sistemas">Sistemas</option>
     	                        </select>
     	                    </div>
     	                </div>
