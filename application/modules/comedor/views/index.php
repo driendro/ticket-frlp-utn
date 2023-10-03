@@ -54,12 +54,12 @@
     											<option value="Llevar"> Para llevar </option>
     										</select>
     									</div>
-    									-->
+                                    -->
                                     <div>
                                         <select class="form-select" name="selectTurno<?= ucwords($dia); ?>"
                                             id="selectTurno<?= ucwords($dia); ?>">
-                                            <option value="12:30"> 12:30 hs </option>
-                                            <option value="13:30"> 13:30 hs </option>
+                                            <option value="12:00"> Turno mañana</option>
+                                            <option value="20:00"> Turno noche </option>
                                         </select>
                                     </div>
                                     <div>
@@ -67,7 +67,7 @@
                                             id="selectMenu<?= ucwords($dia); ?>">
                                             <option value="Basico"> Básico </option>
                                             <option value="Veggie"> Veggie </option>
-                                            <option value="Celiaco"> Celiaco </option>
+                                            <option value="Celiaco"> Sin TACC </option>
                                         </select>
                                     </div>
                                 </fieldset>

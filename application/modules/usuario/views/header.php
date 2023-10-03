@@ -39,6 +39,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('contacto'); ?>">Contacto</a>
                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('comentarios'); ?>">¡Haz un comentario!</a>
+                    </li>
                     <?php if ($this->session->userdata('id_usuario')) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"

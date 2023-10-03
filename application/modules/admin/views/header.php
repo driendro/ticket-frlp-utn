@@ -60,6 +60,12 @@
                                     de Caja</a>
                             </li>
                             <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/ver_comentarios'); ?>">Ver Comentarios</a>
+                            </li>
+                            <!-- <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/ver_historial_menu'); ?>">Historial de comidas</a>
+                            </li> -->
+                            <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li>

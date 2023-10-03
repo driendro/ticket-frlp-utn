@@ -87,4 +87,10 @@ class Administrador_model extends CI_Model
         $query = $this->db->get('usuarios');
         return $query->row();
     }
+
+    public function getComentarios() 
+    {
+        $query = $this->db->get('comentarios');
+        return $query->result();
+    }
 }

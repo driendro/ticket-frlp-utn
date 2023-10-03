@@ -718,6 +718,9 @@ class Vendedor extends CI_Controller
                 $this->form_validation->set_rules("veggie_{$i}", 'Menu Veggie', 'alpha_numeric_spaces', [
                     'alpha_numeric_spaces' => 'Solo deben contener caracteres alfanumerico',
                 ]);
+                $this->form_validation->set_rules("sin_tacc_{$i}", 'Menu Sin TACC', 'alpha_numeric_spaces', [
+                    'alpha_numeric_spaces' => 'Solo deben contener caracteres alfanumerico',
+                ]);
             }
             if ($this->form_validation->run() == FALSE) {
                 $this->load->view('header', $data);
@@ -727,7 +730,18 @@ class Vendedor extends CI_Controller
                 for ($i = 1; $i <= 5; $i++) {
                     $menu_item['menu1'] = $this->input->post("basico_{$i}");
                     $menu_item['menu2'] = $this->input->post("veggie_{$i}");
+                    $menu_item['menu3'] = $this->input->post("sin_tacc_{$i}");
                     $this->vendedor_model->updateMenu($i, $menu_item);
+
+                    // $historialMenu = [
+                    //     'id_vendedor' => $this->session->id_vendedor,
+                    //     'id_dia' => $i,
+                    //     'menu1' => $menu_item['menu1'],
+                    //     'menu2' => $menu_item['menu2'],
+                    //     'menu3' => $menu_item['menu3'],
+                    //     'fecha' => date('Y-m-d', time())
+                    // ];
+                    // $this->vendedor_model->addHistorialMenu($historialMenu);
                 }
                 redirect(base_url('admin/menu'));
             }
@@ -737,4 +751,15 @@ class Vendedor extends CI_Controller
             $this->load->view('general/footer');
         }
     }
+
+    // public function ver_historial_menu() 
+    // {
+    //     $data['titulo'] = 'Historial de comidas';
+    //     $this->load->view('header', $data);
+
+    //     $data['historial_menu'] = $this->vendedor_model->getHistorialMenu();
+    //     $this->load->view('historial_menu', $data);
+
+    //     $this->load->view('general/footer');
+    // }
 }

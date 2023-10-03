@@ -12,8 +12,9 @@
                     <thead>
                         <tr>
                             <th>Día</th>
-                            <th>Menu Basico</th>
+                            <th>Menu Básico</th>
                             <th>Opción Veggie</th>
+                            <th>Sin TACC</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -22,6 +23,7 @@
                                 <td><?= $item->dia; ?></td>
                                 <td> <input name="basico_<?= $item->id; ?>" type="text" value="<?= $item->menu1; ?>"> </td>
                                 <td> <input name="veggie_<?= $item->id; ?>" type="text" value="<?= $item->menu2; ?>"> </td>
+                                <td> <input name="sin_tacc_<?= $item->id; ?>" type="text" value="<?= $item->menu3; ?>"> </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
