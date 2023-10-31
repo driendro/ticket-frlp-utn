@@ -29,7 +29,12 @@
                         <div class="col-4">
                             <input type="number" class="form-control" name="carga" id="carga">
                         </div>
-                        <div class="col-4"></div>
+                        <div class="col-4">
+                            <select name="metodo_carga" class="form-control">
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Virtual">Billetera Virtual</option>
+                            </select>
+                        </div>
 
                         <label class="col-4 col-form-label">Legajo:</label>
                         <div class="col-8">

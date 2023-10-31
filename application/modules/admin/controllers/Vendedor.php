@@ -130,7 +130,7 @@ class Vendedor extends CI_Controller
                     'id_usuario' => $iduser,
                     'monto' => $carga,
                     'id_vendedor' => $this->session->id_vendedor,
-                    'formato' => 'Efectivo',
+                    'formato' => $this->input->post('metodo_carga'),
                     'transaccion_id' => $id_insert
                 ];
                 $this->vendedor_model->addCargaLog($cargaLog);
@@ -493,8 +493,9 @@ class Vendedor extends CI_Controller
             $sheet->setCellValue('C2', 'Apellido');
             $sheet->setCellValue('D2', 'Nombre');
             $sheet->setCellValue('E2', 'Menu');
-            //$sheet->setCellValue('D2', 'Turno');
-            //$sheet->setCellValue('F2', 'Claustro');
+            $sheet->setCellValue('F2', 'Turno');
+            $sheet->setCellValue('G2', 'Claustro');
+            // $sheet->setCellValue('H2', 'Tipo');
             $rows = 3;
             $i = 1;
             foreach ($compras as $compra) {
@@ -505,8 +506,9 @@ class Vendedor extends CI_Controller
                     $sheet->setCellValue("C{$rows}", $usuario->apellido);
                     $sheet->setCellValue("D{$rows}", $usuario->nombre);
                     $sheet->setCellValue("E{$rows}", $compra->menu);
-                    //$sheet->setCellValue("D{$rows}", $compra->turno);
-                    //$sheet->setCellValue("F{$rows}", $compra->tipo);
+                    $sheet->setCellValue("F{$rows}", $compra->turno);
+                    $sheet->setCellValue("G{$rows}", $usuario->tipo);
+                    // $sheet->setCellValue("H{$rows}", $compra->tipo);
                     $rows++;
                 }
             }

@@ -47,14 +47,14 @@
                                     </label>
                                 </div>
                                 <fieldset id="<?= $dia; ?>" disabled>
-                                    <!--
-     									<div>
-    										<select class="form-select" name="selectTipo<?= ucwords($dia); ?>" id="selectTipo<?= ucwords($dia); ?>">
-    											<option value="Comer aqui"> Comer aqui </option>
-    											<option value="Llevar"> Para llevar </option>
-    										</select>
-    									</div>
-                                    -->
+                                    
+     								<div>
+    									<select class="form-select" name="selectTipo<?= ucwords($dia); ?>" id="selectTipo<?= ucwords($dia); ?>">
+    										<option value="Comer aqui"> Comer aqui </option>
+    										<option value="Llevar"> Para llevar </option>
+    									</select>
+    								</div>
+                                   
                                     <div>
                                         <select class="form-select" name="selectTurno<?= ucwords($dia); ?>"
                                             id="selectTurno<?= ucwords($dia); ?>">

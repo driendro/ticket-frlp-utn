@@ -185,9 +185,9 @@ class Vendedor_model extends CI_Model
         descarcgarExcel
         */
         $this->db->select('*');
-        $this->db->from('compra');
-        $this->db->join('usuarios', 'compra.id_usuario=usuarios.id');
-        $this->db->order_by('usuarios.apellido', 'ASC');
+        $this->db->from('compra c');
+        $this->db->join('usuarios u', 'c.id_usuario=u.id');
+        $this->db->order_by('u.apellido', 'ASC');
         $this->db->where('dia_comprado', $fecha);
         $query = $this->db->get();
         return $query->result();
