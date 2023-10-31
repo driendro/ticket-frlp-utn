@@ -73,6 +73,7 @@ $route['comedor/agregar_comentario'] = 'comedor/comentarios/agregar_comentario';
 // $route['aceptarTerminos'] = 'comedor/terminos/aceptarTerminos';
 // $route['rechazarTerminos'] = 'comedor/terminos/rechazarTerminos';
 
+
 $route['dbmigrate'] = 'admin/migrate/index';
 
 $route['admin'] = 'admin/vendedor/index';
