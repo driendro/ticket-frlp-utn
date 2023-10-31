@@ -19,16 +19,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($compras as $compra) : ?>
-                            <tr>
-                                <td><?= $compra->id; ?></td>
-                                <td><?= $compra->fecha; ?></td>
-                                <td><?= $compra->hora; ?></td>
-                                <td><?= $compra->transaccion; ?></td>
-                                <td><?= $compra->monto; ?></td>
-                                <td><?= $compra->saldo; ?></td>
-                            </tr>
-                            <?php endforeach; ?>
+                            <?php if (!empty($compras)) : ?>
+                                <?php foreach ($compras as $compra) : ?>
+                                    <tr>
+                                        <td><?= $compra->id; ?></td>
+                                        <td><?= $compra->fecha; ?></td>
+                                        <td><?= $compra->hora; ?></td>
+                                        <td><?= $compra->transaccion; ?></td>
+                                        <td><?= $compra->monto; ?></td>
+                                        <td><?= $compra->saldo; ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <p>No hay compras disponibles.</p>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>

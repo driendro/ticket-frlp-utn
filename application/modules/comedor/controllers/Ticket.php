@@ -15,6 +15,9 @@ class Ticket extends CI_Controller
         if (!$this->session->userdata('is_user')) {
             redirect(base_url('login'));
         }
+        // if (!$this->session->userdata('accepted_terms')){
+        //     redirect(base_url('terminos'));
+        // }
     }
 
     public function estadoComedor()
@@ -121,7 +124,7 @@ class Ticket extends CI_Controller
         }
 
         $dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
-        // carga de la comppra en la DB
+        // carga de la compra en la DB
         $n_compras = 0;
         foreach ($dias as $id => $dia) {
             if ($this->input->post("check{$dia}")) {
@@ -136,7 +139,7 @@ class Ticket extends CI_Controller
                     'dia_comprado' => date('Y-m-d', $proximo),
                     'id_usuario' => $id_usuario,
                     'precio' => $costoVianda,
-                    //'tipo' => $this->input->post("selectTipo{$dia}"),
+                    'tipo' => $this->input->post("selectTipo{$dia}"),
                     'turno' => $this->input->post("selectTurno{$dia}"),
                     'menu' => $this->input->post("selectMenu{$dia}"),
                     'transaccion_id' => -$id_usuario //Seteamos un id unico y negativo para poder obtenerlas luego
@@ -148,7 +151,7 @@ class Ticket extends CI_Controller
                     'dia_comprado' => date('Y-m-d', $proximo),
                     'id_usuario' => $id_usuario,
                     'precio' => $costoVianda,
-                    //'tipo' => $this->input->post("selectTipo{$dia}"),
+                    'tipo' => $this->input->post("selectTipo{$dia}"),
                     'turno' => $this->input->post("selectTurno{$dia}"),
                     'menu' => $this->input->post("selectMenu{$dia}"),
                     'transaccion_tipo' => 'Compra',
@@ -240,7 +243,7 @@ class Ticket extends CI_Controller
                                 'dia_comprado' => $compra->dia_comprado,
                                 'id_usuario' => $id_usuario,
                                 'precio' => $compra->precio,
-                                //'tipo' => $compra->tipo,
+                                'tipo' => $compra->tipo,
                                 'turno' => $compra->turno,
                                 'menu' => $compra->menu,
                                 'transaccion_tipo' => 'Devolucion', //Seteamos un id unico y negativo para poder obtenerlas luego

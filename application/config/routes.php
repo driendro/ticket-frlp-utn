@@ -69,6 +69,10 @@ $route['contacto'] = 'comedor/contacto/index';
 $route['menu'] = 'comedor/menu/index';
 $route['comentarios'] = 'comedor/comentarios/index';
 $route['comedor/agregar_comentario'] = 'comedor/comentarios/agregar_comentario';
+// $route['terminos'] = 'comedor/terminos/index';
+// $route['aceptarTerminos'] = 'comedor/terminos/aceptarTerminos';
+// $route['rechazarTerminos'] = 'comedor/terminos/rechazarTerminos';
+
 
 $route['dbmigrate'] = 'admin/migrate/index';
 
