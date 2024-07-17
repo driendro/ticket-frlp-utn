@@ -90,7 +90,28 @@ class Administrador_model extends CI_Model
 
     public function getComentarios() 
     {
+        /*Usado en:
+        ver_comentarios
+        */
         $query = $this->db->get('comentarios');
         return $query->result();
+    }
+
+    public function getConfiguracion()
+    {
+        /*Usado en:
+        configuracion_general
+        */
+        return $this->db->get('configuracion')->result();
+    }
+
+    public function updateConfiguracion($data)
+    {
+        /*Usado en:
+        configuracion_general
+        */
+        $this->db->where('id', 1);
+        $this->db->update('configuracion', $data);
+        return true;
     }
 }

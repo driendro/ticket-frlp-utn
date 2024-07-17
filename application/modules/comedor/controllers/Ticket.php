@@ -24,11 +24,12 @@ class Ticket extends CI_Controller
     {
         //Con esta funcion se verifica si el comedor se encuentra cerrado, definiendo los periodos
         //entre la fecha de apertura y cierre, y las vacaciones de invierno
+        $configuracion = $this->ticket_model->getConfiguracion();
         $hoy = date('Y-m-d', time());
-        $apertura = $this->config->item('apertura');
-        $vaca_ini = $this->config->item('vacaciones_i');
-        $vaca_fin = $this->config->item('vacaciones_f');
-        $cierre = $this->config->item('cierre');
+        $apertura = $configuracion[0]->apertura;
+        $vaca_ini = $configuracion[0]->vacaciones_i;
+        $vaca_fin = $configuracion[0]->vacaciones_f;
+        $cierre = $configuracion[0]->cierre;
 
         if ($hoy >= $apertura && $hoy <= $vaca_ini) {
             //Primer semestre
@@ -46,11 +47,12 @@ class Ticket extends CI_Controller
     {
         //Con esta funcion se verifica si el comedor habilitado para usarse, definindo los periodos
         // de compra entre el lunes y el jueves
+        $configuracion = $this->ticket_model->getConfiguracion();
         $hoy = date('N');
         $ahora = date('H:i:s', time());
-        $dia_ini = $this->config->item('dia_inicial');
-        $dia_fin = $this->config->item('dia_final');
-        $hora_fin = $this->config->item('hora_final');
+        $dia_ini = $configuracion[0]->dia_inicial;
+        $dia_fin = $configuracion[0]->dia_final;
+        $hora_fin = $configuracion[0]->hora_final;
 
         if ($hoy >= $dia_ini && $hoy < $dia_fin) {
             //Si hoy esta entre el lunes y el jueves

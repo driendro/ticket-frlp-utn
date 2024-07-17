@@ -94,3 +94,4 @@ $route['admin/ver_comentarios'] = 'admin/administrador/ver_comentarios';
 $route['admin/crear_vendedor'] = 'admin/administrador/createVendedor';
 $route['admin/csv_carga'] = 'admin/administrador/cargar_archivo_csv';
 $route['admin/csv_confirmar_carga'] = 'admin/administrador/confirmarCargasCVS';
+$route['admin/configuracion_periodos'] = 'admin/administrador/configuracion_general';

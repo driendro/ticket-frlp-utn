@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= base_url('assets/css/style.css'); ?>">
@@ -81,10 +82,17 @@
                         <a class="nav-link" href="<?= base_url('admin/crear_vendedor'); ?>">Nuevo Vendedor</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('admin/ver_comentarios'); ?>">Ver Comentarios</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('admin/csv_carga'); ?>">Cargar desde CSV</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">Configuraciones</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/configuracion_periodos'); ?>">Periodos de funcionamiento</a>
+                            </li>
+                        </ul>
                     </li>
                     <?php endif; ?>
                     <?php endif; ?>

@@ -190,4 +190,13 @@ class Ticket_model extends CI_Model
         $query = $this->db->get('usuarios');
         return $query->row();
     }
+
+    public function getConfiguracion()
+    {
+        /*Usado en:
+        estadoComedor
+        estadoCompra
+        */
+        return $this->db->get('configuracion')->result();
+    }
 }

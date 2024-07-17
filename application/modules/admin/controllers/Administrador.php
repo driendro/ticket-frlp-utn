@@ -272,4 +272,33 @@ class Administrador extends CI_Controller
 
         $this->load->view('general/footer');
     }
+
+    public function configuracion_general()
+    {
+        $data['titulo'] = 'Configuracion General';
+        
+        if ($this->input->method() == 'post'){
+            $newConfig = [
+                'apertura' => $this->input->post('apertura_comedor'),
+                'cierre' => $this->input->post('cierre_comedor'),
+                'vacaciones_i' => $this->input->post('inicio_receso'),
+                'vacaciones_f' => $this->input->post('fin_receso'),
+                'dia_inicial' => $this->input->post('inicio_venta_semana'),
+                'dia_final' => $this->input->post('fin_venta_semana'),
+                'hora_final' => $this->input->post('hora_cierre_venta')
+            ];
+            $this->administrador_model->updateConfiguracion($newConfig);
+
+            $data['configuracion'] = $this->administrador_model->getConfiguracion();
+
+            $this->load->view('header', $data);
+            $this->load->view('configuracion_general', $data);
+            $this->load->view('general/footer');
+        } else {
+            $data['configuracion'] = $this->administrador_model->getConfiguracion();
+            $this->load->view('header', $data);
+            $this->load->view('configuracion_general', $data);
+            $this->load->view('general/footer');
+        }
+    }
 }

@@ -4,4 +4,5 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php/$1 [L]
     SetEnv CI_ENV development
+    # SetEnv CI_ENV production
 </IfModule>
