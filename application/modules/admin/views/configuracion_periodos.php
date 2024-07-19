@@ -1,6 +1,6 @@
-<div class="container mt-4 ">
-    <h1 class="mb-4">Configuración General del Sitio</h1>
-    <div style="background-color: lightblue; padding: 20px;">
+<div class="container mt-4">
+    <h1 class="mb-2">Configuración General del Sitio</h1>
+    <div class="mb-2" style="background-color: lightblue; padding: 20px;">
         <?php
     $dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'];
     $diaInicial = $dias[$configuracion[0]->dia_inicial];
@@ -28,7 +28,7 @@
     </div>
 
     <?= form_open(current_url()); ?>
-    <div class="form-group row">
+    <div class="form-group row mb-2"> 
         <label for="apertura_comedor" class="col-sm-5 col-md-5 col-lg-3 col-form-label"> Apertura del Comedor:</label>
         <div class="col-sm-4 col-md-3">
             <input type="date" id="apertura_comedor" name="apertura_comedor" class="form-control"
@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <label for="cierre_comedor" class="col-sm-5 col-md-5 col-lg-3 col-form-label">Cierre del Comedor:</label>
         <div class="col-sm-4 col-md-3">
             <input type="date" id="cierre_comedor" name="cierre_comedor" class="form-control"
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <label for="inicio_receso" class="col-sm-5 col-md-5 col-lg-3 col-form-label">Inicio del Receso:</label>
         <div class="col-sm-4 col-md-3">
             <input type="date" id="inicio_receso" name="inicio_receso" class="form-control"
@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <label for="fin_receso" class="col-sm-5 col-md-5 col-lg-3 col-form-label">Fin del Receso:</label>
         <div class="col-sm-4 col-md-3">
             <input type="date" id="fin_receso" name="fin_receso" class="form-control"
@@ -60,7 +60,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <label for="inicio_venta_semana" class="col-sm-5 col-md-5 col-lg-3 col-form-label">Inicio de la Venta en la
             Semana:</label>
         <div class="col-sm-4 col-md-3">
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <label for="fin_venta_semana" class="col-sm-5 col-md-5 col-lg-3 col-form-label">Fin de la Venta en la
             Semana:</label>
         <div class="col-sm-4 col-md-3">
@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <label for="hora_cierre_venta" class="col-sm-5 col-md-5 col-lg-3 col-form-label">Hora de Cierre de la
             Venta:</label>
         <div class="col-sm-4 col-md-3">
@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <div class="col-sm-4 col-md-3 offset-sm-3">
             <button type="submit" class="btn btn-primary">Guardar</button>
         </div>

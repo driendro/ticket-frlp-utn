@@ -264,41 +264,154 @@ class Administrador extends CI_Controller
 
     public function ver_comentarios() 
     {
-        $data['titulo'] = 'Comentarios';
-        $this->load->view('header', $data);
-
-        $data['comentarios'] = $this->administrador_model->getComentarios();
-        $this->load->view('comentarios', $data);
-
-        $this->load->view('general/footer');
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            $data['titulo'] = 'Comentarios';
+            $data['comentarios'] = $this->administrador_model->getComentarios();
+            $this->load->view('header', $data);
+            $this->load->view('comentarios', $data);
+            $this->load->view('general/footer');
+        } else {
+            redirect(base_url('admin'));
+        }
     }
 
     public function configuracion_general()
     {
-        $data['titulo'] = 'Configuracion General';
-        
-        if ($this->input->method() == 'post'){
-            $newConfig = [
-                'apertura' => $this->input->post('apertura_comedor'),
-                'cierre' => $this->input->post('cierre_comedor'),
-                'vacaciones_i' => $this->input->post('inicio_receso'),
-                'vacaciones_f' => $this->input->post('fin_receso'),
-                'dia_inicial' => $this->input->post('inicio_venta_semana'),
-                'dia_final' => $this->input->post('fin_venta_semana'),
-                'hora_final' => $this->input->post('hora_cierre_venta')
-            ];
-            $this->administrador_model->updateConfiguracion($newConfig);
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            $data['titulo'] = 'Configuracion General';
+            if ($this->input->method() == 'post'){
+                $newConfig = [
+                    'apertura' => $this->input->post('apertura_comedor'),
+                    'cierre' => $this->input->post('cierre_comedor'),
+                    'vacaciones_i' => $this->input->post('inicio_receso'),
+                    'vacaciones_f' => $this->input->post('fin_receso'),
+                    'dia_inicial' => $this->input->post('inicio_venta_semana'),
+                    'dia_final' => $this->input->post('fin_venta_semana'),
+                    'hora_final' => $this->input->post('hora_cierre_venta')
+                ];
+                $this->administrador_model->updateConfiguracion($newConfig);
 
-            $data['configuracion'] = $this->administrador_model->getConfiguracion();
+                $data['configuracion'] = $this->administrador_model->getConfiguracion();
 
+                $this->load->view('header', $data);
+                $this->load->view('configuracion_periodos', $data);
+                $this->load->view('general/footer');
+            } else {
+                $data['configuracion'] = $this->administrador_model->getConfiguracion();
+                $this->load->view('header', $data);
+                $this->load->view('configuracion_periodos', $data);
+                $this->load->view('general/footer');
+            }
+        } else {
+            redirect(base_url('admin'));
+        }
+    }
+
+    public function feriados_list() {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            $año = ($this->uri->segment(4)) ? $this->uri->segment(4) : date('Y', time());
+            $feriados = $this->administrador_model->getFeriadosByAño($año);
+
+            $data['titulo'] = 'Feriados';
+            $data['feriados'] = $feriados;
+            $data['año'] = $año;
+            
+            // Cargar vistas
             $this->load->view('header', $data);
-            $this->load->view('configuracion_general', $data);
+            $this->load->view('feriados', $data);
             $this->load->view('general/footer');
         } else {
-            $data['configuracion'] = $this->administrador_model->getConfiguracion();
-            $this->load->view('header', $data);
-            $this->load->view('configuracion_general', $data);
-            $this->load->view('general/footer');
+            redirect(base_url('admin'));
+        }
+    }
+
+    public function borrar_feriado()
+    {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            $id_feriado = $this->uri->segment(6);
+            $año = $this->uri->segment(4);
+            if ($this->administrador_model->deletedFeriadoById($id_feriado)){
+                redirect(base_url('admin/configuracion/feriados_list/'.$año));
+            } else {
+            redirect(base_url('admin/configuracion/periodos'));
+            }
+        } else {
+            redirect(base_url('admin'));
+        }
+    }
+
+    public function add_feriado()
+    {
+        $año = $this->input->post('ano');
+        $newFeriado = [
+            'fecha' => $this->input->post('fecha_feriado'),
+            'detalle' => $this->input->post('fecha_feriado_motivo')
+        ];
+        if ($this->administrador_model->addFeriado($newFeriado)){
+            redirect(base_url('admin/configuracion/feriados_list/'.$año));
+        } else {
+        redirect(base_url('admin/configuracion/periodos'));
+        }
+    }
+
+    public function add_csv_feriado()
+    {
+        $data['uploadSuccess'] = array();
+        $data['titulo'] = 'Carga CSV';
+        $año = $this->input->post('ano');
+
+        if ($this->input->method() == 'post') {
+            $mi_archivo = 'archivo_csv';
+            $separador = $this->input->post('separador');
+            $config['upload_path'] = "uploads";
+            $config['file_name'] = "carga_feriados";
+            $config['overwrite'] = TRUE;
+            $config['allowed_types'] = "csv";
+            $config['max_size'] = "50000";
+            $config['max_width'] = "2000";
+            $config['max_height'] = "2000";
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload($mi_archivo)) {
+                redirect(base_url('admin/configuracion/feriados_list/2023'));
+            } else {
+                $data['subidoCorrecto'] = $this->upload->data();
+                $file = fopen('uploads/carga_feriados.csv', 'r');
+                $head = fgetcsv($file, 0, $separador);
+                while ((!feof($file)) && ($file != '')) {
+                    $cargas[] = fgetcsv($file, 0, $separador);
+                }
+                fclose($file);
+
+                $data['cargas'] = $cargas;
+                $i=0;
+                foreach ($cargas as $carga) {
+                    if ($carga) {
+                        $newFeriado =[
+                            'fecha' => $cargas[$i][0],
+                            'detalle' => $cargas[$i][1],
+                        ];
+                        $this->administrador_model->addFeriado($newFeriado);
+                        $i=$i+1;
+                    }
+                };
+                
+                redirect(base_url('admin/configuracion/feriados_list/'.$año));
+                //$this->load->view('header', $data);
+                //$this->load->view('transaccion', $data);
+                //$this->load->view('general/footer');
+            }
+        } else {
+            redirect(base_url('admin/configuracion/feriados_list/2025'));
         }
     }
 }

@@ -114,4 +114,35 @@ class Administrador_model extends CI_Model
         $this->db->update('configuracion', $data);
         return true;
     }
+
+    public function getFeriadosByAño($año)
+    {
+        /*Usado en:
+        feriados_list
+        */
+        $this->db->select('*');
+        $this->db->where('YEAR(fecha)', $año);
+        $this->db->order_by('fecha', 'ASC');
+        $query = $this->db->get('feriado');
+        return $query->result();
+    }
+
+    public function deletedFeriadoById($id)
+    {
+        /*Usado en:
+        borrar_feriado
+        */
+        $this->db->where('id',$id);
+        $this->db->delete('feriado');
+        return true;
+    }
+
+    public function addFeriado($data)
+    {
+        /*Usado en:
+        añadir_feriado_fecha
+        */
+        $this->db->insert('feriado', $data);
+        return true;
+    }
 }

@@ -90,7 +90,10 @@
                             aria-expanded="false">Configuraciones</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li>
-                                <a class="dropdown-item" href="<?= base_url('admin/configuracion_periodos'); ?>">Periodos de funcionamiento</a>
+                                <a class="dropdown-item" href="<?= base_url('admin/configuracion/periodos'); ?>">Periodos de funcionamiento</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/configuracion/feriados_list/'.date('Y')); ?>">Feriados</a>
                             </li>
                         </ul>
                     </li>
