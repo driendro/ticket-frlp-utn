@@ -57,6 +57,7 @@ class Administrador_model extends CI_Model
     {
         /* Usdo en:
         confirmarCargasCVS
+        devolver_compras_by_fecha
         */
         $this->db->insert('transacciones', $data);
         return $this->db->insert_id();
@@ -75,7 +76,6 @@ class Administrador_model extends CI_Model
         $this->db->update('usuarios');
         return $saldoNuevo;
     }
-
 
     public function getUserByDocumento($documento)
     {
@@ -141,8 +141,69 @@ class Administrador_model extends CI_Model
     {
         /*Usado en:
         añadir_feriado_fecha
+        add_csv_feriado
         */
         $this->db->insert('feriado', $data);
         return true;
+    }
+
+    public function getComprasByFecha($fecha)
+    {
+        /*Usado en:
+        devolver_compras_by_fecha
+        */
+        $this->db->select('*');
+        $this->db->where('dia_comprado', $fecha);
+        $query = $this->db->get('compra');
+        return $query->result();
+    }
+
+    public function getUserByID($id_user)
+    {
+        /*Usado en:
+        confirmarCargasCVS
+        */
+        $this->db->select('*');
+        $this->db->where('id', $id_user);
+        $query = $this->db->get('usuarios');
+        return $query->row();
+    }
+
+    public function removeCompra($idcompra)
+    {
+        /* Usado en:
+        devolver_compras_by_fecha
+        */
+        if ($this->db->delete('compra', ['id' => $idcompra])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function updateSaldoByIDUser($id_user, $saldo_nuevo)
+    {
+        /* Usado en:
+        devolver_compras_by_fecha
+        */
+        $this->db->set('saldo', $saldo_nuevo);
+        $this->db->where('id', $id_user);
+        if ($this->db->update('usuarios')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function addLogCompra($data)
+    {
+        /* Usado en:
+        devolver_compras_by_fecha
+        */
+        if ($this->db->insert('log_compra', $data)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -221,7 +221,6 @@ class Administrador extends CI_Controller
                     // Correo
                     $carga = $this->administrador_model->getCargaByIdvendedorForEmailCSV($this->session->id_vendedor);
 
-                    //foreach ($cargas as $carga) {
                     //Solo tomo datos del primer elemento, que es la ultima carga del vendedor
                     $data['fecha'] = date('d-m-Y', strtotime($carga->fecha));
                     $data['hora'] = $carga->hora;
@@ -232,7 +231,6 @@ class Administrador extends CI_Controller
                     $data['saldo'] = $carga->saldo;
                     $data['tipo'] = $carga->formato;
                     $correo = $carga->mail;
-                    //}
 
                     //Confeccion del correo del recibo
                     $subject = "Carga de Saldo";
@@ -348,13 +346,70 @@ class Administrador extends CI_Controller
         }
     }
 
+
+    public function devolver_compras_by_fecha($fecha, $motivo)
+    {
+        //Obntenemos las compras realizadas para esa fecha
+        $compras = $this->administrador_model->getComprasByFecha($fecha);
+        foreach ($compras as $key => $compra) {
+            //Por cada compra realizada, obtenemos el usurio que realizo la compra
+            $comprador = $this->administrador_model->getUserByID($compra->id_usuario);
+            $saldo = $comprador->saldo; // obtenemos su saldo
+            $costoVianda = $compra->precio; // obtenemos el costo de esa compra
+            $id_compra = $compra->id;
+            $data_log = [ 
+                'fecha' => date('Y-m-d', time()),
+                'hora' => date('H:i:s', time()),
+                'dia_comprado' => $fecha,
+                'id_usuario' => $comprador->id,
+                'precio' => $compra->precio,
+                'tipo' => $compra->tipo,
+                'turno' => $compra->turno,
+                'menu' => $compra->menu,
+                'transaccion_tipo' => 'Reintegro',
+            ];
+            $data_transaccion=[
+                'fecha' => date('Y-m-d', time()),
+                'hora' => date('H:i:s', time()),
+                'id_usuario' => $comprador->id,
+                'transaccion' => 'Reintegro',
+                'monto' => $costoVianda,
+                'saldo' => $saldo+$costoVianda,
+            ];
+            if ($this->administrador_model->removeCompra($id_compra)) {
+                // si se borra la compra, actualizamos el saldo del usuario
+                $this->administrador_model->updateSaldoByIDUser($comprador->id, $saldo + $costoVianda);
+                $id_transaccion = $this->administrador_model->addTransaccion($data_transaccion);
+                $data_log['transaccion_id'] = $id_transaccion;
+                // Generamso la transaccion y vinculamos los ids
+                $this->administrador_model->addLogCompra($data_log);
+                
+                //Armamos el correo con el detalle
+                $dataRecivo['compra'] = $compra;
+                $dataRecivo['saldo'] = $saldo+$costoVianda;
+                $dataRecivo['fechaHoy'] = date('Y-m-d', time());
+                $dataRecivo['horaAhora'] = date('H:i:s', time());
+                $dataRecivo['recivoNumero'] = $id_transaccion;
+
+                $subject = 'Reintegro por '.$motivo;
+                $message = $this->load->view('general/correos/recibo_reintegro', $dataRecivo, true);
+                
+                $this->generalticket->smtpSendEmail($comprador->mail, $subject, $message);
+            }
+        }
+    }
+
+
     public function add_feriado()
     {
         $año = $this->input->post('ano');
+        $fecha = $this->input->post('fecha_feriado');
+        $detalle = $this->input->post('fecha_feriado_motivo');
         $newFeriado = [
-            'fecha' => $this->input->post('fecha_feriado'),
-            'detalle' => $this->input->post('fecha_feriado_motivo')
+            'fecha' => $fecha,
+            'detalle' => $detalle
         ];
+        $this->devolver_compras_by_fecha($fecha, $detalle);
         if ($this->administrador_model->addFeriado($newFeriado)){
             redirect(base_url('admin/configuracion/feriados_list/'.$año));
         } else {
@@ -382,7 +437,7 @@ class Administrador extends CI_Controller
             $this->load->library('upload', $config);
 
             if (!$this->upload->do_upload($mi_archivo)) {
-                redirect(base_url('admin/configuracion/feriados_list/2023'));
+                redirect(base_url('admin/configuracion/feriados_list/'.$año));
             } else {
                 $data['subidoCorrecto'] = $this->upload->data();
                 $file = fopen('uploads/carga_feriados.csv', 'r');
@@ -406,12 +461,10 @@ class Administrador extends CI_Controller
                 };
                 
                 redirect(base_url('admin/configuracion/feriados_list/'.$año));
-                //$this->load->view('header', $data);
-                //$this->load->view('transaccion', $data);
-                //$this->load->view('general/footer');
             }
         } else {
-            redirect(base_url('admin/configuracion/feriados_list/2025'));
+            redirect(base_url('admin/configuracion/feriados_list/'.$año));
         }
     }
+
 }
