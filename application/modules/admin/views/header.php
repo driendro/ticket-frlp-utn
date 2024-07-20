@@ -95,6 +95,9 @@
                             <li>
                                 <a class="dropdown-item" href="<?= base_url('admin/configuracion/feriados_list/'.date('Y')); ?>">Feriados</a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/configuracion/precios'); ?>">Precios</a>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>

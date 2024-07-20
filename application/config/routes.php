@@ -95,6 +95,7 @@ $route['admin/crear_vendedor'] = 'admin/administrador/createVendedor';
 $route['admin/csv_carga'] = 'admin/administrador/cargar_archivo_csv';
 $route['admin/csv_confirmar_carga'] = 'admin/administrador/confirmarCargasCVS';
 $route['admin/configuracion/periodos'] = 'admin/administrador/configuracion_general';
+$route['admin/configuracion/precios'] = 'admin/administrador/configuracion_costos';
 $route['admin/configuracion/feriados_list/(:num)'] = 'admin/administrador/feriados_list';
 $route['admin/configuracion/feriados_list/(:num)/d/(:num)'] = 'admin/administrador/borrar_feriado';
 $route['admin/conf/feriados/add/fecha'] = 'admin/administrador/add_feriado';

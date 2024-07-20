@@ -467,4 +467,34 @@ class Administrador extends CI_Controller
         }
     }
 
+    public function configuracion_costos()
+    {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            $data['titulo'] = 'Configuracion Precios';
+            if ($this->input->method() == 'post'){
+                $precios = $this->administrador_model->getPrecios();
+                foreach ($precios as $key => $precio) {
+                    $id_precio=$precio->id;
+                    $costo = $this->input->post('precio_'.$id_precio);
+                    $this->administrador_model->updatePrecios($id_precio, $costo);
+                }
+
+                $data['precios'] = $this->administrador_model->getPrecios();
+
+                $this->load->view('header', $data);
+                $this->load->view('configuracion_precios', $data);
+                $this->load->view('general/footer');
+            } else {
+                $data['precios'] = $this->administrador_model->getPrecios();
+                $this->load->view('header', $data);
+                $this->load->view('configuracion_precios', $data);
+                $this->load->view('general/footer');
+            }
+        } else {
+            redirect(base_url('admin'));
+        }
+    }
+
 }

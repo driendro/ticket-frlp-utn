@@ -206,4 +206,27 @@ class Administrador_model extends CI_Model
             return false;
         }
     }
+
+    public function getPrecios()
+    {
+        /* Usado en:
+        configuracion_costos
+        */
+        return $this->db->get('precios')->result();
+    }
+    
+
+    public function updatePrecios($id_precio, $costo)
+    {
+        /* Usado en:
+        configuracion_costos
+        */
+        $this->db->set('costo', $costo);
+        $this->db->where('id', $id_precio);
+        if ($this->db->update('precios')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
