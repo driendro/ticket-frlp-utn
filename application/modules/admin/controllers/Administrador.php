@@ -266,7 +266,20 @@ class Administrador extends CI_Controller
         $admin = $this->administrador_model->getAdminById($id_vendedor);
         if ($admin->nivel == 1) {
             $data['titulo'] = 'Comentarios';
-            $data['comentarios'] = $this->administrador_model->getComentarios();
+            $comentarios = $this->administrador_model->getComentarios();
+            $dataComentarios=array();
+            foreach ($comentarios as $key => $comentario) {
+                $usuario = $this->administrador_model->getUserByID($comentario->id_usuario);
+                $dataComentarios_i = [
+                    'id' => $comentario->id,
+                    'usuario' => strtoupper($usuario->apellido).', '.strtolower($usuario->nombre),
+                    'comentario' => $comentario->comentario,
+                    'fecha' => $comentario->fecha,
+                    'hora' => $comentario->hora
+                ];
+                array_push($dataComentarios, $dataComentarios_i);
+            }
+            $data['comentarios'] = $dataComentarios;
             $this->load->view('header', $data);
             $this->load->view('comentarios', $data);
             $this->load->view('general/footer');

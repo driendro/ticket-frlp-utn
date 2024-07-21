@@ -32,6 +32,7 @@
                 <input type="text" id="busqueda">
             </div>
         </div>
+
         <div class="row">
             <div class="col">
                 <div class="table-responsive">
@@ -48,21 +49,21 @@
                         <tbody>
                             <?php foreach ($comentarios as $comentario): ?>
                                 <tr class="comment-row">
-                                <td style="text-align: center"><?= $comentario->id; ?></td>
-                                <td style="text-align: center"><?= $comentario->id_usuario; ?></td>
+                                <td style="text-align: center"><?= $comentario['id']; ?></td>
+                                <td style="text-align: center"><?= $comentario['usuario']; ?></td>
                                 <td class="comment-cell" style="text-align: center">
                                     <span class="comment-short">
-                                        <?= strlen($comentario->comentario) > 50 ? substr($comentario->comentario, 0, 20) . '...': $comentario->comentario; ?>
+                                        <?= strlen($comentario['comentario']) > 50 ? substr($comentario['comentario'], 0, 20) . '...': $comentario['comentario']; ?>
                                     </span> 
                                     <span class="comment-full" style="display: none;">
-                                        <?= $comentario->comentario; ?>
+                                        <?= $comentario['comentario']; ?>
                                     </span>
-                                    <?php if (strlen($comentario->comentario) > 50): ?>
+                                    <?php if (strlen($comentario['comentario']) > 50): ?>
                                         <a href="#" class="toggle-comment">Ver más</a>
                                     <?php endif; ?>
                                 </td>
-                                <td class="comment-fecha" style="text-align: center"><?= $comentario->fecha; ?></td>
-                                <td style="text-align: center"><?= $comentario->hora; ?></td>
+                                <td class="comment-fecha" style="text-align: center"><?= $comentario['fecha']; ?></td>
+                                <td style="text-align: center"><?= date('H:i', strtotime($comentario['hora'])); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
