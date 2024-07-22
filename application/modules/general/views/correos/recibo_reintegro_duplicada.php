@@ -39,11 +39,9 @@
         <div class="row">
             <div class="col">
 
-                <p>Si ha recibido este correo electrónico, se debe a que el comedor universitario no funcionó el día
+                <p>Si ha recibido este correo electrónico, se debe a que se a realizado una devolucion por compra doble o erronea el día
                     <strong><?= date('d', strtotime($compra->dia_comprado)).' de '.$meses[date('F', strtotime($compra->dia_comprado))].' de '.date('Y', strtotime($compra->dia_comprado)); ?></strong>.
-                    Debido a que
-                    realizó una
-                    compra para ese día, se le ha reintegrado el costo de la misma.
+                    Debido a esto, se le ha reintegrado el costo de la misma.
                 </p>
 
                 <h2>Detalle del reintegro</h2>

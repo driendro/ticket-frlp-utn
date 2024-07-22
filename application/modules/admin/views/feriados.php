@@ -28,7 +28,31 @@
     </div>
     <!-- ################################################ -->
     <!-- ################################################ -->
-
+    <?php
+    $diasSemana=[
+        "Monday"    => "Lunes",
+        "Tuesday"   => "Martes",
+        "Wednesday" => "Miércoles",
+        "Thursday"  => "Jueves",
+        "Friday"    => "Viernes",
+        "Saturday"  => "Sábado",
+        "Sunday"    => "Domingo"
+    ];
+    $meses=[
+        "January"   => "Enero",
+        "February"  => "Febrero",
+        "March"     => "Marzo",
+        "April"     => "Abril",
+        "May"       => "Mayo",
+        "June"      => "Junio",
+        "July"      => "Julio",
+        "August"    => "Agosto",
+        "September" => "Septiembre",
+        "October"   => "Octubre",
+        "November"  => "Noviembre",
+        "December"  => "Diciembre"
+    ];
+    ?>
     <!-- ################################################ -->
     <!-- ################################################ -->
     <div class="row mt-2">
@@ -55,9 +79,9 @@
                     <tbody>
                         <?php foreach ($feriados as $feriado) : ?>
                         <tr>
-                            <td class="align-middle"><?= date('l', strtotime($feriado->fecha)); ?></td>
+                            <td class="align-middle"><?= $diasSemana[date('l', strtotime($feriado->fecha))]; ?></td>
                             <td class="align-middle"><?= date('d', strtotime($feriado->fecha)); ?></td>
-                            <td class="align-middle"><?= date('F', strtotime($feriado->fecha)); ?></td>
+                            <td class="align-middle"><?= $meses[date('F', strtotime($feriado->fecha))]; ?></td>
                             <td class="align-middle"><?= $feriado->detalle; ?></td>
                             <td>
                                 <a class="btn btn-danger btn-sm"

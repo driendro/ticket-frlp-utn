@@ -63,11 +63,8 @@
                             <!-- <li>
                                 <a class="dropdown-item" href="<?= base_url('admin/ver_historial_menu'); ?>">Historial de comidas</a>
                             </li> -->
-                            <li>
-                                <a class="dropdown-item" href="<?= base_url('admin/ver_comentarios'); ?>">Ver Comentarios</a>
-                            </li>
                             <!-- <li>
-                                <a class="dropdown-item" href="<?= base_url('admin/ver_historial_menu'); ?>">Historial de comidas</a>
+                                    <a class="dropdown-item" href="<?= base_url('admin/ver_historial_menu'); ?>">Historial de comidas</a>
                             </li> -->
                             <li>
                                 <hr class="dropdown-divider">
@@ -78,25 +75,39 @@
                         </ul>
                     </li>
                     <?php if ($this->session->userdata('admin_lvl') == 1) : ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('admin/crear_vendedor'); ?>">Nuevo Vendedor</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('admin/csv_carga'); ?>">Cargar desde CSV</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">Administracion</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/ver_comentarios'); ?>">Ver
+                                    Comentarios</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/crear_vendedor'); ?>">Nuevo
+                                    Vendedor</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/csv_carga'); ?>">Cargar desde CSV</a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false">Configuraciones</a>
+                            data-bs-toggle="dropdown" aria-expanded="false">Configuraciones</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li>
-                                <a class="dropdown-item" href="<?= base_url('admin/configuracion/periodos'); ?>">Periodos de funcionamiento</a>
+                                <a class="dropdown-item"
+                                    href="<?= base_url('admin/configuracion/periodos'); ?>">Periodos de
+                                    funcionamiento</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="<?= base_url('admin/configuracion/feriados_list/'.date('Y')); ?>">Feriados</a>
+                                <a class="dropdown-item"
+                                    href="<?= base_url('admin/configuracion/feriados_list/'.date('Y')); ?>">Feriados</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="<?= base_url('admin/configuracion/precios'); ?>">Precios</a>
+                                <a class="dropdown-item"
+                                    href="<?= base_url('admin/configuracion/precios'); ?>">Precios</a>
                             </li>
                         </ul>
                     </li>

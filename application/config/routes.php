@@ -100,3 +100,6 @@ $route['admin/configuracion/feriados_list/(:num)'] = 'admin/administrador/feriad
 $route['admin/configuracion/feriados_list/(:num)/d/(:num)'] = 'admin/administrador/borrar_feriado';
 $route['admin/conf/feriados/add/fecha'] = 'admin/administrador/add_feriado';
 $route['admin/conf/feriados/add/csv'] = 'admin/administrador/add_csv_feriado';
+$route['admin/compras/usuario/(:num)'] = 'admin/administrador/ver_compras_userid';
+$route['admin/compras/usuario/(:num)/(:num)'] = 'admin/administrador/ver_compras_userid';
+$route['admin/compras/devolver/(:num)/(:num)'] = 'admin/administrador/devolver_compra_by_id';

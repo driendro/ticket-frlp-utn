@@ -229,4 +229,44 @@ class Administrador_model extends CI_Model
             return false;
         }
     }
+
+public function getComprasByUserId($id_user)
+    {
+        /*Usado en:
+        ver_compras_userid
+        */
+        $this->db->select('*');
+        $this->db->where('id_usuario', $id_user);
+        $this->db->order_by('dia_comprado', 'DESC');
+        $query = $this->db->get('compra');
+        return $query->result();
+    }
+
+    public function getComprasInRangeByIDUser($limit, $start, $id_user)
+    {
+        /*Usado en:
+        ver_compras_userid
+        */
+        $this->db->select('*');
+        $this->db->where('id_usuario', $id_user);
+        $this->db->limit($limit, $start);
+        $this->db->order_by('dia_comprado', 'DESC');
+        $query = $this->db->get("compra");
+
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        }
+        return false;
+    }
+
+    public function getCompraById($id)
+    {
+        /*Usado en:
+        devolver_compra_by_id
+        */
+        $this->db->select('*');
+        $this->db->where('id', $id);
+        $query = $this->db->get('compra');
+        return $query->row();
+    }
 }

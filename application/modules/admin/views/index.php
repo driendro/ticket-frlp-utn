@@ -57,9 +57,13 @@
                         </div>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-success mx-3">Cargar Saldo</button>
-                        <a class="btn btn-primary" href="<?= base_url("admin/modificar_usuario/{$usuario->id}"); ?>"
+                        <button type="submit" class="btn btn-success mx-2">Cargar Saldo</button>
+                        <a class="btn btn-primary mx-2" href="<?= base_url("admin/modificar_usuario/{$usuario->id}"); ?>"
                             role="button">Modificar usuario</a>
+                        <?php if ($this->session->userdata('admin_lvl') == 1) : ?>
+                        <a class="btn btn-info mx-2" href="<?= base_url("admin/compras/usuario/{$usuario->id}"); ?>"
+                            role="button">Ver compras</a>
+                        <?php endif; ?>
                     </div>
                 </form>
             </div>

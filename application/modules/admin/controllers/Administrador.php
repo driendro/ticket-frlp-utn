@@ -272,7 +272,7 @@ class Administrador extends CI_Controller
                 $usuario = $this->administrador_model->getUserByID($comentario->id_usuario);
                 $dataComentarios_i = [
                     'id' => $comentario->id,
-                    'usuario' => strtoupper($usuario->apellido).', '.strtolower($usuario->nombre),
+                    'usuario' => strtoupper($usuario->apellido).', '.ucwords($usuario->nombre),
                     'comentario' => $comentario->comentario,
                     'fecha' => $comentario->fecha,
                     'hora' => $comentario->hora
@@ -468,7 +468,9 @@ class Administrador extends CI_Controller
                             'fecha' => $cargas[$i][0],
                             'detalle' => $cargas[$i][1],
                         ];
-                        $this->administrador_model->addFeriado($newFeriado);
+                        if($this->administrador_model->addFeriado($newFeriado)){
+                            $this->devolver_compras_by_fecha($cargas[$i][0], $cargas[$i][1]);
+                        };
                         $i=$i+1;
                     }
                 };
@@ -507,6 +509,122 @@ class Administrador extends CI_Controller
             }
         } else {
             redirect(base_url('admin'));
+        }
+    }
+
+    public function ver_compras_userid()
+    {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            $id_user = $this->uri->segment(4);
+            $usuario = $this->administrador_model->getUserByID($id_user);
+            $compras = $this->administrador_model->getComprasByUserId($id_user);
+            $data['titulo'] = 'Historico de compras de '.$usuario->nombre;
+            $data['usuario'] = $usuario;
+            $limit_por_pagina = 10;
+            $start_index = ($this->uri->segment(5)) ? $this->uri->segment(5) : 0;
+            $total_registros = count($compras);
+            $start_index = floor($start_index/10)*10;
+
+            $data['ultimo'] = floor($total_registros/$limit_por_pagina)*10;
+
+            $data['compras'] = $this->administrador_model->getComprasInRangeByIDUser($limit_por_pagina, $start_index, $id_user);
+            //Botones para la paginacion
+            if ($start_index==0) {
+                //Si el id es 0, estamos en la primera pagina, y lo seteamos
+                $data['primera'] = 1;
+            } elseif ($start_index <= 10) {
+                $link[] =[
+                    'id'=>0,
+                    'num'=>floor($start_index/10)
+                ];
+            } elseif ($start_index>10) {
+                $link[] = [
+                    'id'=>$start_index - 10,
+                    'num'=>floor($start_index/10)
+                ];
+            }
+
+            $link[] = [
+                'id' => $start_index,
+                'num' => floor($start_index / 10) + 1,
+                'act' =>'active'
+            ];
+
+            if ($start_index+10<=$total_registros) {
+                $link[] = [
+                    'id'=>$start_index + 10,
+                    'num'=>floor($start_index/10)+2
+                ];
+            } else {
+                $data['ultima'] = 1;
+            }
+            if ($total_registros>$limit_por_pagina){
+                $data['links']= $link;
+            }
+
+            $this->load->view('header', $data);
+            $this->load->view('ver_compras', $data);
+            $this->load->view('general/footer');
+        } else {
+            redirect(base_url('usuario'));
+        }
+    }
+
+    public function devolver_compra_by_id()
+    {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            $id_user = $this->uri->segment(4);
+            $id_compra = $this->uri->segment(5);
+            $compra = $this->administrador_model->getCompraById($id_compra);
+            $comprador = $this->administrador_model->getUserByID($id_user);
+            $saldo = $comprador->saldo; // obtenemos su saldo
+            $costoVianda = $compra->precio; // obtenemos el costo de esa compra
+            $data_log = [ 
+                'fecha' => date('Y-m-d', time()),
+                'hora' => date('H:i:s', time()),
+                'dia_comprado' => $compra->dia_comprado,
+                'id_usuario' => $comprador->id,
+                'precio' => $compra->precio,
+                'tipo' => $compra->tipo,
+                'turno' => $compra->turno,
+                'menu' => $compra->menu,
+                'transaccion_tipo' => 'Reintegro',
+            ];
+            $data_transaccion=[
+                'fecha' => date('Y-m-d', time()),
+                'hora' => date('H:i:s', time()),
+                'id_usuario' => $comprador->id,
+                'transaccion' => 'Reintegro',
+                'monto' => $costoVianda,
+                'saldo' => $saldo+$costoVianda,
+            ];
+            if ($this->administrador_model->removeCompra($id_compra)) {
+                $this->administrador_model->updateSaldoByIDUser($id_user, $saldo + $costoVianda);
+                $id_transaccion = $this->administrador_model->addTransaccion($data_transaccion);
+                // Generamso la transaccion y vinculamos los ids
+                $data_log['transaccion_id'] = $id_transaccion;
+                $this->administrador_model->addLogCompra($data_log);
+                //Armamos el correo con el detalle
+                $dataRecivo['compra'] = $compra;
+                $dataRecivo['saldo'] = $saldo+$costoVianda;
+                $dataRecivo['fechaHoy'] = date('Y-m-d', time());
+                $dataRecivo['horaAhora'] = date('H:i:s', time());
+                $dataRecivo['recivoNumero'] = $id_transaccion;
+                $motivo='Compra erronea o duplicada';
+            
+                $subject = 'Reintegro por'.$motivo;
+                $message = $this->load->view('general/correos/recibo_reintegro_duplicada', $dataRecivo, true);
+                
+                $this->generalticket->smtpSendEmail($comprador->mail, $subject, $message);
+            }
+
+            redirect(base_url("admin/compras/usuario/{$id_user}"));
+        } else {
+            redirect(base_url('usuario'));
         }
     }
 
