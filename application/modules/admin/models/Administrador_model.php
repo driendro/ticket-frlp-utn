@@ -230,7 +230,7 @@ class Administrador_model extends CI_Model
         }
     }
 
-public function getComprasByUserId($id_user)
+    public function getComprasByUserId($id_user)
     {
         /*Usado en:
         ver_compras_userid
