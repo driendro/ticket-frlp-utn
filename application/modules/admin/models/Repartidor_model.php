@@ -95,4 +95,15 @@ class Repartidor_model extends CI_Model
         $query = $this->db->get('usuarios');
         return $query->row();
     }
+
+    public function getComprasByDiaComprado($fecha)
+    {
+        /*Usado en:
+        historial_entregas_by_fecha
+        */
+        $this->db->select('*');
+        $this->db->where('dia_comprado', $fecha);
+        $query = $this->db->get('compra');
+        return $query->result();
+    }
 }

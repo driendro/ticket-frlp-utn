@@ -106,3 +106,4 @@ $route['admin/compras/devolver/(:num)/(:num)'] = 'admin/administrador/devolver_c
 
 $route['admin/repartidor'] = 'admin/repartidor/buscar_compra_por_fecha_user';
 $route['admin/repartidor/entregar'] = 'admin/repartidor/entregar_compra_by_id';
+$route['admin/repartidor/historial/(:num)'] = 'admin/repartidor/historial_entregas_by_fecha';

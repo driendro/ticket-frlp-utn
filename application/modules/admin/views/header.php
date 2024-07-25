@@ -45,13 +45,14 @@
                             <?= $this->session->userdata('nombre'); ?></a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li>
-                                <a class="dropdown-item" href="<?= base_url('admin/historial'); ?>">Historial de
-                                    cargas</a>
+                                <a class="dropdown-item" href="<?= base_url("admin/repartidor/historial/".time()); ?>">Entregas Realizadas</a>
                             </li>
+                            <?php if (in_array($this->session->userdata('admin_lvl'), [0,1])) : ?>
                             <li>
                                 <a class="dropdown-item" href="<?= base_url('admin/nuevo_usuario'); ?>">Crear nuevo
                                     usuario</a>
                             </li>
+                            <?php endif; ?>
                             <li>
                                 <a class="dropdown-item" href="<?= base_url('admin/listados'); ?>">Descargar
                                     Listados</a>

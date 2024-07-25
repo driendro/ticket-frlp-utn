@@ -693,13 +693,12 @@ class Vendedor extends CI_Controller
     public function historialCargas()
     {
         $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
         $cargas = $this->vendedor_model->getCargasByIdvendedor($id_vendedor);
-
         $data = [
             'titulo' => 'Historial de cargas',
             'cargas' => $cargas
         ];
-
         $this->load->view('header', $data);
         $this->load->view('historial', $data);
         $this->load->view('general/footer');
@@ -753,15 +752,4 @@ class Vendedor extends CI_Controller
             $this->load->view('general/footer');
         }
     }
-
-    // public function ver_historial_menu() 
-    // {
-    //     $data['titulo'] = 'Historial de comidas';
-    //     $this->load->view('header', $data);
-
-    //     $data['historial_menu'] = $this->vendedor_model->getHistorialMenu();
-    //     $this->load->view('historial_menu', $data);
-
-    //     $this->load->view('general/footer');
-    // }
 }
