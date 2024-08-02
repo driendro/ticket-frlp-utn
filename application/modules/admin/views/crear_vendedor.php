@@ -35,6 +35,15 @@
                             <input type="text" class="form-control" name="email">
                         </div>
                     </div>
+                    <div class="row">
+                        <label class="col-sm-2 col-form-label">Tipo:</label>
+                        <div class="mb-2 col-sm-3">
+                            <select class="form-control" name="tipo">
+                                <option value="0">Cajero</option>
+                                <option value="2">Repartidor</option>
+                            </select>
+                        </div>
+                    </div>
                     <div>
                         <button type="submit" class="btn btn-success">Crear usuario</button>
                     </div>

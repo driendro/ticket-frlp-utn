@@ -8,7 +8,6 @@ class Login extends CI_Controller
         parent::__construct();
 
         $this->load->model('login_model');
-        // $this->load->model('comedor/terminos_model');
     }
 
     public function index()
@@ -46,7 +45,6 @@ class Login extends CI_Controller
                     'is_user' => TRUE,
                     'is_admin' => FALSE,
                     'admin_lvl' => FALSE,
-                    // 'accepted_terms' => $this->terminos_model->validarAceptarTerminos($usuario->id),
                 ];
                 $this->session->set_userdata($session);
                 //Si no se valida, la contraseña es incorrecta

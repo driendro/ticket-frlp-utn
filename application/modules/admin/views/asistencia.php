@@ -32,7 +32,7 @@
             <h2 class="text-center">
                 <?= $diasSemana[date('l', strtotime($fecha))].', '.date('d', strtotime($fecha)).' de '.$meses[date('F', strtotime($fecha))].' de '.date('Y', strtotime($fecha)); ?>
             </h2>
-                <?= $retiro_count; ?>
+
         </div>
     </div>
     <nav aria-label="Page navigation example">
@@ -84,9 +84,9 @@
                             <td> Si </td>
                             <td> <?= $compra['repartidor']; ?></td>
                             <?php else:?>
-                                <?php if (in_array($this->session->userdata('admin_lvl'), [2,3])) : ?>
+                            <?php if (in_array($this->session->userdata('admin_lvl'), [2,3])) : ?>
                             <?php endif; ?>
-                                <td> - </td>
+                            <td> - </td>
                             <td> - </td>
                             <?php endif; ?>
                         </tr>

@@ -79,16 +79,18 @@ class Administrador extends CI_Controller
                             'is_unique' => 'Ese %s ya esta registrado',
                         ]
                     ],
+                    [
+                        'field' => 'tipo',
+                        'label' => 'Tipo',
+                        'rules' => "trim|max_length[2]|required|numeric",
+                        'errors' => [
+                            'numeric' => 'Seleccione un tipo valido %s',
+                        ]
+                    ],
                 ];
                 $this->form_validation->set_rules($rules);
-                if ($this->form_validation->run() == FALSE) {
-                    $this->load->view('header', $data);
-                    $this->load->view('crear_vendedor', $data);
-                    $this->load->view('general/footer');
-                } else {
-
+                if ($this->form_validation->run() != FALSE) {
                     $password = $this->input->post('documento');
-
                     $newUser = [
                         'nombre_usuario' => $this->input->post('nickName'),
                         'pass' => md5($password),
@@ -96,12 +98,12 @@ class Administrador extends CI_Controller
                         'apellido' => ucwords($this->input->post('apellido')),
                         'mail' => strtolower($this->input->post('email')),
                         'estado' => 1,
-                        'nivel' => 0
+                        'nivel' => $this->input->post('tipo')
                     ];
 
                     if ($this->administrador_model->addNewVendedor($newUser)) {
                         //Confeccion del correo para el nuevo vendedor
-                        $correo = $this->input->post('email');
+                        $correo = strtolower($this->input->post('email'));
                         $dataCorreo['apellido'] = $this->input->post('apellido');
                         $dataCorreo['nombre'] = $this->input->post('nombre');
                         $dataCorreo['nickName'] = $this->input->post('nickName');
@@ -110,8 +112,9 @@ class Administrador extends CI_Controller
 
                         $subject = "Bienvenido al Comedor Universitario UTN-FRLP";
                         $message = $this->load->view('general/correos/nuevo_vendedor', $dataCorreo, true);
-                        $this->generalticket->smtpSendEmail($correo, $subject, $message);
-
+                        if ($this->generalticket->smtpSendEmail($correo, $subject, $message)) {
+                            redirect(base_url('admin/csv_carga'));
+                        };
                         redirect(base_url('admin'));
                     }
                 }
@@ -260,7 +263,7 @@ class Administrador extends CI_Controller
         }
     }
 
-    public function ver_comentarios() 
+    public function ver_comentarios()
     {
         $id_vendedor = $this->session->userdata('id_vendedor');
         $admin = $this->administrador_model->getAdminById($id_vendedor);
@@ -332,7 +335,7 @@ class Administrador extends CI_Controller
             $data['titulo'] = 'Feriados';
             $data['feriados'] = $feriados;
             $data['año'] = $año;
-            
+
             // Cargar vistas
             $this->load->view('header', $data);
             $this->load->view('feriados', $data);
@@ -370,7 +373,7 @@ class Administrador extends CI_Controller
             $saldo = $comprador->saldo; // obtenemos su saldo
             $costoVianda = $compra->precio; // obtenemos el costo de esa compra
             $id_compra = $compra->id;
-            $data_log = [ 
+            $data_log = [
                 'fecha' => date('Y-m-d', time()),
                 'hora' => date('H:i:s', time()),
                 'dia_comprado' => $fecha,
@@ -396,7 +399,7 @@ class Administrador extends CI_Controller
                 $data_log['transaccion_id'] = $id_transaccion;
                 // Generamso la transaccion y vinculamos los ids
                 $this->administrador_model->addLogCompra($data_log);
-                
+
                 //Armamos el correo con el detalle
                 $dataRecivo['compra'] = $compra;
                 $dataRecivo['saldo'] = $saldo+$costoVianda;
@@ -406,7 +409,7 @@ class Administrador extends CI_Controller
 
                 $subject = 'Reintegro por '.$motivo;
                 $message = $this->load->view('general/correos/recibo_reintegro', $dataRecivo, true);
-                
+
                 $this->generalticket->smtpSendEmail($comprador->mail, $subject, $message);
             }
         }
@@ -474,7 +477,7 @@ class Administrador extends CI_Controller
                         $i=$i+1;
                     }
                 };
-                
+
                 redirect(base_url('admin/configuracion/feriados_list/'.$año));
             }
         } else {
@@ -583,7 +586,7 @@ class Administrador extends CI_Controller
             $comprador = $this->administrador_model->getUserByID($id_user);
             $saldo = $comprador->saldo; // obtenemos su saldo
             $costoVianda = $compra->precio; // obtenemos el costo de esa compra
-            $data_log = [ 
+            $data_log = [
                 'fecha' => date('Y-m-d', time()),
                 'hora' => date('H:i:s', time()),
                 'dia_comprado' => $compra->dia_comprado,
@@ -615,10 +618,10 @@ class Administrador extends CI_Controller
                 $dataRecivo['horaAhora'] = date('H:i:s', time());
                 $dataRecivo['recivoNumero'] = $id_transaccion;
                 $motivo='Compra erronea o duplicada';
-            
+
                 $subject = 'Reintegro por'.$motivo;
                 $message = $this->load->view('general/correos/recibo_reintegro_duplicada', $dataRecivo, true);
-                
+
                 $this->generalticket->smtpSendEmail($comprador->mail, $subject, $message);
             }
 

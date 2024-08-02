@@ -30,7 +30,7 @@ if (!isset($_SERVER['CI_ENV'])) {
 } elseif ($_SERVER['CI_ENV'] == 'development') {
     $config['base_url'] = '';
 } elseif ($_SERVER['CI_ENV'] == 'production') {
-    $config['base_url'] = "https://{$_SERVER['HTTP_HOST']}/ticket";
+    $config['base_url'] = "https://{$_SERVER['HTTP_HOST']}/";
 }
 /*
 |--------------------------------------------------------------------------

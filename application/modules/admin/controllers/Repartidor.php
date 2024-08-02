@@ -24,6 +24,7 @@ class Repartidor extends MX_Controller
                 } else {
                     $usuario=False;
                     $compra=False;
+                    $repartidor = False;
                 }
                 $data['usuario'] = $usuario;
                 $data['compra'] = $compra;
@@ -92,10 +93,10 @@ class Repartidor extends MX_Controller
                 $repartidor = $this->repartidor_model->getAdminById($compra->id_repartidor);
 
                 $compra_i['documento'] = $usuario->documento;
-                $compra_i['nombre'] = ucwords($usuario->nombre); 
+                $compra_i['nombre'] = ucwords($usuario->nombre);
                 $compra_i['apellido'] = strtoupper($usuario->apellido);
-                $compra_i['menu'] = $compra->menu; 
-                $compra_i['turno'] = $compra->turno; 
+                $compra_i['menu'] = $compra->menu;
+                $compra_i['turno'] = $compra->turno;
                 $compra_i['retiro'] = $compra->retiro;
                 if ($compra->id_repartidor != 0){
                     $compra_i['repartidor'] = $repartidor->nombre_usuario;
