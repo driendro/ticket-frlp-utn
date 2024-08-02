@@ -24,8 +24,6 @@
     ];
 ?>
 
-
-<?php if ($_SESSION['transaccion']): ?>
 <div class="row justify-content-center">
     <div class="col-11 col-md-7 col-xl-6 text-center my-5">
         <div class="alert alert-success" role="alert">
@@ -40,4 +38,4 @@
         </div>
     </div>
 </div>
-<?php endif; ?>
+

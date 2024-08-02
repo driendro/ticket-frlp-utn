@@ -199,21 +199,6 @@ class Ticket extends CI_Controller
         $this->session->set_flashdata('transaccion', $id_insert);
 
         redirect(base_url('usuario/comprar/success'));
-        //Confeccion del correo del recivo
-        //$usuario = $this->ticket_model->getUserById($id_usuario);
-        //$compras = $this->ticket_model->getComprasByIDTransaccion($id_insert);
-        //$dataRecivo['compras'] = $compras;
-        //$dataRecivo['total'] = $costoVianda * $n_compras;
-        //$dataRecivo['fechaHoy'] = date('d/m/Y', time());
-        //$dataRecivo['horaAhora'] = date('H:i:s', time());
-        //$dataRecivo['recivoNumero'] = $id_insert;
-
-        //$subject = "Recibo de compra del comedor";
-        //$message = $this->load->view('general/correos/recibo_compra', $dataRecivo, true);
-
-        //if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message)) {
-        //    redirect(base_url('usuario'));
-        //}
     }
 
     public function compraSuccess()
@@ -226,6 +211,7 @@ class Ticket extends CI_Controller
         $usuario = $this->ticket_model->getUserById($id_usuario);
 
         $data['transaccion'] = $id_transaccion;
+        $data['tipo'] = 'compra';
 
 
         if ($id_transaccion) {
@@ -256,7 +242,7 @@ class Ticket extends CI_Controller
                 $this->load->view('general/footer');
             }
         } else {
-            redirect(base_url('menu'));
+            redirect(base_url('usuario'));
         }
     }
 
@@ -328,20 +314,10 @@ class Ticket extends CI_Controller
                             $this->ticket_model->updateTransactionInLogCompraByID($id_compra, $id_insert);
                         }
                     }
-                    //Confeccion del correo del recivo
-                    $usuario = $this->ticket_model->getUserById($id_usuario);
-                    $compras = $this->ticket_model->getlogComprasByIDTransaccion($id_insert);
-                    $dataRecivo['compras'] = $compras;
-                    $dataRecivo['total'] = $costoVianda * $n_devolucion;
-                    $dataRecivo['fechaHoy'] = date('d/m/Y', time());
-                    $dataRecivo['horaAhora'] = date('H:i:s', time());
-                    $dataRecivo['recivoNumero'] = $id_insert;
+                    
+                    $this->session->set_flashdata('transaccion', $id_insert);
+                    redirect(base_url('usuario/devolver/success'));
 
-                    $subject = "Recibo de devolucion del comedor";
-                    $message = $this->load->view('general/correos/recibo_devolucion', $dataRecivo, true);
-
-                    if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message))
-                        redirect(base_url('usuario/devolver_compra'));
                 } else {
                     $this->load->view('usuario/header', $data);
                     $this->load->view('usuario/devolver_compra', $data);
@@ -366,6 +342,48 @@ class Ticket extends CI_Controller
             $this->load->view('usuario/header', $data);
             $this->load->view('alerta_comedor_cerrado', $data);
             $this->load->view('general/footer');
+        }
+    }
+
+        public function devolverCompraSuccess()
+    {
+        $data['titulo'] = 'Confirmacion';
+        $id_transaccion= $this->session->flashdata('transaccion');
+        $id_usuario = $this->session->userdata('id_usuario');
+
+        $cargas = $this->ticket_model->getCargaByTransaccion($id_transaccion);
+        $usuario = $this->ticket_model->getUserById($id_usuario);
+
+        $data['transaccion'] = $id_transaccion;
+        $data['tipo'] = 'devolucion';
+
+        if ($id_transaccion) {
+            $compras = $this->ticket_model->getlogComprasByIDTransaccion($id_transaccion);
+            $data['compras']=$compras;
+            $this->session->set_flashdata('transaccion', $id_transaccion);
+
+            if ($this->input->method() == 'post') {
+                $id_transaccion= $this->session->flashdata('transaccion');
+                //Confeccion del correo del recivo
+                $dataRecivo['compras'] = $compras;
+                $dataRecivo['total'] = $costoVianda * $n_devolucion;
+                $dataRecivo['fechaHoy'] = date('d/m/Y', time());
+                $dataRecivo['horaAhora'] = date('H:i:s', time());
+                $dataRecivo['recivoNumero'] = $id_transaccion;
+
+                $subject = "Recibo de devolucion del comedor";
+                $message = $this->load->view('general/correos/recibo_devolucion', $dataRecivo, true);
+
+                if ($this->generalticket->smtpSendEmail($usuario->mail, $subject, $message)){
+                    redirect(base_url('usuario/devolver_compra'));
+                }
+            } else {
+                $this->load->view('usuario/header', $data);
+                $this->load->view('comedor/compra_confirmacion', $data);
+                $this->load->view('general/footer');
+            }
+        } else {
+            redirect(base_url('usuario'));
         }
     }
 }
