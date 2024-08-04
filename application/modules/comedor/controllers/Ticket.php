@@ -220,12 +220,13 @@ class Ticket extends CI_Controller
             $this->session->set_flashdata('transaccion', $id_transaccion);
 
             if ($this->input->method() == 'post') {
+                $costoVianda = $this->ticket_model->getCostoByID($usuario->id_precio);
                 $id_transaccion= $this->session->flashdata('transaccion');
                 //Confeccion del correo del recivo
                 $usuario = $this->ticket_model->getUserById($id_usuario);
                 $compras = $this->ticket_model->getComprasByIDTransaccion($id_transaccion);
                 $dataRecivo['compras'] = $compras;
-                $dataRecivo['total'] = $costoVianda * $n_compras;
+                $dataRecivo['total'] = $costoVianda * count($compras);
                 $dataRecivo['fechaHoy'] = date('d/m/Y', time());
                 $dataRecivo['horaAhora'] = date('H:i:s', time());
                 $dataRecivo['recivoNumero'] = $id_transaccion;
@@ -314,7 +315,7 @@ class Ticket extends CI_Controller
                             $this->ticket_model->updateTransactionInLogCompraByID($id_compra, $id_insert);
                         }
                     }
-                    
+
                     $this->session->set_flashdata('transaccion', $id_insert);
                     redirect(base_url('usuario/devolver/success'));
 
@@ -351,7 +352,6 @@ class Ticket extends CI_Controller
         $id_transaccion= $this->session->flashdata('transaccion');
         $id_usuario = $this->session->userdata('id_usuario');
 
-        $cargas = $this->ticket_model->getCargaByTransaccion($id_transaccion);
         $usuario = $this->ticket_model->getUserById($id_usuario);
 
         $data['transaccion'] = $id_transaccion;
@@ -360,13 +360,14 @@ class Ticket extends CI_Controller
         if ($id_transaccion) {
             $compras = $this->ticket_model->getlogComprasByIDTransaccion($id_transaccion);
             $data['compras']=$compras;
+            $costoVianda = $this->ticket_model->getCostoById($usuario->id_precio);
             $this->session->set_flashdata('transaccion', $id_transaccion);
 
             if ($this->input->method() == 'post') {
                 $id_transaccion= $this->session->flashdata('transaccion');
                 //Confeccion del correo del recivo
                 $dataRecivo['compras'] = $compras;
-                $dataRecivo['total'] = $costoVianda * $n_devolucion;
+                $dataRecivo['total'] = $costoVianda * count($compras);
                 $dataRecivo['fechaHoy'] = date('d/m/Y', time());
                 $dataRecivo['horaAhora'] = date('H:i:s', time());
                 $dataRecivo['recivoNumero'] = $id_transaccion;

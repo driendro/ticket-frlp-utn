@@ -59,8 +59,13 @@
                     <div class="col-4">
                         <select name="metodo_carga" class="form-control">
                             <option value='' selected> ----- </option>
-                            <option value="efectivo">Efectivo</option>
-                            <option value="virtual">Virtual</option>
+                            <?php if (in_array($this->session->userdata('admin_lvl'), [1])) : ?>
+                            <option value="reintegro">Reintegro</option>
+                            <option value="compra">Compra</option>
+                            <option value="error">Error</option>
+                            <?php endif; ?>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Virtual">Virtual</option>
                         </select>
                     </div>
 

@@ -22,8 +22,8 @@ class General_model extends CI_Model
             'smtp_pass' => $this->config->item('smtp_pass'),
             'smtp_port' => $this->config->item('smtp_port'),
             'smtp_crypto' => $this->config->item('smtp_crypto'),
-            'mailtype'  => 'html',
-            'charset'   => 'UTF-8'
+            'mailtype' => 'html',
+            'charset' => 'UTF-8'
         );
         $this->email->initialize($config);
         $this->email->set_mailtype("html");

@@ -47,10 +47,10 @@
                                     </label>
                                 </div>
                                 <fieldset id="<?= $dia; ?>" disabled>
-                                    <div>
+                                    <div hidden>
                                         <select class="form-select" name="selectTipo<?= ucwords($dia); ?>"
                                             id="selectTipo<?= ucwords($dia); ?>">
-                                            <option value="Comer aqui"> Comer aqui </option>
+                                            <option selected value="Comer aqui"> Comer aqui </option>
                                             <option value="Llevar"> Para llevar </option>
                                         </select>
                                     </div>
