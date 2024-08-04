@@ -44,6 +44,13 @@
                             aria-expanded="false"><?= $this->session->userdata('apellido'); ?>,
                             <?= $this->session->userdata('nombre'); ?></a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <?php if (in_array($this->session->userdata('admin_lvl'), [2])) : ?>
+                            <li>
+                                <a class="dropdown-item"
+                                    href="<?= base_url("admin/repartidor/historial/".time()); ?>">Asistencia</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if (in_array($this->session->userdata('admin_lvl'), [0,1])) : ?>
                             <li>
                                 <a class="dropdown-item" href="<?= base_url('admin/historial'); ?>">Historial de
                                     cargas</a>
@@ -60,6 +67,7 @@
                                 <a class="dropdown-item" href="<?= base_url('admin/informe'); ?>">Cierre
                                     de Caja</a>
                             </li>
+                            <?php endif; ?>
                             <!-- <li>
                                 <a class="dropdown-item" href="<?= base_url('admin/ver_historial_menu'); ?>">Historial de comidas</a>
                             </li> -->

@@ -199,4 +199,17 @@ class Ticket_model extends CI_Model
         */
         return $this->db->get('configuracion')->result();
     }
+
+    public function getCargaByTransaccion($id_transaccion)
+    {
+        /* Usdo en:
+
+        */
+        $this->db->select('*');
+        $this->db->from('log_carga');
+        $this->db->join('usuarios', 'log_carga.id_usuario=usuarios.id');
+        $this->db->where('log_carga.transaccion_id', $id_transaccion);
+        $query = $this->db->get();
+        return $query->result();
+    }
 }

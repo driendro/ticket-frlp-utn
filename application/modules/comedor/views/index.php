@@ -47,17 +47,18 @@
                                     </label>
                                 </div>
                                 <fieldset id="<?= $dia; ?>" disabled>
-     									<div>
-    										<select class="form-select" name="selectTipo<?= ucwords($dia); ?>" id="selectTipo<?= ucwords($dia); ?>">
-    											<option value="Comer aqui"> Comer aqui </option>
-    											<option value="Llevar"> Para llevar </option>
-    										</select>
-    									</div>
+                                    <div hidden>
+                                        <select class="form-select" name="selectTipo<?= ucwords($dia); ?>"
+                                            id="selectTipo<?= ucwords($dia); ?>">
+                                            <option selected value="Comer aqui"> Comer aqui </option>
+                                            <option value="Llevar"> Para llevar </option>
+                                        </select>
+                                    </div>
                                     <div>
                                         <select class="form-select" name="selectTurno<?= ucwords($dia); ?>"
                                             id="selectTurno<?= ucwords($dia); ?>">
-                                            <option value="12:00"> Turno mañana</option>
-                                            <option value="20:00"> Turno noche </option>
+                                            <option value="mañana"> Medio día</option>
+                                            <option value="noche"> Noche </option>
                                         </select>
                                     </div>
                                     <div>

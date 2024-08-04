@@ -65,7 +65,6 @@ class Vendedor extends CI_Controller
             $data['tipo'] = $carga->formato;
             $correo = $carga->mail;
         }
-
         //Confeccion del correo del recibo
         $subject = "Carga de Saldo";
         $message = $this->load->view('general/correos/carga_saldo', $data, true);
@@ -86,12 +85,18 @@ class Vendedor extends CI_Controller
                 [
                     'field' => 'carga',
                     'label' => 'Saldo a Cargar',
-                    'rules' => 'trim|required|differs[0]|greater_than[-10000]|less_than[10000]',
+                    'rules' => 'trim|required|differs[0]',
                     'errors' => [
                         'required' => 'Debe ingresar un monto a cargar',
                         'differs' => 'El monto debe ser distinto de 0 (cero)',
-                        'greater_than' => 'El monto a cargar no puede ser menor que -9999$',
-                        'less_than' => 'El monto a cargar no debe superar los 9999$'
+                    ]
+                ],
+                [
+                    'field' => 'metodo_carga',
+                    'label' => 'Metodo de Carga',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'Se debe especificar un metodo de carga'
                     ]
                 ],
             ];
@@ -134,14 +139,51 @@ class Vendedor extends CI_Controller
                     'transaccion_id' => $id_insert
                 ];
                 $this->vendedor_model->addCargaLog($cargaLog);
-                $this->correoCargaSaldo($id_insert);
+                $this->session->set_flashdata('transaccion', $id_insert);
 
-                redirect(base_url('admin'));
+                redirect(base_url('admin/cargar_saldo/succes'));
             }
         } else {
             redirect(base_url('admin'));
         }
     }
+
+    public function cargarSaldoSucces()
+    {
+        $id_transaccion= $this->session->flashdata('transaccion');
+        $cargas = $this->vendedor_model->getCargaByTransaccion($id_transaccion);
+        $data['titulo'] = 'Confirmacion';
+
+        if ($id_transaccion) {
+            foreach ($cargas as $carga) {
+                //Solo tomo datos del unico elemento que trae el array
+                $data['transaccion'] = $id_transaccion;
+                $data['fecha'] = date('d-m-Y', strtotime($carga->fecha));
+                $data['hora'] = $carga->hora;
+                $data['documento'] = $carga->documento;
+                $data['apellido'] = $carga->apellido;
+                $data['nombre'] = $carga->nombre;
+                $data['monto'] = $carga->monto;
+                $data['saldo'] = $carga->saldo;
+                $data['tipo'] = $carga->formato;
+                $correo = $carga->mail;
+            }
+            $this->session->set_flashdata('transaccion', $id_transaccion);
+
+            if ($this->input->method() == 'post') {
+                $id_transaccion= $this->session->flashdata('transaccion');
+                $this->correoCargaSaldo($id_transaccion);
+                redirect(base_url('admin'));
+            } else {
+                $this->load->view('header', $data);
+                $this->load->view('carga_succes', $data);
+                $this->load->view('general/footer');
+            }
+        } else {
+            redirect(base_url('admin'));
+        }
+    }
+
 
     public function createUser()
     {
@@ -515,6 +557,7 @@ class Vendedor extends CI_Controller
             header('Content-Type: application/vnd.ms-excel');
             header("Content-Disposition: attachment; filename={$filename}");
             $writer = new Xlsx($spreadsheet);
+            ob_end_clean();
             $writer->save("php://output");
         } else {
             $this->load->view('header', $data);
@@ -694,12 +737,10 @@ class Vendedor extends CI_Controller
     {
         $id_vendedor = $this->session->userdata('id_vendedor');
         $cargas = $this->vendedor_model->getCargasByIdvendedor($id_vendedor);
-
         $data = [
             'titulo' => 'Historial de cargas',
             'cargas' => $cargas
         ];
-
         $this->load->view('header', $data);
         $this->load->view('historial', $data);
         $this->load->view('general/footer');
@@ -714,15 +755,9 @@ class Vendedor extends CI_Controller
 
         if ($this->input->method() == 'post') {
             for ($i = 1; $i <= 5; $i++) {
-                $this->form_validation->set_rules("basico_{$i}", 'Menu Basico', 'alpha_numeric_spaces', [
-                    'alpha_numeric_spaces' => 'Solo deben contener caracteres alfanumerico',
-                ]);
-                $this->form_validation->set_rules("veggie_{$i}", 'Menu Veggie', 'alpha_numeric_spaces', [
-                    'alpha_numeric_spaces' => 'Solo deben contener caracteres alfanumerico',
-                ]);
-                $this->form_validation->set_rules("sin_tacc_{$i}", 'Menu Sin TACC', 'alpha_numeric_spaces', [
-                    'alpha_numeric_spaces' => 'Solo deben contener caracteres alfanumerico',
-                ]);
+                $this->form_validation->set_rules("basico_{$i}", 'Menu Basico', 'required');
+                $this->form_validation->set_rules("veggie_{$i}", 'Menu Veggie', 'required');
+                $this->form_validation->set_rules("sin_tacc_{$i}", 'Menu Sin TACC', 'required');
             }
             if ($this->form_validation->run() == FALSE) {
                 $this->load->view('header', $data);
@@ -753,15 +788,4 @@ class Vendedor extends CI_Controller
             $this->load->view('general/footer');
         }
     }
-
-    // public function ver_historial_menu() 
-    // {
-    //     $data['titulo'] = 'Historial de comidas';
-    //     $this->load->view('header', $data);
-
-    //     $data['historial_menu'] = $this->vendedor_model->getHistorialMenu();
-    //     $this->load->view('historial_menu', $data);
-
-    //     $this->load->view('general/footer');
-    // }
 }
