@@ -269,4 +269,26 @@ class Administrador_model extends CI_Model
         $query = $this->db->get('compra');
         return $query->row();
     }
+
+    public function getLinkVirtuales()
+    {
+        return $this->db->get('linkpagos')->result();
+    }
+    
+    public function addLinkVirtual($data)
+    {
+        /*Usado en:
+        */
+        $this->db->insert('linkpagos', $data);
+        return true;
+    }
+
+    public function removeLinkVirtual($id)
+    {
+        /*Usado en:
+        */
+        $this->db->where('id',$id);
+        $this->db->delete('linkpagos');
+        return true;
+    }
 }

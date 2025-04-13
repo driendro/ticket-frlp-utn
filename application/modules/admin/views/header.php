@@ -115,6 +115,10 @@
                             </li>
                             <li>
                                 <a class="dropdown-item"
+                                    href="<?= base_url('admin/configuracion/links'); ?>">Botones de Pagos</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item"
                                     href="<?= base_url('admin/configuracion/precios'); ?>">Precios</a>
                             </li>
                         </ul>

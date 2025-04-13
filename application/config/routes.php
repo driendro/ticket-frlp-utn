@@ -106,6 +106,9 @@ $route['admin/conf/feriados/add/csv'] = 'admin/administrador/add_csv_feriado';
 $route['admin/compras/usuario/(:num)'] = 'admin/administrador/ver_compras_userid';
 $route['admin/compras/usuario/(:num)/(:num)'] = 'admin/administrador/ver_compras_userid';
 $route['admin/compras/devolver/(:num)/(:num)'] = 'admin/administrador/devolver_compra_by_id';
+$route['admin/configuracion/links'] = 'admin/administrador/listar_link_pagos';
+$route['admin/configuracion/links/add'] = 'admin/administrador/add_link_pago';
+$route['admin/configuracion/links/rm'] = 'admin/administrador/remove_link_pago';
 
 $route['admin/repartidor'] = 'admin/repartidor/buscar_compra_por_fecha_user';
 $route['admin/repartidor/entregar'] = 'admin/repartidor/entregar_compra_by_id';

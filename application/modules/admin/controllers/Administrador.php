@@ -9,6 +9,7 @@ class Administrador extends CI_Controller
 
         $this->load->model('administrador_model');
 
+
         if ($this->session->userdata('is_user')) {
             redirect(base_url('usuario'));
         }
@@ -631,4 +632,52 @@ class Administrador extends CI_Controller
         }
     }
 
+    public function listar_link_pagos()
+    {
+        $data['titulo'] = 'Links de Pagos';
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            $data['links']= $this->administrador_model->getLinkVirtuales();
+            $this->load->view('header', $data);
+            $this->load->view('listar_links_mp', $data);
+            $this->load->view('general/footer');
+            
+        } else {
+            redirect(base_url('usuario'));
+        }
+    }
+
+    public function add_link_pago()
+    {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1 && $this->input->method() == 'post') {
+            $user_tipo = $this->input->post('tipo_usuario');
+            $monto = $this->input->post('monto');
+            $link = $this->input->post('link');
+            $newBoton = [
+                'valor' => $monto,
+                'link' => $link,
+                'tipo_user' => $user_tipo,
+            ];
+            $this->administrador_model->addLinkVirtual($newBoton);
+            redirect(base_url('admin/configuracion/links'));
+        } else {
+            redirect(base_url('admin/configuracion/links'));
+        }
+    }
+
+    public function remove_link_pago()
+    {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1 && $this->input->method() == 'post') {
+            $id_link = $this->input->post('id_link');
+            $this->administrador_model->removeLinkVirtual($id_link);
+            redirect(base_url('admin/configuracion/links'));
+        } else {
+            redirect(base_url('admin/configuracion/links'));
+        }
+    }
 }
