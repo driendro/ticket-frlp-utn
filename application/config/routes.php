@@ -57,6 +57,7 @@ $route['translate_uri_dashes'] = false;
 $route['usuario'] = 'comedor/ticket/index';
 $route['usuario/cambio-password'] = 'usuario/changePassword';
 $route['usuario/comprar'] = 'comedor/ticket/compra';
+$route['usuario/carga_virtual'] = 'usuario/botones_de_pago';
 $route['usuario/comprar/success'] = 'comedor/ticket/compraSuccess';
 $route['usuario/devolver_compra'] = 'comedor/ticket/devolverCompra';
 $route['usuario/devolver/success'] = 'comedor/ticket/devolverCompraSuccess';

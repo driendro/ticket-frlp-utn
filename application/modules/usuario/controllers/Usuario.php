@@ -137,4 +137,43 @@ class Usuario extends CI_Controller
         $this->load->view('historial', $data);
         $this->load->view('general/footer');
     }
+
+    public function botones_de_pago()
+    {
+        $data = [
+            'titulo' => 'Carga por Link de pago'
+        ];
+        $id_user = $this->session->userdata('id_usuario');
+        $usuario = $this->usuario_model->getUserByID($id_user);
+        $data['usuario'] = $usuario;
+        $data['saldo'] = $usuario->saldo;
+        $data['monto_acreditar'] = 2000;
+        $data['links'] = $this->usuario_model->getLinkByUserType($usuario->tipo);
+
+        $this->load->view('header', $data);
+        $this->load->view('bonotes_pago', $data);
+        $this->load->view('general/footer');
+    }
+
+    public function add_carga_virtual()
+    {
+        $id_user = $this->session->userdata('id_usuario');
+        $usuario = $this->usuario_model->getUserByID($id_user);
+        if ($this->input->method() == 'post') {
+            $id_link = $this->input->post('id_link');
+            $link_pago = $this->usuario_model->getLinkByID($id_link)
+            $link_mp = 
+        } else {
+            $this->load->view('header', $data);
+            $this->load->view('bonotes_pago', $data);
+            $this->load->view('general/footer');
+        }
+
+        $data['usuario'] = $usuario;
+        $data['saldo'] = $usuario->saldo;
+        $data['monto_acreditar'] = 2000;
+        $data['links'] = $this->usuario_model->getLinkByUserType($usuario->tipo);
+
+    }
+
 }

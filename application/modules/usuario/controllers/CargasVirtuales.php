@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Usuario extends CI_Controller
+class CargaVirtual extends CI_Controller
 {
     public function __construct()
     {
@@ -18,25 +18,6 @@ class Usuario extends CI_Controller
         }
     }
 
-    public function botonera()
-    {
-        $data = [
-            'titulo' => 'Carga por Link de pago'
-        ];
-        $id_user = $this->session->userdata('id_usuario');
-        $usuario = $this->usuario_model->getUserByID($id_user);
-        $data['usuario'] = $usuario;
-        $data['links_pagos'] = $this->cargavirtuales_model->getLinkByUserType($usuario->tipo);
-
-        if ($this->input->method() == 'post') {
-        }
-        else {
-            $this->load->view('header', $data);
-            $this->load->view('change_password');
-            $this->load->view('general/footer');
-        }
-
-    }
 
     public function ultimosMovimientos()
     {
