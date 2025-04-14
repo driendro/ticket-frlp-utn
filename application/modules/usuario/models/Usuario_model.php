@@ -60,9 +60,10 @@ class Usuario_model extends CI_Model
         return false;
     }
 
-    public function createCargaV($data)
+    public function createCargaVirtual($data)
     {
         $this->db->insert('cargasvirtuales', $data);
+        return True;
     }
 
     public function getLinkByUserType($tipo_usuario) 
@@ -70,6 +71,22 @@ class Usuario_model extends CI_Model
         $this->db->select('*');
         $this->db->where('tipo_user', $tipo_usuario);
         $query = $this->db->get("linkpagos");
+        return $query->result();
+    }
+
+    public function getLinkByID($id)
+    {
+        $this->db->select('*');
+        $this->db->where('id', $id);
+        $query = $this->db->get('linkpagos');
+        return $query->row();
+    }
+
+    public function getCargasVirtualesByUserID($id_user)
+    {
+        $this->db->select('*');
+        $this->db->where('usuario', $id_user);
+        $query = $this->db->get('cargasvirtuales');
         return $query->result();
     }
 }

@@ -58,6 +58,7 @@ $route['usuario'] = 'comedor/ticket/index';
 $route['usuario/cambio-password'] = 'usuario/changePassword';
 $route['usuario/comprar'] = 'comedor/ticket/compra';
 $route['usuario/carga_virtual'] = 'usuario/botones_de_pago';
+$route['usuario/carga_virtual/add'] = 'usuario/add_carga_virtual';
 $route['usuario/comprar/success'] = 'comedor/ticket/compraSuccess';
 $route['usuario/devolver_compra'] = 'comedor/ticket/devolverCompra';
 $route['usuario/devolver/success'] = 'comedor/ticket/devolverCompraSuccess';

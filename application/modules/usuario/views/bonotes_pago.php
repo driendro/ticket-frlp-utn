@@ -8,8 +8,12 @@
         <div class="row form-center">
             <div class="col-10 col-md-8 col-xl-7 my-5">
             <?php foreach ($links as $link) : ?>
-                <a href="<?= $link->link; ?>" class="btn btn-primary mt-2">Cargar $<?= $link->valor; ?> </a>
+                <form action="<?= base_url('usuario/carga_virtual/add') ?>" method="POST" class="d-inline" target='_blanck' onsubmit="setTimeout(() => { location.reload(); }, 2000);">
+                    <input type="hidden" name="id_link" value="<?= $link->id; ?>">
+                    <button type="submit" class="btn btn-primary mt-2">Cargar: $<?= $link->valor; ?></button>
+                </form>
             <?php endforeach; ?>
-            </div>
+        </div>
         </div>
     </div>
+

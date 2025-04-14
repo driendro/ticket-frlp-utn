@@ -8,8 +8,7 @@
                 </p>
                 <p class="text-center mb-0" style="font-size:95%">Actualizado por <strong>Secretaria de Asuntos
                         Universitarios </strong> - <strong>UTN-FRLP</strong>.</p>
-                <p class=" text-center mb-0" style="font-size:95%">Basado en el sistema desarrollado por BIFANO,
-                    Lautaro, RUMBO, Dario y DORCE, Jose.</p>
+                <p class=" text-center mb-0" style="font-size:95%">Basado en el sistema desarrollado por Lautaro BIFANO, Dario RUMBO y Jose DORCE.</p>
                 <p class="text-center mb-0"><strong>Ticket-Web © Copyright <?= date('Y'); ?></strong></p>
             </div>
         </div>
