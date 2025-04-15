@@ -291,4 +291,61 @@ class Administrador_model extends CI_Model
         $this->db->delete('linkpagos');
         return true;
     }
+
+    public function getLast20Cargas()
+    {
+        /*Usado en:
+        */
+        $this->db->select('cargasvirtuales.*, usuarios.nombre, usuarios.apellido, usuarios.documento, vendedores.nombre_usuario as vendedor_username');
+        $this->db->from('cargasvirtuales');
+        $this->db->join('usuarios', 'cargasvirtuales.usuario = usuarios.id', 'inner');
+        $this->db->join('vendedores', 'cargasvirtuales.confirmacion_vendedor = vendedores.id_vendedor', 'left');
+        $this->db->order_by('cargasvirtuales.id', 'DESC');
+        $this->db->limit(5);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function getCargasByFecha($fecha)
+    {
+        /*Usado en:
+        */
+        $this->db->select('cargasvirtuales.*, usuarios.nombre, usuarios.apellido, usuarios.documento, vendedores.nombre_usuario as vendedor_username');
+        $this->db->from('cargasvirtuales');
+        $this->db->join('usuarios', 'cargasvirtuales.usuario = usuarios.id', 'inner');
+        $this->db->join('vendedores', 'cargasvirtuales.confirmacion_vendedor = vendedores.id_vendedor', 'left');
+        $this->db->where('DATE(cargasvirtuales.timestamp)', $fecha);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function getCargaVirtualByID($id)
+    {
+        /*Usado en:
+        */
+        $this->db->select('*');
+        $this->db->where('id', $id);
+        $query = $this->db->get('cargasvirtuales');
+        return $query->row();
+    }
+
+    public function updateCargaVirtualByID($id, $vendedor_id)
+    {
+        /*Usado en:
+        */
+        $this->db->set('confirmacion_vendedor', $vendedor_id);
+        $this->db->set('estado', 'aprobado');
+        $this->db->set('confirmacion_timestamp', date('Y-m-d H:i:s'));
+        $this->db->where('id', $id);
+        return $this->db->update('cargasvirtuales');
+    }
+
+    public function rmCargaVirtualByID($id)
+    {
+        /*Usado en:
+        */
+        $this->db->where('id',$id);
+        $this->db->delete('cargasvirtuales');
+        return true;
+    }
 }
