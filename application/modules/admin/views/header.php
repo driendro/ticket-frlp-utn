@@ -92,6 +92,9 @@
                                     Comentarios</a>
                             </li>
                             <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/cargasvirtuales/list'); ?>">Ver Cargas Virtuales</a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="<?= base_url('admin/crear_vendedor'); ?>">Nuevo
                                     Vendedor</a>
                             </li>

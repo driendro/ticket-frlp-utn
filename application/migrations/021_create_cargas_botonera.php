@@ -26,11 +26,13 @@ class Migration_create_cargas_botonera extends CI_Migration
                 'constraint' => 50,
             ],
             'confirmacion_timestamp' => [
-                'type' => 'DATETIME'
+                'type' => 'DATETIME',
+                'null' => TRUE
             ],
             'confirmacion_vendedor' => [
                 'type' => 'INT',
-                'constraint' => 11
+                'constraint' => 11,
+                'null' => TRUE
             ],
         ]);
         // This table stores virtual load transactions, including user, amount, state, and timestamps.

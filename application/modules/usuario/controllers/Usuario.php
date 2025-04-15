@@ -137,4 +137,51 @@ class Usuario extends CI_Controller
         $this->load->view('historial', $data);
         $this->load->view('general/footer');
     }
+
+    public function botones_de_pago()
+    {
+        $data = [
+            'titulo' => 'Carga por Link de pago'
+        ];
+        $id_user = $this->session->userdata('id_usuario');
+        $usuario = $this->usuario_model->getUserByID($id_user);
+        $cargas_virtuales = $this->usuario_model->getCargasVirtualesByUserID($id_user);
+        $data['usuario'] = $usuario;
+        $data['saldo'] = $usuario->saldo;
+        $data['monto_acreditar'] = !empty($cargas_virtuales)
+            ? array_sum(array_column($cargas_virtuales, 'monto'))
+            : 0;
+        $data['links'] = $this->usuario_model->getLinkByUserType($usuario->tipo);
+
+        $this->load->view('header', $data);
+        $this->load->view('bonotes_pago', $data);
+        $this->load->view('general/footer');
+    }
+
+    public function add_carga_virtual()
+    {
+        $id_user = $this->session->userdata('id_usuario');
+        $usuario = $this->usuario_model->getUserByID($id_user);
+        if ($this->input->method() == 'post') {
+            $id_link = $this->input->post('id_link');
+            $link_pago = $this->usuario_model->getLinkByID($id_link);
+            $link_mp = $link_pago->link;
+            $nuevaCarga =[
+                'usuario'=> $usuario->id,
+                'timestamp' => date('Y-m-d H:i:s'),
+                'monto' => $link_pago->valor,
+                'estado' => 'revision',
+            ];
+            if ($this->usuario_model->createCargaVirtual($nuevaCarga)) {
+                //echo "<script>window.open('$link_mp', '_blank')</script>";
+                redirect($link_mp);
+                //redirect(base_url('usuario/carga_virtual/add'));
+            } else {
+                redirect(base_url('usuario/carga_virtual/add'));
+            }
+        } else {
+            redirect(base_url('usuario/carga_virtual/add'));
+        }
+    }
+
 }

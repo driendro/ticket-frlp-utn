@@ -680,4 +680,122 @@ class Administrador extends CI_Controller
             redirect(base_url('admin/configuracion/links'));
         }
     }
+
+    public function cargas_virtuales_all_list($fecha = null)
+    {
+        $data['titulo'] = 'Pagos Virtuales Realizados';
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            if ($this->input->method() == 'post'){
+                $fecha = $this->input->post('filter_date');
+                redirect(base_url('admin/cargasvirtuales/list/'.$fecha));
+            } else{
+                if ($fecha) {
+                    $fecha_formateada = date('Y-m-d', strtotime(str_replace('-', '/', $fecha)));
+                    $data['fecha_filtrada'] = $fecha;
+                    $data['cargas'] = $this->administrador_model->getCargasByFecha($fecha_formateada);
+                } else {
+                    $data['fecha_filtrada'] = "";
+                    $data['cargas'] = $this->administrador_model->getLast20Cargas();
+                }
+            }
+            $this->load->view('header', $data);
+            $this->load->view('listar_cargas_virtuales', $data);
+            $this->load->view('general/footer');
+        } else {
+            redirect(base_url('usuario'));
+        }
+    }
+
+    public function carga_virtual_ok($fecha = null)
+    {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            if ($this->input->method() == 'post'){
+                $carga_id = $this->input->post('carga_id');
+                $carga = $this->administrador_model->getCargaVirtualByID($carga_id);
+                $usuario = $this->administrador_model->getUserByID($carga->usuario);
+                $iduser = $usuario->id; //obtengo el id del user
+                $saldo = $this->administrador_model->updateAndGetSaldoByUserId($iduser, $carga->monto); // modifico y luego obtengo el saldo
+
+                //Genero y guardo la transaccion
+                $transaction_carga = [
+                    'fecha' => date('Y-m-d', time()),
+                    'hora' => date('H:i:s', time()),
+                    'id_usuario' => $iduser,
+                    'monto' => $carga->monto,
+                    'transaccion'=> 'Carga de Saldo',
+                ];
+                //Seteo el saldo al final de la transaccion
+                $transaction_carga['saldo'] = $saldo;
+                //Inserto la transaccion y obtengo su ID
+                $id_insert = $this->administrador_model->addTransaccion($transaction_carga);
+
+                //Genero la carga en la tabla log_carga
+                $cargaLog = [
+                    'fecha' => date('Y-m-d', time()),
+                    'hora' => date('H:i:s', time()),
+                    'id_usuario' => $iduser,
+                    'monto' => $carga->monto,
+                    'id_vendedor' => $this->session->id_vendedor,
+                    'formato' => 'Virtual',
+                    'transaccion_id' => $id_insert
+                ];
+                $this->administrador_model->addCargaLog($cargaLog);
+                $this->session->set_flashdata('transaccion', $id_insert);
+                $this->administrador_model->updateCargaVirtualByID($carga_id, $id_vendedor);
+                //Confeccion del correo
+                $data['transaccion'] = $id_insert;
+                $data['fecha'] = date('d-m-Y', strtotime($cargaLog->fecha));
+                $data['hora'] = $cargaLog->hora;
+                $data['documento'] = $usuario->documento;
+                $data['apellido'] = $usuario->apellido;
+                $data['nombre'] = $usuario->nombre;
+                $data['monto'] = $cargaLog->monto;
+                $data['saldo'] = $saldo;
+                $data['tipo'] = $cargaLog->formato;
+                $correo = $usuario->mail;
+                
+                //Confeccion del correo del recibo
+                $subject = "Acreditacion de Carga Virtual";
+                $message = $this->load->view('general/correos/carga_saldo', $data, true);
+                $this->generalticket->smtpSendEmail($correo, $subject, $message);
+
+                redirect(base_url('admin/cargasvirtuales/list/'.$fecha));
+            } else {
+                redirect(base_url('admin/cargasvirtuales/list/'.$fecha));
+            }
+        }
+    }
+
+    public function carga_virtual_remove($fecha = null)
+    {
+        $id_vendedor = $this->session->userdata('id_vendedor');
+        $admin = $this->administrador_model->getAdminById($id_vendedor);
+        if ($admin->nivel == 1) {
+            if ($this->input->method() == 'post'){
+                $carga_id = $this->input->post('carga_id');
+                $carga = $this->administrador_model->getCargaVirtualByID($carga_id);
+                if($this->administrador_model->rmCargaVirtualByID($carga_id)){
+                    $usuario = $this->administrador_model->getUserByID($carga->usuario);
+                    //Confeccion del correo
+                    $data['fecha'] = date('d-m-Y', strtotime($carga->timestamp));
+                    $data['documento'] = $usuario->documento;
+                    $data['apellido'] = $usuario->apellido;
+                    $data['nombre'] = $usuario->nombre;
+                    $data['monto'] = $carga->monto;
+                    $correo = $usuario->mail;
+                    //Confeccion del correo del recibo
+                    $subject = "Rechazo de Carga Virtual";
+                    $message = $this->load->view('general/correos/carga_virtual_rechazo', $data, true);
+                    $this->generalticket->smtpSendEmail($correo, $subject, $message);
+                }
+                redirect(base_url('admin/cargasvirtuales/list/'.$fecha));
+            } else {
+                redirect(base_url('admin/cargasvirtuales/list/'.$fecha));
+            }
+        }
+    }
 }
