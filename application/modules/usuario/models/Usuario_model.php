@@ -86,6 +86,7 @@ class Usuario_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->where('usuario', $id_user);
+        $this->db->where('estado', 'revision');
         $query = $this->db->get('cargasvirtuales');
         return $query->result();
     }
