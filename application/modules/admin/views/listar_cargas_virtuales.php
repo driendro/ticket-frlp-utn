@@ -48,12 +48,18 @@
                             <td><?= $carga -> apellido; ?></td>
                             <td><?= $carga -> nombre; ?></td>
                             <td>$<?= $carga -> monto; ?></td>
-                            <?php if ($carga->estado === 'aprobado') : ?>
-                            <td style="text-align: right;">
-                                <span style="background-color: green; color: white; padding: 5px; border-radius: 3px;">Aprobado</span>
-                            </td>
-                            <td> <?= $carga -> vendedor_username; ?> </td>
-                            <td> <?= date('d-M-Y', strtotime($carga->confirmacion_timestamp)); ?> </td>
+                            <?php if ($carga->estado !== 'revision') : ?>
+                                <?php if ($carga->estado === 'aprobado') : ?>
+                                <td style="text-align: right;">
+                                    <span style="background-color: green; color: white; padding: 5px; border-radius: 3px;">Aprobado</span>
+                                </td>
+                                <?php else: ?>
+                                <td style="text-align: right;">
+                                    <span style="background-color: red; color: white; padding: 5px; border-radius: 3px;">Rechazado</span>
+                                </td>
+                                <?php endif; ?>
+                                <td> <?= $carga -> vendedor_username; ?> </td>
+                                <td> <?= date('d-M-Y', strtotime($carga->confirmacion_timestamp)); ?> </td>
                             <?php else: ?>
                             <td style="text-align: right;">
                                 <form method="POST" action="<?= base_url('admin/cargasvirtuales/list/' . $fecha_filtrada . '/aprobar'); ?>" style="display: inline;">

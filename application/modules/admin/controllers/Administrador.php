@@ -745,7 +745,7 @@ class Administrador extends CI_Controller
                 ];
                 $this->administrador_model->addCargaLog($cargaLog);
                 $this->session->set_flashdata('transaccion', $id_insert);
-                $this->administrador_model->updateCargaVirtualByID($carga_id, $id_vendedor);
+                $this->administrador_model->updateCargaVirtualByID($carga_id, $id_vendedor,'Aprobado');
                 //Confeccion del correo
                 $data['transaccion'] = $id_insert;
                 $data['fecha'] = date('d-m-Y', strtotime($cargaLog->fecha));
@@ -778,7 +778,7 @@ class Administrador extends CI_Controller
             if ($this->input->method() == 'post'){
                 $carga_id = $this->input->post('carga_id');
                 $carga = $this->administrador_model->getCargaVirtualByID($carga_id);
-                if($this->administrador_model->rmCargaVirtualByID($carga_id)){
+                if($this->administrador_model->updateCargaVirtualByID($carga_id, $id_vendedor, 'Rechazado')){
                     $usuario = $this->administrador_model->getUserByID($carga->usuario);
                     //Confeccion del correo
                     $data['fecha'] = date('d-m-Y', strtotime($carga->timestamp));

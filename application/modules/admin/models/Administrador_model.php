@@ -329,12 +329,12 @@ class Administrador_model extends CI_Model
         return $query->row();
     }
 
-    public function updateCargaVirtualByID($id, $vendedor_id)
+    public function updateCargaVirtualByID($id, $vendedor_id, $estado)
     {
         /*Usado en:
         */
         $this->db->set('confirmacion_vendedor', $vendedor_id);
-        $this->db->set('estado', 'aprobado');
+        $this->db->set('estado', $estado);
         $this->db->set('confirmacion_timestamp', date('Y-m-d H:i:s'));
         $this->db->where('id', $id);
         return $this->db->update('cargasvirtuales');
