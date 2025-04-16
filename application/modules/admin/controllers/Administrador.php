@@ -749,11 +749,11 @@ class Administrador extends CI_Controller
                 //Confeccion del correo
                 $data['transaccion'] = $id_insert;
                 $data['fecha'] = date('d-m-Y', strtotime($cargaLog->fecha));
-                $data['hora'] = $cargaLog->hora;
+                $data['hora'] = $cargaLog['hora'];
                 $data['documento'] = $usuario->documento;
                 $data['apellido'] = $usuario->apellido;
                 $data['nombre'] = $usuario->nombre;
-                $data['monto'] = $cargaLog->monto;
+                $data['monto'] = $carga->monto;
                 $data['saldo'] = $saldo;
                 $data['tipo'] = $cargaLog->formato;
                 $correo = $usuario->mail;
