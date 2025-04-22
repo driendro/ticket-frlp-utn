@@ -4,7 +4,13 @@
                 <img class="img-fluid mx-auto d-block" src="<?= base_url('assets/img/logo_comedor.png'); ?>" alt="">
             </div>
         </div>
-        <div class="row form-center">
+        <div class="col">
+            <div class="col text-center">
+                <p style="font-size: larger; font-weight: bold;">Pedí tu usuario <a href="https://forms.gle/dt6NBGTLEsgbcaWS7" target="_blanck">ACÁ</a>.</p>
+            </div>
+            <div class="col text-center">
+                <p style="font-size: larger; font-weight: bold;"><a href="<?= base_url('download/instructivo.pdf'); ?>" target="_blanck">Instructivo de Registro y Carga de Saldo</a></p>    </div>
+        </div>    <div class="row form-center">
             <div class="col-6 col-md-5 col-xl-4 my-3">
                 <?= form_open(current_url()); ?>
                 <div class="form-group mb-4">
